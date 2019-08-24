@@ -4,6 +4,7 @@ export default {
     menu: null,
 
     category: null,
-    categoryPost: null
+    categoryPost: null,
+    post: null
   }
 }

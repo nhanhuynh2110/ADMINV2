@@ -12,7 +12,6 @@ class Form extends React.PureComponent {
   }
   handleSubmit () {
     this.props.handleSubmitSingle((data) => {
-      console.log(data)
       if (!this.props.data) {
         this.props.api.category.insert(data, (err, resp) => {
           if (err) return alert('save fail')

@@ -1,49 +1,56 @@
 const ACCOUNT = {
-  PROFILE: '/profile'
+    PROFILE: '/profile'
 }
 
 const CATEGORYLINK = {
-  GRID: '/category',
-  ADD: '/category/add',
-  EDIT: '/category/:id'
+    GRID: '/category',
+    ADD: '/category/add',
+    EDIT: '/category/:id'
 }
 
 const CATEGORYPOSTLINK = {
-  GRID: '/category-post',
-  ADD: '/category-post/add',
-  EDIT: '/category-post/:id'
+    GRID: '/category-post',
+    ADD: '/category-post/add',
+    EDIT: '/category-post/:id'
+}
+
+const POSTLINK = {
+    GRID: '/post',
+    ADD: '/post/add',
+    EDIT: '/post/:id'
 }
 
 const BANNERLINK = {
-  GRID: '/banner',
-  ADD: '/banner/add',
-  UPDATE: '/banner/update'
+    GRID: '/banner',
+    ADD: '/banner/add',
+    UPDATE: '/banner/update'
 }
 
 const PARTNERLINK = {
-  GRID: '/partner',
-  ADD: '/partner/add',
-  UPDATE: '/partner/update'
+    GRID: '/partner',
+    ADD: '/partner/add',
+    UPDATE: '/partner/update'
 }
 
 const VIDEOLINK = {
-  GRID: '/video',
-  ADD: '/video/add',
-  UPDATE: ''
+    GRID: '/video',
+    ADD: '/video/add',
+    UPDATE: ''
 }
 
 const PRODUCTLINK = {
-  GRID: '/product',
-  ADD: '/category',
-  UPDATE: ''
+    GRID: '/product',
+    ADD: '/category',
+    UPDATE: ''
 }
 
 export {
-  ACCOUNT,
-  CATEGORYLINK,
-  CATEGORYPOSTLINK,
-  BANNERLINK,
-  PARTNERLINK,
-  VIDEOLINK,
-  PRODUCTLINK
+    ACCOUNT,
+    CATEGORYLINK,
+    CATEGORYPOSTLINK,
+    POSTLINK,
+    BANNERLINK,
+    PARTNERLINK,
+    VIDEOLINK,
+    PRODUCTLINK
 }

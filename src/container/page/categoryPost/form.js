@@ -35,20 +35,14 @@ class Form extends React.PureComponent {
   }
 
   componentDidMount () {
-    TinyMCE.init('#editor', 'description', this.props.onInputChange)
-    // console.log('TinyMCE.tiny.EditorManager', TinyMCE.tiny.EditorManager)
-    // TinyMCE.tiny.EditorManager.execCommand('mceAddControl', true, '#categorypostdescription');
-    // console.log(11111, TinyMCE.tiny(), TinyMCE.get('#categorypostdescription'))
-    // tinymce.EditorManager.execCommand('mceRemoveControl',true, editor_id);
-    // TinyMCE.init('#editor', 'description', this.props.onInputChange)
-    // TinyMCE.remove('#categorypostdescription', () => {
-    //   TinyMCE.init('#categorypostdescription', 'description', this.props.onInputChange)
-    // })
+    let {description} = this.props.model
+    TinyMCE.init('description', this.props.onInputChange, () => {
+      tinyMCE.activeEditor.setContent(description.value);
+    })
   }
 
   render () {
     let { title, isActive, isHome, fate, description } = this.props.model
-    console.log('this.props.model', this.props.model)
     return (
       <FormLayoutDefault
         title='Create Category Post'
@@ -67,8 +61,8 @@ class Form extends React.PureComponent {
             </Field>
 
             <Field field={description}>
-              <div id='editor'>
-                <textarea id='#description' className='editor' />
+              <div>
+                <textarea className='editor' />
               </div>
             </Field>
             <Field field={isActive}>
