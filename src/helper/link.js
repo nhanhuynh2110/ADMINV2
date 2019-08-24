@@ -5,7 +5,13 @@ const ACCOUNT = {
 const CATEGORYLINK = {
   GRID: '/category',
   ADD: '/category/add',
-  EDIT: '/category/:code'
+  EDIT: '/category/:id'
+}
+
+const CATEGORYPOSTLINK = {
+  GRID: '/category-post',
+  ADD: '/category-post/add',
+  EDIT: '/category-post/:id'
 }
 
 const BANNERLINK = {
@@ -35,6 +41,7 @@ const PRODUCTLINK = {
 export {
   ACCOUNT,
   CATEGORYLINK,
+  CATEGORYPOSTLINK,
   BANNERLINK,
   PARTNERLINK,
   VIDEOLINK,

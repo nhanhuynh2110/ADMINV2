@@ -2,6 +2,7 @@
 import Home from './home'
 import Profile from './account/form'
 import Category from './category'
+import CategoryPost from './categoryPost'
 import Banner from './banner'
 import Product from './product'
 import Partner from './partner'
@@ -11,6 +12,7 @@ export {
   Home,
   Profile,
   Category,
+  CategoryPost,
   Banner,
   Partner,
   Product,

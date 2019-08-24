@@ -15,9 +15,9 @@ class ActionTool extends React.PureComponent {
     let {data, linkedit} = this.props
     return (
       <div>
-        <a onClick={() => this.handleAction('ACTIVE')}><i className={`fa ${data.is_active ? 'fa-check' : 'fa-ban'}`} /></a>
+        <a onClick={() => this.handleAction('ACTIVE')}><i className={`fa ${data.isActive ? 'fa-check' : 'fa-ban'}`} /></a>
         <a onClick={() => this.handleAction('DELETE')}><i className='fa fa-trash-o' /></a>
-        <Link to={linkedit + data.code}><i className='fa fa-pencil' /></Link>
+        <a href={linkedit + data._id}><i className='fa fa-pencil' /></a>
       </div>
     )
   }

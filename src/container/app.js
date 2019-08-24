@@ -3,8 +3,8 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import Layout from '../layout/default'
 import { withContainer } from '../context'
 
-import { ACCOUNT, CATEGORYLINK, BANNERLINK, PARTNERLINK, VIDEOLINK } from '../helper/link'
-import { Profile, Category, Banner, Partner, Product, Home, Video } from './page'
+import { ACCOUNT, CATEGORYLINK, CATEGORYPOSTLINK, BANNERLINK, PARTNERLINK, VIDEOLINK } from '../helper/link'
+import { Profile, Category, CategoryPost, Banner, Partner, Product, Home, Video } from './page'
 
 class App extends React.PureComponent {
   renderCategory ({ match }) {
@@ -20,6 +20,7 @@ class App extends React.PureComponent {
               <Route exact path='/' component={Home} />
               <Route path={ACCOUNT.PROFILE} component={Profile} />
               <Route path={CATEGORYLINK.GRID} component={Category} />
+              <Route path={CATEGORYPOSTLINK.GRID} component={CategoryPost} />
               <Route path={CATEGORYLINK.GRID + '/:code'} exact component={Category} />
               <Route path={BANNERLINK.GRID} component={Banner} />
               <Route path={PARTNERLINK.GRID} component={Partner} />
@@ -30,6 +31,10 @@ class App extends React.PureComponent {
         </Suspense>
       </Router>
     )
+  }
+
+  componentDidMount () {
+    // require('../helper/tinyMCE').init1()
   }
 }
 

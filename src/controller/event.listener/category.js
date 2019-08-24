@@ -15,17 +15,14 @@ export default (getCtr) => {
       _.remove(obj.list, {
         code: data
       })
-      console.log('items', obj)
       return obj
     })
   })
 }
 
 let updateCategories = (self, data = {}) => {
-  console.log('data', data)
   self.data.setCategory(obj => {
-    console.log('obj', obj)
-    let index = _.findIndex(obj.list, (item) => item.code === data.code)
+    let index = _.findIndex(obj.list, (item) => item._id === data._id)
     if (index >= 0) {
       obj.list[index] = data
     }

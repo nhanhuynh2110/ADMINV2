@@ -62,17 +62,17 @@ class GridView extends React.PureComponent {
 
   handleAction (type, data) {
     if (type === 'ACTIVE') {
-      this.update({ code: data.code, is_active: data.is_active === 1 ? 0 : 1 })
+      this.update({ id: data._id, isActive: !data.isActive })
     } else if (type === 'DELETE') {
-      this.delete({ code: data.code, is_delete: 1 })
+      this.delete({ id: data._id, isDelete: true })
     }
   }
 
   handleActionTrash (type, data) {
     if (type === 'ACTIVE') {
-      this.update({ code: data.code, is_active: 1, is_delete: 0 })
+      this.update({ id: data._id, isDelete: false })
     } else if (type === 'DELETE') {
-      this.remove({ code: data.code })
+      this.remove({ id: data._id })
     }
   }
 

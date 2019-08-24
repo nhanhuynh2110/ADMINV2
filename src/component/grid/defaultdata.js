@@ -3,7 +3,7 @@ import _ from 'lodash'
 
 export default () => {
   let entries = [
-    // { text: 2, value: 2 },
+    { text: 2, value: 2 },
     { text: 10, value: 10 },
     { text: 20, value: 20 },
     { text: 30, value: 30 },
@@ -22,7 +22,7 @@ export default () => {
       // }} />,
       on: (state) => {
         let newState = _.clone(state)
-        newState.payload.isDel = 0
+        newState.payload.isDelete = false
         return newState
       }
     },
@@ -32,7 +32,7 @@ export default () => {
       id: 'trash',
       on: (state) => {
         let newState = _.clone(state)
-        newState.payload.isDel = 1
+        newState.payload.isDelete = true
         return newState
       }
     }
@@ -47,7 +47,7 @@ export default () => {
       pageNumber: 1,
       colSort: 'create_date',
       typeSort: '',
-      isDel: 0
+      isDelete: 0
     }
   }
 }

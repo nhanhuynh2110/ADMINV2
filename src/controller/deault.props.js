@@ -3,6 +3,7 @@ export default {
     currentUser: null,
     menu: null,
 
-    category: null
+    category: null,
+    categoryPost: null
   }
 }

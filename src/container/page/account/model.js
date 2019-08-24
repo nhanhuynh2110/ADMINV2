@@ -50,6 +50,13 @@ var model = {
       },
       birthday: {
         label: 'Birthday'
+      },
+      gender: {
+        label: 'Gender',
+        options: [{ text: 'Nam', value: 1 }, { text: 'Nữ', value: 2 }]
+      },
+      is_active: {
+        text: 'active'
       }
     }
   }

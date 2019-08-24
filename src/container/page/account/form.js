@@ -1,4 +1,5 @@
 import React from 'react'
+import {Link} from 'react-router-dom'
 import DatePicker from 'react-datepicker'
 import moment from 'moment'
 
@@ -7,6 +8,9 @@ import { withContainer } from '../../../context'
 import config from '../../../../config'
 import Model from './model'
 import Field from '../../../component/form/field'
+import Select from '../../../component/control/select'
+
+import 'react-datepicker/dist/react-datepicker.css'
 
 let domain = config.server.domain
 
@@ -14,7 +18,7 @@ class Form extends React.PureComponent {
   constructor (props) {
     super(props)
     this.uploadFile = this.uploadFile.bind(this)
-    this.changeDatepicker = this.changeDatepicker.bind(this)
+    this.handleSubmit = this.handleSubmit.bind(this)
   }
   uploadFile (e) {
     var files = e.target.files
@@ -23,16 +27,17 @@ class Form extends React.PureComponent {
 
     this.props.api.file.upload(files, name, folder, (err, resp) => {
       if (err) this.props.onInputChange(null, { name, value: null })
+      else this.props.onInputChange(null, {name, value: resp.img})
     })
   }
 
-  changeDatepicker (date, name, term) {
-
+  handleSubmit () {
+    console.log(123)
   }
 
   render () {
-    let {avatar, username, email, firstname, lastname, address, phone, birthday} = this.props.model
-    console.log('birthday', moment(birthday.value))
+    let {model, isFormValid, hasChanged, onInputChange} = this.props
+    let {avatar, username, email, firstname, lastname, address, phone, birthday, gender} = model
     var linkAvatar = (avatar.value) ? domain + avatar.value : 'https://img7.androidappsapk.co/115/7/3/a/com.profile.admires_stalkers_unknown.png'
     return (
       <section className='content'>
@@ -42,10 +47,10 @@ class Form extends React.PureComponent {
               <div className='box-body box-profile'>
                 <img className='profile-user-img img-responsive img-circle' src={linkAvatar} alt='User profile picture' />
                 <h3 className='profile-username text-center'>GROUP DEV</h3>
-                <p className='text-muted text-center'>Nhóm Quản Trị</p>
+                <p className='text-muted text-center'>Admin Group</p>
                 <Field field={avatar}>
                   <div className='upload-image'>
-                    <button className='btn btn-block btn-success'>Tải Hình Ảnh</button>
+                    <button className='btn btn-block btn-success'>Avatar</button>
                     <input data-name='avatar' data-folder='account' id='upload-input' className='btn btn-block btn-success' type='file' name='uploads[]' onChange={this.uploadFile} />
                   </div>
                 </Field>
@@ -73,57 +78,44 @@ class Form extends React.PureComponent {
           <div className='col-md-6'>
             <div className='box box-success'>
               <div className='box-header with-border'>
-                <h3 className='box-title'>Thông tin tài khoản</h3>
+                <h3 className='box-title'>Account info</h3>
               </div>
               <form role='form'>
                 <div className='box-body'>
                   <Field field={firstname}>
-                    <input type='text' className='form-control' placeholder={firstname.placeholder} onChange={this.props.onInputChange} defaultValue={firstname.value} />
+                    <input type='text' className='form-control' placeholder={firstname.placeholder} onChange={onInputChange} defaultValue={firstname.value} />
                   </Field>
 
                   <Field field={lastname}>
-                    <input type='text' className='form-control' placeholder={lastname.placeholder} onChange={this.props.onInputChange} defaultValue={lastname.value} />
+                    <input type='text' className='form-control' placeholder={lastname.placeholder} onChange={onInputChange} defaultValue={lastname.value} />
                   </Field>
 
                   <div className='form-group'>
-                    <label>Tên Đầy Đủ</label>
-                    <span> {`${firstname.value} ${lastname.value}`}</span>
+                    <label>Fullname</label>
+                    <span> {`${firstname.value} ${lastname.value}`.trim()}</span>
                   </div>
 
                   <Field field={address}>
-                    <input type='text' className='form-control' placeholder={address.placeholder} onChange={this.props.onInputChange} defaultValue={address.value} />
+                    <input type='text' className='form-control' placeholder={address.placeholder} onChange={onInputChange} defaultValue={address.value} />
                   </Field>
 
                   <Field field={phone}>
-                    <input type='text' className='form-control' placeholder={phone.placeholder} onChange={this.props.onInputChange} defaultValue={phone.value} />
+                    <input type='text' className='form-control' placeholder={phone.placeholder} onChange={onInputChange} defaultValue={phone.value} />
                   </Field>
 
                   <Field field={birthday}>
-                    <DatePicker className='form-control' selected={birthday.value ? moment(birthday.value) : moment()} onChange={(date) => this.props.onInputChange(null, {name: 'birthday', value: date.format('DD-MM-YYYY')})} />
+                    <DatePicker className='form-control' selected={moment(birthday.value).isValid() ? new Date(birthday.value) : new Date()} onChange={(date) => onInputChange(null, {name: 'birthday', value: date})} />
                   </Field>
-                  {/* <div className='form-group'>
-                    <label>Địa Chỉ</label>
-                    <input type='text' className='form-control' placeholder='Địa Chỉ' value={this.state.fields.address.value || ''} data-name={this.state.fields.address.name} onChange={this.changeData} />
-                  </div>
-                  <div className='form-group'>
-                    <label>Phone</label>
-                    <input type='number' className='form-control' placeholder='Số Điện Thoại' value={this.state.fields.phone.value || ''} data-name={this.state.fields.phone.name} onChange={this.changeData} />
-                  </div>
-                  <div className='form-group'>
-                    <label>Ngày Sinh</label>
-                    <DatePicker className='form-control' selected={this.state.dateBirthday}
-                      onChange={(date) => this.changeDatepicker(date, this.state.fields.birthday.name, 'dateBirthday')} />
-                  </div>
-                  <div className='form-group'>
-                    <label>Giới Tính {this.state.fields.gender.value}</label>
-                    <SelectOption isSelected={this.state.fields.gender.value} name={this.state.fields.gender.name} data={this.state.gender} classSelect='select2' onChange={this.changeData} />
-                  </div>
-                  <div className='form-group'>
-                    <span data-name={this.state.fields.is_active.name} className='checkbox-react' onClick={this.changeDataCheckbox}>
-                      {this.state.fields.is_active.value === 1 ? <i className='fa fa-check' /> : ''}
+
+                  <Field field={gender}>
+                    <Select isSelected={parseInt(gender.value)} options={gender.options} classSelect='select2' onChange={onInputChange} />
+                  </Field>
+
+                  <Field field={model.is_active}>
+                    <span className='checkbox-react' onClick={() => onInputChange(null, { name: 'is_active', value: model.active.value !== 1 ? 1 : 0 })}>
+                      {model.is_active.value === 1 && <i className='fa fa-check' />}
                     </span>
-                    Kích Hoạt
-                  </div> */}
+                  </Field>
                 </div>
               </form>
             </div>
@@ -143,21 +135,26 @@ class Form extends React.PureComponent {
               </form>
             </div>
           </div> */}
-          {/* <div className='col-md-12'>
+          <div className='col-md-12'>
             <div className='box box-success'>
               <div className='box-body'>
                 <div className='pull-left'>
-                  <a href='/admin/account' className='btn btn-danger btn-xs'>Huỷ</a>
+                  <Link to='/account' className='btn btn-danger btn-xs'>Cancle</Link>
                 </div>
 
                 <div className='pull-right'>
-                  <input className='btn btn-success btn-xs' disabled={!this.state.actionValid} onClick={(e) => { this.submitForm(e, '/admin/account/form', '/admin/account') }} id='ck' type='submit' defaultValue='Lưu' />
+                  <input
+                    className='btn btn-success btn-xs'
+                    disabled={!isFormValid || (!hasChanged)}
+                    type='submit'
+                    defaultValue='Save'
+                    onClick={this.handleSubmit} />
                 </div>
 
                 <div className='clearfix' />
               </div>
             </div>
-          </div> */}
+          </div>
 
         </div>
       </section>

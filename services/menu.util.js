@@ -9,8 +9,18 @@ let init = (permissions, permissionsUser) => {
       key: 'category',
       title: 'Category',
       childItem: [
-        { text: 'New', link: '/category/form', permission: hasPermissionMenu('CATEGORYADD') },
+        { text: 'New', link: '/category/add', permission: hasPermissionMenu('CATEGORYADD') },
         { text: 'List', link: '/category', permission: hasPermissionMenu('CATEGORYVIEW') }
+      ],
+      icon: 'fa fa-book',
+      permission: hasPermissionMenu('CATEGORYVIEW')
+    },
+    {
+      key: 'category-post',
+      title: 'Category POst',
+      childItem: [
+        { text: 'New', link: '/category-post/add', permission: true },
+        { text: 'List', link: '/category-post', permission: true }
       ],
       icon: 'fa fa-book',
       permission: hasPermissionMenu('CATEGORYVIEW')
