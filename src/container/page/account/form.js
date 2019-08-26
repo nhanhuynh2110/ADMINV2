@@ -167,9 +167,7 @@ const FormBox = withFormBehaviors(Form, Model)
 class FormWrapper extends React.PureComponent {
   constructor (props) {
     super(props)
-    this.state = {
-      data: this.props.currentUser
-    }
+    this.state.data = this.props.currentUser
   }
   render () {
     return <FormBox data={this.state.data} api={this.props.api} />

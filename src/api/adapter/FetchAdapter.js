@@ -31,7 +31,6 @@ export default class FetchAdapter {
   }
 
   put (url, query = {}, body = {}, cb) {
-    console.log('body body', body)
     let { headers } = this.options
     url = url + '?' + this.formatLink(query)
     return fetch(url, {

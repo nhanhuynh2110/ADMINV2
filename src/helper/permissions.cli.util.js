@@ -1,22 +1,26 @@
-let hasPermissions = (permissions, currentUser, type) => {
-  let isPermissions = false
+import _ from 'lodash'
+
+const hasPermission = (arrCode = [], currentUser) => {
+  console.log(1111111111111111111)
+  if (!currentUser || arrCode.length <= 0) return false
+  const permissions = currentUser.permissions || null
+
   if (!permissions) return false
-  if (!currentUser) return false
+
+  let arr = []
   Object.keys(permissions).forEach(key => {
-    permissions[key].forEach(el => {
-      if (el.includes(type) && currentUser.includes(type)) {
-        isPermissions = true
-      }
+    arrCode.forEach(code => {
+      const role = permissions[key].role.find(r => r.key === code)
+      if (role) arr.push(role.isActive || false)
     })
   })
-
-  return isPermissions
+  if (arr.length <= 0) return false
+  return arr.every(element => element)
 }
 
-let routerPermissions = (type, permissions, permissionsUser) => {
-  if (!type) return false
-  return hasPermissions(permissions, permissionsUser, type)
-}
+// let routerPermissions = (type, permissions, permissionsUser) => {
+//   if (!type) return false
+//   return hasPermission(permissions, permissionsUser, type)
+// }
 
-exports.hasPermissions = hasPermissions
-exports.routerPermissions = routerPermissions
+export default hasPermission

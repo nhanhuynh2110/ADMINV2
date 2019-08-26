@@ -1,4 +1,4 @@
-/* global _ */
+/* global _, tinymce */
 
 import React from 'react'
 import Model from './model'
@@ -37,7 +37,7 @@ class Form extends React.PureComponent {
   componentDidMount () {
     let {description} = this.props.model
     TinyMCE.init('description', this.props.onInputChange, () => {
-      tinyMCE.activeEditor.setContent(description.value);
+      if (description.value) tinymce.activeEditor.setContent(description.value)
     })
   }
 

@@ -10,6 +10,11 @@ module.exports = function (app) {
     return res.render('page/login')
   })
 
+  app.get('/logout', (req, res, next) => {
+    req.logout()
+    return res.redirect('/login')
+  })
+
   app.post('/login', passport.authenticate('local', {failureRedirect: '/login', successRedirect: '/'}))
 
   app.use('/*', auth)
@@ -77,7 +82,7 @@ module.exports = function (app) {
 
   app.get('/api/get-current-user', (req, res) => {
     let user = req.user
-    let menu = menuData(req.user.permissions, req.user.permissionsUser)
+    let menu = menuData(req.user.permissions)
     let data = { user, menu }
     return res.status(200).json({ status: 200, message: 'server error', data })
   })

@@ -2,30 +2,35 @@ import React, { Suspense } from 'react'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import Layout from '../layout/default'
 import { withContainer } from '../context'
-
-import { ACCOUNT, CATEGORYLINK, CATEGORYPOSTLINK, POSTLINK, BANNERLINK, PARTNERLINK, VIDEOLINK } from '../helper/link'
-import { Profile, Category, CategoryPost, Post, Banner, Partner, Product, Home, Video } from './page'
+import LINKSTORE from '../helper/link'
+import hasPermission from '../helper/permissions.cli.util'
+import { Profile, Category, CategoryPost, Post, Home } from './page'
+const { ACCOUNT, CATEGORYLINK, CATEGORYPOSTLINK, POSTLINK } = LINKSTORE
 
 class App extends React.PureComponent {
-  renderCategory ({ match }) {
-    return <Category query={match} />
+  constructor (props) {
+    super(props)
+    this.routes = [
+      { key: 'main-cat', exact: true, path: '/', component: Home },
+      { key: 'main-profile', path: ACCOUNT.PROFILE, component: Profile },
+      { key: 'main-category', path: CATEGORYLINK.GRID, component: Category, permission: ['CATEGORYVIEW'] },
+      { key: 'main-category-post', path: CATEGORYPOSTLINK.GRID, component: CategoryPost },
+      { key: 'main-post', path: POSTLINK.GRID, component: Post }
+    ]
   }
-
   render () {
+    console.log(hasPermission(['CATEGORYVIEW'], this.props.currentUser))
+
     return (
       <Router>
         <Suspense fallback={<div>Loading...</div>}>
           <Layout>
             <Switch>
-              <Route exact path='/' component={Home} />
-              <Route path={ACCOUNT.PROFILE} component={Profile} />
-              <Route path={CATEGORYLINK.GRID} component={Category} />
-              <Route path={CATEGORYPOSTLINK.GRID} component={CategoryPost} />
-              <Route path={POSTLINK.GRID} component={Post} />
-              <Route path={CATEGORYLINK.GRID + '/:code'} exact component={Category} />
-              <Route path={BANNERLINK.GRID} component={Banner} />
-              <Route path={PARTNERLINK.GRID} component={Partner} />
-              <Route path={VIDEOLINK.GRID} component={Video} />
+              {this.routes.map(route => {
+                if (!route.permission) return <Route {...route} />
+                if (!hasPermission(route.permission, this.props.currentUser)) return null
+                return <Route {...route} />
+              })}
             </Switch>
           </Layout>
         </Suspense>
@@ -35,5 +40,5 @@ class App extends React.PureComponent {
 }
 
 export default withContainer(App, (c) => ({
-  data: c.data
+  currentUser: c.data.currentUser
 }))

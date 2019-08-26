@@ -6,7 +6,7 @@ import ActionTrash from './actionTrash'
 import PageLayout from '../../layout/pageLayout'
 import GridViewLayout from '../../layout/gridViewLayout'
 import { withContainer } from '../../context'
-import METADATA from '../../meta'
+import METADATA from '../../helper/meta'
 import dfdataModule from './defaultdata'
 import _ from 'lodash'
 
