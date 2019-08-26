@@ -1,5 +1,3 @@
-let domain = 'http://localhost:3100'
-
 let formatDate = (strDate) => {
   var date = new Date(strDate)
   return (
@@ -7,12 +5,6 @@ let formatDate = (strDate) => {
   )
 }
 
-let renderString = (value) => {
-  return value
-}
-
 export {
-  domain,
-  formatDate,
-  renderString
+  formatDate
 }

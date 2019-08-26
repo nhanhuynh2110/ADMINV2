@@ -80,9 +80,7 @@ const withFormBehaviors = (WrappedComponent, rawModel) => {
     handleSubmit (callback) { // TODO
       if (this.state.loading) return
       this.setState({loading: true}, () => {
-        // if (!this.props.onSubmit) {
-        //   return
-        // }
+        if (!this.props.onSubmit) return
         boundModel.revalidate((err, valid) => {
           if (err || !valid || typeof this.props.onSubmit !== 'function') {
             return this.setState({model: { ...boundModel.toObject() }, hasChanged: !!err, loading: false})
@@ -107,11 +105,7 @@ const withFormBehaviors = (WrappedComponent, rawModel) => {
     handleSubmitSingle (callback) { // TODO
       if (this.state.loading) return
       this.setState({loading: true}, () => {
-        // if (!this.props.onSubmit) {
-        //   return
-        // }
         boundModel.revalidate((err, valid) => {
-          console.log('revalidate', valid)
           if (err || !valid || typeof callback !== 'function') {
             return this.setState({model: { ...boundModel.toObject() }, hasChanged: !!err, loading: false})
           }

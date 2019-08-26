@@ -1,9 +1,10 @@
-import { CATEGORYLINK } from '../helper/link'
-import { formatDate } from '../helper/utility'
+import LINKSTORE from '../link'
+import { formatDate } from '../utility'
 
-let PAGE_HEADER = { title: 'Category', link: CATEGORYLINK.ADD }
+const LINK = LINKSTORE.CATEGORYLINK
+let PAGE_HEADER = { title: 'Category', link: LINK.ADD }
 let ACTIONLINK = {
-  EDIT: '/category/'
+  EDIT: LINK.GRID
 }
 
 let TABLEVIEW = (self) => {

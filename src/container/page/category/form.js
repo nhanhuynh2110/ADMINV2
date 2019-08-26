@@ -70,10 +70,10 @@ class FormWrapper extends React.PureComponent {
   }
 
   componentDidMount () {
-    let {match} = this.props
+    let {match, isEdit} = this.props
     if (!match) return
     let {params} = match
-    if (!params.id || params.id === 'add') return false
+    if (!isEdit) return false
     this.props.api.category.get({id: params.id}, (err, data) => {
       if (err) return
       this.setState({ data })
