@@ -12,7 +12,7 @@ export default class Category extends React.PureComponent {
     this.state = {
       routes: [
         { key: 'catagory-gridview', permissions: ['CATEGORYVIEW'], path: CATEGORYLINK.GRID, exact: true, render: (props) => <Grid search sortHeader sortFooter meta={KEY} {...props} /> },
-        { key: 'catagory-form', permissions: ['CATEGORYADD'], exact: true, path: CATEGORYLINK.ADD, render: (props) => <FormWrapper {...props} /> },
+        // { key: 'catagory-form', permissions: ['CATEGORYADD'], exact: true, path: CATEGORYLINK.ADD, render: (props) => <FormWrapper {...props} /> },
         { key: 'catagory-form', permissions: ['CATEGORYEDIT'], path: CATEGORYLINK.EDIT, render: (props) => <FormWrapper isEdit {...props} /> }
       ]
     }

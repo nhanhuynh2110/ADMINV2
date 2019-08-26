@@ -2,12 +2,16 @@
 var model = {
     model: function () {
       return {
+        image: {
+          validators: [
+            { compare: 'required' }
+          ]
+        },
         title: {
           label: 'Title',
           placeholder: 'please input title',
           validators: [
-            { compare: 'required' },
-            { compare: 'minlen', compareTo: 6 }
+            { compare: 'required' }
           ]
         },
         introTitle: {
