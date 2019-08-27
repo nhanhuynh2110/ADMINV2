@@ -27,7 +27,6 @@ class ApiAdapterForward extends Adapter {
     this.options['method'] = 'POST'
     this.options['headers']['Content-Type'] = 'application/json'
     this.options = setUrl(this.options)
-    console.log('this.options', this.options)
     super.post((error, body) => {
       if (error) return cb(error)
       return cb(null, body)

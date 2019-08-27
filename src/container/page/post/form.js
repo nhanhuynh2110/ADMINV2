@@ -1,4 +1,4 @@
-/* global _ */
+/* global _, tinymce */
 
 import React from 'react'
 import async from 'async'
@@ -57,15 +57,15 @@ class Form extends React.PureComponent {
   }
 
   componentDidMount () {
-    let {description} = this.props.model
-    TinyMCE.init('description', this.props.onInputChange, () => {
-      if (description.value) tinymce.activeEditor.setContent(description.value)
+    let {content} = this.props.model
+    TinyMCE.init('content', this.props.onInputChange, () => {
+      if (content.value) tinymce.activeEditor.setContent(content.value)
     })
   }
 
   render () {
     let { categories, onInputChange } = this.props
-    let { image, title, introTitle, isActive, description, categoryPostId } = this.props.model
+    let { image, title, introTitle, isActive, description, categoryPostId, content } = this.props.model
 
     var linkImg = (image.value) ? domain + image.value : 'https://img7.androidappsapk.co/115/7/3/a/com.profile.admires_stalkers_unknown.png'
     return (
@@ -93,7 +93,7 @@ class Form extends React.PureComponent {
             <Field field={title}>
               <input type='text' className='form-control' placeholder={title.placeholder} onChange={onInputChange} defaultValue={title.value} />
             </Field>
-            
+
             <Field field={introTitle}>
               <input type='text' className='form-control' placeholder={introTitle.placeholder} onChange={onInputChange} defaultValue={introTitle.value} />
             </Field>
@@ -103,6 +103,12 @@ class Form extends React.PureComponent {
             </Field>
 
             <Field field={description}>
+              <div>
+                <textarea name='description' value={description.value} onChange={onInputChange} />
+              </div>
+            </Field>
+
+            <Field field={content}>
               <div>
                 <textarea className='editor' />
               </div>
