@@ -4,23 +4,22 @@ import Layout from '../layout/default'
 import { withContainer } from '../context'
 import LINKSTORE from '../helper/link'
 import hasPermission from '../helper/permissions.cli.util'
-import { Profile, Category, CategoryPost, Post, Home } from './page'
-const { ACCOUNT, CATEGORYLINK, CATEGORYPOSTLINK, POSTLINK } = LINKSTORE
+import { Profile, Account, Category, CategoryPost, Post, Home } from './page'
+const { ACCOUNTLINK, CATEGORYLINK, CATEGORYPOSTLINK, POSTLINK } = LINKSTORE
 
 class App extends React.PureComponent {
   constructor (props) {
     super(props)
     this.routes = [
       { key: 'main-cat', exact: true, path: '/', component: Home },
-      { key: 'main-profile', path: ACCOUNT.PROFILE, component: Profile },
+      { key: 'main-profile', path: ACCOUNTLINK.PROFILE, component: Profile },
+      { key: 'main-account', path: ACCOUNTLINK.GRID, component: Account, permission: ['ACCOUNTVIEW'] },
       { key: 'main-category', path: CATEGORYLINK.GRID, component: Category, permission: ['CATEGORYVIEW'] },
       { key: 'main-category-post', path: CATEGORYPOSTLINK.GRID, component: CategoryPost },
       { key: 'main-post', path: POSTLINK.GRID, component: Post }
     ]
   }
   render () {
-    console.log(hasPermission(['CATEGORYVIEW'], this.props.currentUser))
-
     return (
       <Router>
         <Suspense fallback={<div>Loading...</div>}>

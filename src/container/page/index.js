@@ -1,6 +1,7 @@
 
 import Home from './home'
-import Profile from './account/form'
+import Profile from './account/form1'
+import Account from './account'
 import Category from './category'
 import CategoryPost from './categoryPost'
 import Post from './post'
@@ -12,6 +13,7 @@ import Video from './video'
 export {
   Home,
   Profile,
+  Account,
   Category,
   CategoryPost,
   Post,

@@ -15,7 +15,6 @@ function controller () {
   self.setupAPIListeners()
   self.runApplication = (cb) => {
     self.api.account.getUserInfo((error, data) => {
-      console.log('data', error, data)
       self.data.setCurrentUser(data.user)
       self.data.setMenu(data.menu)
       return cb(error, data)

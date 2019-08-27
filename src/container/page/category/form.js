@@ -1,15 +1,33 @@
 import React from 'react'
+import _ from 'lodash'
+
 import Model from './model'
 import Field from '../../../component/form/field'
 import { withFormBehaviors } from '../../../component/form/form'
 import FormLayoutDefault from '../../../component/form/layout/default'
 import { withContainer } from '../../../context'
-import _ from 'lodash'
+import config from '../../../../config'
+
+let domain = config.server.domain
+
 class Form extends React.PureComponent {
   constructor (props) {
     super(props)
+    this.uploadFile = this.uploadFile.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
   }
+
+  uploadFile (e) {
+    var files = e.target.files
+    var name = e.target.getAttribute('data-name')
+    var folder = e.target.getAttribute('data-folder')
+
+    this.props.api.file.upload(files, name, folder, (err, resp) => {
+      if (err) this.props.onInputChange(null, { name, value: null })
+      else this.props.onInputChange(null, {name, value: resp.img})
+    })
+  }
+
   handleSubmit () {
     this.props.handleSubmitSingle((data) => {
       if (!this.props.data) {
@@ -30,7 +48,9 @@ class Form extends React.PureComponent {
   }
 
   render () {
-    let { title, isActive, isHome } = this.props.model
+    let { img, title, isActive, isHome } = this.props.model
+
+    var linkImg = (img.value) ? domain + img.value : 'https://img7.androidappsapk.co/115/7/3/a/com.profile.admires_stalkers_unknown.png'
     return (
       <FormLayoutDefault
         title='Create Category'
@@ -41,6 +61,19 @@ class Form extends React.PureComponent {
       >
         <form role='form'>
           <div className='box-body'>
+
+            <div className='box-body box-profile'>
+              <img className='profile-user-img img-responsive img-circle' src={linkImg} alt='User profile picture' />
+              <h3 className='profile-username text-center'>Image category</h3>
+              <Field field={img}>
+                <div className='upload-image'>
+                  <button className='btn btn-block btn-success'>Image</button>
+                  <input data-name='img' data-folder='categories' id='upload-input' className='btn btn-block btn-success' type='file' name='uploads[]' onChange={this.uploadFile} />
+                </div>
+              </Field>
+            </div>
+            
+
             <Field field={title}>
               <input type='text' className='form-control' placeholder={title.placeholder} onChange={this.props.onInputChange} defaultValue={title.value} />
             </Field>
@@ -73,7 +106,7 @@ class FormWrapper extends React.PureComponent {
     let {match, isEdit} = this.props
     if (!match) return
     let {params} = match
-    if (!isEdit) return false
+    if (!params.id) return false
     this.props.api.category.get({id: params.id}, (err, data) => {
       if (err) return
       this.setState({ data })
