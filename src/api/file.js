@@ -4,7 +4,7 @@ import config from '../../config'
 let domain = config.server.domain
 
 export default class File {
-  upload (files, name, folder = '', callback) {
+  upload (multiple, files, name, folder = '', callback) {
     if (!files || files.length <= 0) return callback(new Error('No file'))
     var formData = new FormData()
     for (var i = 0; i < files.length; i++) {
@@ -20,7 +20,7 @@ export default class File {
       processData: false,
       contentType: false,
       success: function (resp) {
-        if (resp.status && resp.status === 200) return callback(null, resp.data)
+        if (resp.status && resp.status === 200) return callback(null, multiple ? resp.data : resp.data[0])
         return callback(new Error('Upload file'))
       },
       xhr: function () {

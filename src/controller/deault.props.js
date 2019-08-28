@@ -5,6 +5,7 @@ export default {
     account: null,
     category: null,
     categoryPost: null,
-    post: null
+    post: null,
+    gallery: null
   }
 }

@@ -7,8 +7,10 @@ import { withFormBehaviors } from '../../../component/form/form'
 import FormLayoutDefault from '../../../component/form/layout/default'
 import { withContainer } from '../../../context'
 import config from '../../../../config'
+import STORELINK from '../../../helper/link'
 
 let domain = config.server.domain
+const LINK = STORELINK.CATEGORYLINK
 
 class Form extends React.PureComponent {
   constructor (props) {
@@ -22,7 +24,7 @@ class Form extends React.PureComponent {
     var name = e.target.getAttribute('data-name')
     var folder = e.target.getAttribute('data-folder')
 
-    this.props.api.file.upload(files, name, folder, (err, resp) => {
+    this.props.api.file.upload(false, files, name, folder, (err, resp) => {
       if (err) this.props.onInputChange(null, { name, value: null })
       else this.props.onInputChange(null, {name, value: resp.img})
     })
@@ -33,14 +35,14 @@ class Form extends React.PureComponent {
       if (!this.props.data) {
         this.props.api.category.insert(data, (err, resp) => {
           if (err) return alert('save fail')
-          alert('save success')
+          return this.props.history.push(LINK.GRID)
         })
       } else {
         let dt = data
         dt.id = this.props.data._id
         this.props.api.category.update(dt, (err, resp) => {
-          if (err) alert('update fail')
-          alert('update success')
+          if (err) return alert('update fail')
+          return this.props.history.push(LINK.GRID)
         })
       }
       this.props.handleSubmitFinish()
@@ -48,9 +50,9 @@ class Form extends React.PureComponent {
   }
 
   render () {
-    let { img, title, isActive, isHome } = this.props.model
-
-    var linkImg = (img.value) ? domain + img.value : 'https://img7.androidappsapk.co/115/7/3/a/com.profile.admires_stalkers_unknown.png'
+    let { img, title, description, isActive, isHome } = this.props.model
+    let {onInputChange} = this.props
+    var linkImg = (img.value) ? domain + img.value : 'http://placehold.it/250x150'
     return (
       <FormLayoutDefault
         title='Create Category'
@@ -58,12 +60,13 @@ class Form extends React.PureComponent {
         isFormValid={this.props.isFormValid}
         hasChanged={this.props.hasChanged}
         handleSubmit={this.handleSubmit}
+        isSubmit
       >
         <form role='form'>
           <div className='box-body'>
 
-            <div className='box-body box-profile'>
-              <img className='profile-user-img img-responsive img-circle' src={linkImg} alt='User profile picture' />
+            <div className='box-body box-profile' style={{ width: '250px' }}>
+              <img style={{ width: '100%' }} src={linkImg} />
               <h3 className='profile-username text-center'>Image category</h3>
               <Field field={img}>
                 <div className='upload-image'>
@@ -72,18 +75,24 @@ class Form extends React.PureComponent {
                 </div>
               </Field>
             </div>
-            
 
             <Field field={title}>
-              <input type='text' className='form-control' placeholder={title.placeholder} onChange={this.props.onInputChange} defaultValue={title.value} />
+              <input type='text' className='form-control' placeholder={title.placeholder} onChange={onInputChange} defaultValue={title.value} />
             </Field>
+
+            <Field field={description}>
+              <div>
+                <textarea style={{width: '100%', height: '200px'}} name='description' value={description.value} onChange={onInputChange} />
+              </div>
+            </Field>
+
             <Field field={isActive}>
-              <span className='checkbox-react' onClick={() => this.props.onInputChange(null, { name: 'isActive', value: !isActive.value })}>
+              <span className='checkbox-react' onClick={() => onInputChange(null, { name: 'isActive', value: !isActive.value })}>
                 {isActive.value && <i className='fa fa-check' />}
               </span>
             </Field>
             <Field field={isHome}>
-              <span className='checkbox-react' onClick={() => this.props.onInputChange(null, { name: 'isHome', value: !isHome.value })}>
+              <span className='checkbox-react' onClick={() => onInputChange(null, { name: 'isHome', value: !isHome.value })}>
                 {isHome.value && <i className='fa fa-check' />}
               </span>
             </Field>
@@ -103,7 +112,7 @@ class FormWrapper extends React.PureComponent {
   }
 
   componentDidMount () {
-    let {match, isEdit} = this.props
+    let {match} = this.props
     if (!match) return
     let {params} = match
     if (!params.id) return false
@@ -113,7 +122,7 @@ class FormWrapper extends React.PureComponent {
     })
   }
   render () {
-    return <FormBox data={this.state.data} api={this.props.api} />
+    return <FormBox data={this.state.data} api={this.props.api} {...this.props} />
   }
 }
 

@@ -31,7 +31,7 @@ class Form extends React.PureComponent {
     var name = e.target.getAttribute('data-name')
     var folder = e.target.getAttribute('data-folder')
 
-    this.props.api.file.upload(files, name, folder, (err, resp) => {
+    this.props.api.file.upload(false, files, name, folder, (err, resp) => {
       if (err) this.props.onInputChange(null, { name, value: null })
       else this.props.onInputChange(null, {name, value: resp.img})
     })
@@ -67,7 +67,7 @@ class Form extends React.PureComponent {
     let { categories, onInputChange } = this.props
     let { image, title, introTitle, isActive, description, categoryPostId, content } = this.props.model
 
-    var linkImg = (image.value) ? domain + image.value : 'https://img7.androidappsapk.co/115/7/3/a/com.profile.admires_stalkers_unknown.png'
+    var linkImg = (image.value) ? domain + image.value : 'http://placehold.it/250x150'
     return (
       <FormLayoutDefault
         title='Create Post'
@@ -75,13 +75,14 @@ class Form extends React.PureComponent {
         isFormValid={this.props.isFormValid}
         hasChanged={this.props.hasChanged}
         handleSubmit={this.handleSubmit}
+        isSubmit
       >
         <form role='form'>
           <div className='box-body'>
 
-            <div className='box-body box-profile'>
-              <img className='profile-user-img img-responsive img-circle' src={linkImg} alt='User profile picture' />
-              <h3 className='profile-username text-center'>Image category</h3>
+            <div className='box-body box-profile' style={{ width: '250px' }}>
+              <img style={{ width: '100%' }} src={linkImg} />
+              <h3 className='profile-username text-center'>Image</h3>
               <Field field={image}>
                 <div className='upload-image'>
                   <button className='btn btn-block btn-success'>Image</button>
@@ -104,7 +105,7 @@ class Form extends React.PureComponent {
 
             <Field field={description}>
               <div>
-                <textarea name='description' value={description.value} onChange={onInputChange} />
+                <textarea style={{width: '100%', height: '200px'}} name='description' value={description.value} onChange={onInputChange} />
               </div>
             </Field>
 

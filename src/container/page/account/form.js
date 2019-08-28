@@ -26,7 +26,7 @@ class Form extends React.PureComponent {
     var name = e.target.getAttribute('data-name')
     var folder = e.target.getAttribute('data-folder')
 
-    this.props.api.file.upload(files, name, folder, (err, resp) => {
+    this.props.api.file.upload(false, files, name, folder, (err, resp) => {
       if (err) this.props.onInputChange(null, { name, value: null })
       else this.props.onInputChange(null, {name, value: resp.img})
     })
