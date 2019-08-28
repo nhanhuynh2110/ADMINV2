@@ -15,6 +15,10 @@ var model = {
           { compare: 'minlen', compareTo: 6 }
         ]
       },
+      description: {
+        label: 'Description',
+        validators: []
+      },
       isActive: {
         text: 'Active'
       },

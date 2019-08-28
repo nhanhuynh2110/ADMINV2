@@ -4,11 +4,13 @@ import React from 'react'
 import Model from './model'
 import Field from '../../../component/form/field'
 import _ from 'lodash'
-import { CATEGORYPOSTLINK as LINK } from '../../../helper/link'
+import STORELINK from '../../../helper/link'
 import { withFormBehaviors } from '../../../component/form/form'
 import FormLayoutDefault from '../../../component/form/layout/default'
 import { withContainer } from '../../../context'
 import TinyMCE from '../../../helper/tinyMCE'
+
+const LINK = STORELINK.CATEGORYPOSTLINK
 class Form extends React.PureComponent {
   constructor (props) {
     super(props)
@@ -50,6 +52,7 @@ class Form extends React.PureComponent {
         isFormValid={this.props.isFormValid}
         hasChanged={this.props.hasChanged}
         handleSubmit={this.handleSubmit}
+        isSubmit
       >
         <form role='form'>
           <div className='box-body'>

@@ -24,5 +24,6 @@ export default {
     GRID: '/post/',
     ADD: '/post/add',
     EDIT: '/post/:id'
-  }
+  },
+  GALLERYLINK: '/gallery'
 }

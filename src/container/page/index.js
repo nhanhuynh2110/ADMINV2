@@ -5,10 +5,7 @@ import Account from './account'
 import Category from './category'
 import CategoryPost from './categoryPost'
 import Post from './post'
-import Banner from './banner'
-import Product from './product'
-import Partner from './partner'
-import Video from './video'
+import Gallery from './gallery'
 
 export {
   Home,
@@ -17,8 +14,5 @@ export {
   Category,
   CategoryPost,
   Post,
-  Banner,
-  Partner,
-  Product,
-  Video
+  Gallery
 }

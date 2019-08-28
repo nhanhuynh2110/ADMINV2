@@ -6,6 +6,7 @@ import Post from './post'
 import Partner from './partner'
 import Video from './video'
 import File from './file'
+import Gallery from './gallery'
 
 export default () => {
   return {
@@ -16,6 +17,7 @@ export default () => {
     post: new Post(),
     partner: new Partner(),
     video: new Video(),
-    file: new File()
+    file: new File(),
+    gallery: new Gallery()
   }
 }

@@ -2,7 +2,8 @@ import React from 'react'
 import { Route } from 'react-router-dom'
 import Grid from '../../../component/grid'
 import FormWrapper from './form'
-import { CATEGORYPOSTLINK as LINK } from '../../../helper/link'
+import STORELINK from '../../../helper/link'
+const LINK = STORELINK.CATEGORYPOSTLINK
 const KEY = 'categoryPost'
 export default class CategoryPost extends React.PureComponent {
   constructor (props) {

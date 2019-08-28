@@ -1,6 +1,9 @@
 import React from 'react'
-import { domain, formatDate } from '../../../helper/utility'
+import { formatDate } from '../../../helper/utility'
+import config from '../../../../config'
 import { withContainer } from '../../../context'
+
+let domain = config.server.domain
 
 class UserNav extends React.PureComponent {
   constructor (props) {
