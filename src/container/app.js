@@ -1,5 +1,5 @@
 import React, { Suspense } from 'react'
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
+import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom'
 import Layout from '../layout/default'
 import { withContainer } from '../context'
 import LINKSTORE from '../helper/link'
@@ -17,7 +17,8 @@ class App extends React.PureComponent {
       { key: 'main-category', path: CATEGORYLINK.GRID, component: Category, permission: ['CATEGORYVIEW'] },
       { key: 'main-category-post', path: CATEGORYPOSTLINK.GRID, component: CategoryPost },
       { key: 'main-post', path: POSTLINK.GRID, component: Post },
-      { key: 'main-gallery', path: GALLERYLINK, component: Gallery }
+      { key: 'main-gallery', path: GALLERYLINK, component: Gallery },
+      { key: 'main-logout', path: '/logout', render: () => <Redirect to='/login' /> }
     ]
   }
   render () {

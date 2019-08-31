@@ -57,7 +57,7 @@ class UserNav extends React.PureComponent {
               <a href='/admin/profile' className='btn btn-default btn-flat'>Hồ sơ</a>
             </div>
             <div className='pull-right'>
-              <a href='/system/login' className='btn btn-default btn-flat'>
+              <a href='/login' className='btn btn-default btn-flat'>
                 Đăng xuất
               </a>
             </div>
