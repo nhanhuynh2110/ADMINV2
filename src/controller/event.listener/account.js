@@ -18,6 +18,10 @@ export default (getCtr) => {
       return obj
     })
   })
+
+  self.api.account.on('update-current-user', data => {
+    self.data.setCurrentUser(data)
+  })
 }
 
 let updateAccount = (self, data = {}) => {

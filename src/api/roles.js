@@ -1,33 +1,32 @@
-// import Adapter from './adapter'
-// import Config from './adapter/config'
-
 import Adapter from './adapter'
 import Config from './adapter/config'
 import handleError from './error'
 import Base from './base'
 
-export default class Account  extends Base {
-
+export default class Category extends Base {
   constructor () {
     super()
     var conf = new Config()
     this.adapter = new Adapter(conf.get())
   }
 
-  getUserInfo (cb) {
-    this.adapter.get('/api/get-current-user', {}, (error, data) => {
-      if (error) return cb(error)
-      if (data.status !== 200) return cb(data.message)
-      return cb(null, data.data)
+  getAll (payload, cb) {
+    payload['api'] = '/api/admin/roles/'
+    this.adapter.get('/base-api', payload, (error, resp) => {
+      if (error) return handleError(error, false, cb)
+      if (resp.status !== 200) return cb(resp.message)
+      if (typeof cb === 'function') {
+        return cb(null, resp.data)
+      }
     })
   }
 
   gets (payload, cb) {
-    payload['api'] = '/api/admin/user'
+    payload['api'] = '/api/admin/role'
     this.adapter.get('/base-api', payload, (error, resp) => {
       if (error) return handleError(error, false, cb)
       if (resp.status !== 200) return cb(resp.message)
-      this.emit('get-accounts', resp.data)
+      this.emit('get-roles', resp.data)
       if (typeof cb === 'function') {
         return cb(null, resp.data)
       }
@@ -35,12 +34,12 @@ export default class Account  extends Base {
   }
 
   get (payload, cb) {
-    payload['api'] = '/api/admin/user/' + payload.id
+    payload['api'] = '/api/admin/role/' + payload.id
     delete payload.id
     this.adapter.get('/base-api', payload, (error, resp) => {
       if (error) return handleError(error, false, cb)
       if (resp.status !== 200) return cb(resp.message)
-      this.emit('get-account', resp.data)
+      this.emit('get-role', resp.data)
       if (typeof cb === 'function') {
         return cb(null, resp.data)
       }
@@ -48,11 +47,11 @@ export default class Account  extends Base {
   }
 
   insert (payload, cb) {
-    payload['api'] = '/api/admin/user'
+    payload['api'] = '/api/admin/category'
     this.adapter.post('/base-api', null, payload, (error, resp) => {
       if (error) return handleError(error, false, cb)
       if (resp.status !== 200) return cb(resp.message)
-      this.emit('insert-account', resp.data)
+      this.emit('insert-role', resp.data)
       if (typeof cb === 'function') {
         return cb(null, resp.data)
       }
@@ -60,11 +59,11 @@ export default class Account  extends Base {
   }
 
   update (payload, cb) {
-    payload['api'] = '/api/admin/user/' + payload.id
+    payload['api'] = '/api/admin/category/' + payload.id
     this.adapter.put('/base-api', null, payload, (error, resp) => {
       if (error) return handleError(error, false, cb)
       if (resp.status !== 200) return cb(resp.message)
-      this.emit('update-account', resp.data)
+      this.emit('update-role', resp.data)
       if (typeof cb === 'function') {
         return cb(null, resp.data)
       }
@@ -72,24 +71,11 @@ export default class Account  extends Base {
   }
 
   delete (payload, cb) {
-    payload['api'] = '/api/admin/user/' + payload.id
+    payload['api'] = '/api/admin/category/' + payload.id
     this.adapter.delete('/base-api', null, payload, (error, resp) => {
       if (error) return handleError(error, false, cb)
       if (resp.status !== 200 || !resp.data) return cb(resp.message)
-      this.emit('delete-account', payload.id)
-      if (typeof cb === 'function') {
-        return cb(null, resp.data)
-      }
-    })
-  }
-
-  updateProfile (payload, cb) {
-    payload['api'] = '/api/admin/user/' + payload.id + '/profile'
-    delete payload.id
-    this.adapter.put('/base-api', null, payload, (error, resp) => {
-      if (error) return handleError(error, false, cb)
-      if (resp.status !== 200) return cb(resp.message)
-      this.emit('update-current-user', resp.data)
+      this.emit('delete-role', payload.id)
       if (typeof cb === 'function') {
         return cb(null, resp.data)
       }

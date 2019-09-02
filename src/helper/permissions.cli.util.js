@@ -1,7 +1,6 @@
 import _ from 'lodash'
 
 const hasPermission = (arrCode = [], currentUser) => {
-  console.log(1111111111111111111)
   if (!currentUser || arrCode.length <= 0) return false
   const permissions = currentUser.permissions || null
 

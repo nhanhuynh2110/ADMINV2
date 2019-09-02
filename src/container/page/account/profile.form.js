@@ -1,12 +1,11 @@
 import React from 'react'
 import {Link} from 'react-router-dom'
 import DatePicker from 'react-datepicker'
-import moment from 'moment'
 
 import { withFormBehaviors } from '../../../component/form/form'
 import { withContainer } from '../../../context'
 import config from '../../../../config'
-import Model from './model1'
+import Model from './profile.model'
 import Field from '../../../component/form/field'
 import Select from '../../../component/control/select'
 
@@ -25,23 +24,34 @@ class Form extends React.PureComponent {
     var name = e.target.getAttribute('data-name')
     var folder = e.target.getAttribute('data-folder')
 
-    this.props.api.file.upload(files, name, folder, (err, resp) => {
+    this.props.api.file.upload(false, files, name, folder, (err, resp) => {
       if (err) this.props.onInputChange(null, { name, value: null })
       else this.props.onInputChange(null, {name, value: resp.img})
     })
   }
 
   handleSubmit () {
+    this.props.handleSubmitSingle((data) => {
+      if (!this.props.data) return
+      let dt = data
+      dt.id = this.props.currentUser._id
+      this.props.api.account.updateProfile(dt, (err, resp) => {
+        if (err) alert('update fail')
+        alert('update success')
+      })
+      this.props.handleSubmitFinish()
+    })
   }
 
   render () {
-    let {model, isFormValid, hasChanged, onInputChange} = this.props
-    let {avatar, username, email, firstname, lastname, address, phone, birthday, gender} = model
+    let {model, isFormValid, hasChanged, onInputChange, currentUser} = this.props
+    let {avatar, firstname, lastname, address, phone, birthday, gender} = model
+    let {email, username} = currentUser
     var linkAvatar = (avatar.value) ? domain + avatar.value : 'https://img7.androidappsapk.co/115/7/3/a/com.profile.admires_stalkers_unknown.png'
     return (
       <section className='content'>
         <div className='row'>
-          <div className='col-md-3'>
+          <div className='col-md-4'>
             <div className='box box-primary'>
               <div className='box-body box-profile'>
                 <img className='profile-user-img img-responsive img-circle' src={linkAvatar} alt='User profile picture' />
@@ -62,19 +72,20 @@ class Form extends React.PureComponent {
               </div>
               <form role='form'>
                 <div className='box-body'>
-                  <Field field={username}>
-                    <input type='text' className='form-control' placeholder={username.placeholder} onChange={this.props.onInputChange} defaultValue={username.value} />
-                  </Field>
-
-                  <Field field={email}>
-                    <input type='text' className='form-control' placeholder={email.placeholder} onChange={this.props.onInputChange} defaultValue={email.value} />
-                  </Field>
+                  <div className='form-group'>
+                    <label>UserName: </label>
+                    <span> {username}</span>
+                  </div>
+                  <div className='form-group'>
+                    <label>Email: </label>
+                    <span> {email}</span>
+                  </div>
                 </div>
               </form>
             </div>
 
           </div>
-          <div className='col-md-6'>
+          <div className='col-md-8'>
             <div className='box box-success'>
               <div className='box-header with-border'>
                 <h3 className='box-title'>Account info</h3>
@@ -103,17 +114,11 @@ class Form extends React.PureComponent {
                   </Field>
 
                   <Field field={birthday}>
-                    <DatePicker className='form-control' selected={moment(birthday.value).isValid() ? new Date(birthday.value) : new Date()} onChange={(date) => onInputChange(null, {name: 'birthday', value: date})} />
+                    <DatePicker className='form-control' selected={birthday.value ? new Date(birthday.value) : new Date()} onChange={(date) => onInputChange(null, {name: 'birthday', value: date})} />
                   </Field>
 
                   <Field field={gender}>
                     <Select isSelected={parseInt(gender.value)} options={gender.options} classSelect='select2' onChange={onInputChange} />
-                  </Field>
-
-                  <Field field={model.is_active}>
-                    <span className='checkbox-react' onClick={() => onInputChange(null, { name: 'is_active', value: model.active.value !== 1 ? 1 : 0 })}>
-                      {model.is_active.value === 1 && <i className='fa fa-check' />}
-                    </span>
                   </Field>
                 </div>
               </form>
@@ -164,12 +169,16 @@ class Form extends React.PureComponent {
 const FormBox = withFormBehaviors(Form, Model)
 
 class FormWrapper extends React.PureComponent {
-  constructor (props) {
-    super(props)
-    this.state.data = this.props.currentUser
-  }
   render () {
-    return <FormBox data={this.state.data} api={this.props.api} />
+    let data = {
+      firstname: this.props.currentUser.firstname,
+      lastname: this.props.currentUser.lastname,
+      address: this.props.currentUser.address,
+      phone: this.props.currentUser.phone,
+      birthday: this.props.currentUser.birthday,
+      gender: this.props.currentUser.gender
+    }
+    return <FormBox data={data} currentUser={this.props.currentUser} api={this.props.api} />
   }
 }
 

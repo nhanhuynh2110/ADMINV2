@@ -1,5 +1,6 @@
 import React from 'react'
 import _ from 'lodash'
+import async from 'async'
 
 import Model from './model'
 import Field from '../../../component/form/field'
@@ -52,8 +53,9 @@ class Form extends React.PureComponent {
   }
 
   render () {
-    let {onInputChange} = this.props
-    let { avatar, password, username, phone, address, gender, isActive } = this.props.model
+    let {onInputChange, roles} = this.props
+    console.log('roles', roles)
+    let { avatar, password, username, phone, address, gender, isActive, roleId } = this.props.model
 
     var linkImg = (avatar.value) ? domain + avatar.value : 'https://img7.androidappsapk.co/115/7/3/a/com.profile.admires_stalkers_unknown.png'
     return (
@@ -77,7 +79,6 @@ class Form extends React.PureComponent {
                 </div>
               </Field>
             </div>
-            
 
             <Field field={username}>
               <input type='text' className='form-control' placeholder={username.placeholder} onChange={onInputChange} defaultValue={username.value} />
@@ -85,6 +86,10 @@ class Form extends React.PureComponent {
 
             <Field field={password}>
               <input type='password' className='form-control' placeholder={password.placeholder} onChange={onInputChange} defaultValue={password.value} />
+            </Field>
+
+            <Field field={roleId}>
+              <Select isSelected={roleId.value} name='roleId' options={roles} classSelect='select2' onChange={(e) => onInputChange(null, {name: 'roleId', value: e.target.value})} />
             </Field>
 
             <Field field={phone}>
@@ -115,22 +120,37 @@ class FormWrapper extends React.PureComponent {
   constructor (props) {
     super(props)
     this.state = {
+      roles: [],
       data: null
     }
   }
 
   componentDidMount () {
-    let {match, isEdit} = this.props
+    let {match} = this.props
     if (!match) return
-    let {params} = match
-    if (!params.id) return false
-    this.props.api.account.get({id: params.id}, (err, data) => {
+    const {params} = match
+    let pararel = {}
+    const roles = (cb) => {
+      this.props.api.role.getAll({}, cb)
+    }
+
+    const account = (cb) => {
+      this.props.api.account.get({id: params.id}, cb)
+    }
+
+    pararel['roles'] = roles
+    if (params.id) pararel['account'] = account
+
+    async.parallel(pararel, (err, data) => {
       if (err) return
-      this.setState({ data })
+      let {roles, account} = data
+      let dtRole = roles.map(el => ({ text: el.title, value: el._id }))
+      console.log('dtRole', dtRole)
+      this.setState({ roles: dtRole, data: account })
     })
   }
   render () {
-    return <FormBox data={this.state.data} api={this.props.api} />
+    return <FormBox data={this.state.data} roles={this.state.roles} api={this.props.api} />
   }
 }
 

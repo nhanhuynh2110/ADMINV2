@@ -1,6 +1,6 @@
 
 import Home from './home'
-import Profile from './account/form1'
+import Profile from './account/profile.form'
 import Account from './account'
 import Category from './category'
 import CategoryPost from './categoryPost'
