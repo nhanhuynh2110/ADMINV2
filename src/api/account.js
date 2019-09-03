@@ -6,8 +6,7 @@ import Config from './adapter/config'
 import handleError from './error'
 import Base from './base'
 
-export default class Account  extends Base {
-
+export default class Account extends Base {
   constructor () {
     super()
     var conf = new Config()

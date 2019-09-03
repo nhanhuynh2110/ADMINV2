@@ -50,7 +50,6 @@ module.exports = {
         },
 
         init_instance_callback: callback,
-        
 
         images_upload_handler: function (blobInfo, success, failure) {
           var xhr, formData
@@ -64,11 +63,11 @@ module.exports = {
               return
             }
             json = JSON.parse(xhr.responseText)
-            if (!json || typeof json.data.link !== 'string') {
+            if (!json || !json.data || typeof json.data[0].link !== 'string') {
               failure('Invalid JSON: ' + xhr.responseText)
               return
             }
-            success(json.data.link)
+            success(json.data[0].link)
           }
           formData = new FormData()
           formData.append('file', blobInfo.blob(), blobInfo.filename())

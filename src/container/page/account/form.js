@@ -145,7 +145,6 @@ class FormWrapper extends React.PureComponent {
       if (err) return
       let {roles, account} = data
       let dtRole = roles.map(el => ({ text: el.title, value: el._id }))
-      console.log('dtRole', dtRole)
       this.setState({ roles: dtRole, data: account })
     })
   }

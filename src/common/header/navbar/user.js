@@ -1,4 +1,5 @@
 import React from 'react'
+import {Link} from 'react-router-dom'
 import { formatDate } from '../../../helper/utility'
 import config from '../../../../config'
 import { withContainer } from '../../../context'
@@ -54,7 +55,7 @@ class UserNav extends React.PureComponent {
           </li>
           <li className='user-footer'>
             <div className='pull-left'>
-              <a href='/admin/profile' className='btn btn-default btn-flat'>Hồ sơ</a>
+              <Link to='/profile' className='btn btn-default btn-flat'>Profile</Link>
             </div>
             <div className='pull-right'>
               <a href='/login' className='btn btn-default btn-flat'>
