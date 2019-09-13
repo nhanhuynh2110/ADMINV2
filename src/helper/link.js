@@ -25,5 +25,10 @@ export default {
     ADD: '/post/add',
     EDIT: '/post/:id'
   },
-  GALLERYLINK: '/gallery'
+  GALLERYLINK: '/gallery',
+  PRODUCTLINK: {
+    GRID: '/product/',
+    ADD: '/product/add',
+    EDIT: '/product/:id'
+  },
 }

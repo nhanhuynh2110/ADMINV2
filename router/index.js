@@ -52,6 +52,7 @@ module.exports = function (app) {
 
   // base api method put restfull api
   app.put('/base-api', (req, res) => {
+    console.log(11111111111111, req.body)
     if (!req.body.api) return res.status(500).json({ status: 500, message: 'api missing error' })
     var Adapter = new ApiAdapter({ url: req.body.api, headers: { token: req.user.token } })
     let body = req.body
