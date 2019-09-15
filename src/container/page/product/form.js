@@ -1,4 +1,5 @@
 import React from 'react'
+import async from 'async'
 import _ from 'lodash'
 
 import Model from './model'
@@ -8,6 +9,7 @@ import FormLayoutDefault from '../../../component/form/layout/default'
 import { withContainer } from '../../../context'
 import config from '../../../../config'
 import STORELINK from '../../../helper/link'
+import Select from '../../../component/control/select'
 
 let domain = config.server.domain
 const LINK = STORELINK.PRODUCTLINK
@@ -32,25 +34,30 @@ class Form extends React.PureComponent {
   }
 
   uploadGallery (e) {
+    var files = e.target.files
+    var name = e.target.getAttribute('data-name')
+    var folder = e.target.getAttribute('data-folder')
+    var {gallery} = this.props.model
     this.props.api.file.upload(true, files, name, folder, (err, resp) => {
-
-      console.log('resp', resp)
-      // if (err) this.props.onInputChange(null, { name, value: null })
-      // else this.props.onInputChange(null, {name, value: resp.img})
+      if (err) return alert('upload gallery error')
+      var galleries = []
+      if (gallery.value) galleries = gallery.value
+      resp.forEach(el => galleries.push(el.img))
+      this.props.onInputChange(null, { name, value: galleries})
     })
   }
 
   handleSubmit () {
     this.props.handleSubmitSingle((data) => {
       if (!this.props.data) {
-        this.props.api.category.insert(data, (err, resp) => {
+        this.props.api.product.insert(data, (err, resp) => {
           if (err) return alert('save fail')
           return this.props.history.push(LINK.GRID)
         })
       } else {
         let dt = data
         dt.id = this.props.data._id
-        this.props.api.category.update(dt, (err, resp) => {
+        this.props.api.product.update(dt, (err, resp) => {
           if (err) return alert('update fail')
           return this.props.history.push(LINK.GRID)
         })
@@ -60,12 +67,12 @@ class Form extends React.PureComponent {
   }
 
   render () {
-    let { image, imageGallery, title, code, price, priceSale, description, isNewProduct, isHot, isActive } = this.props.model
-    let {onInputChange} = this.props
+    let { image, gallery, title, code, price, priceSale, description, isNewProduct, categoryId, isHot, isActive } = this.props.model
+    let {onInputChange, categories} = this.props
     var linkImg = (image.value) ? domain + image.value : 'http://placehold.it/250x150'
     var galleries = []
-    if (imageGallery.value) {
-      galleries = imageGallery.value
+    if (gallery.value) {
+      galleries = gallery.value
     }
     return (
       <FormLayoutDefault
@@ -86,16 +93,16 @@ class Form extends React.PureComponent {
               <Field field={image}>
                 <div className='upload-image'>
                   <button className='btn btn-block btn-success'>upload Image</button>
-                  <input data-name='image' data-folder='categories' id='upload-input' className='btn btn-block btn-success' type='file' name='uploads[]' onChange={this.uploadFile} />
+                  <input data-name='image' data-folder='product' id='upload-input' className='btn btn-block btn-success' type='file' name='uploads[]' onChange={this.uploadFile} />
                 </div>
               </Field>
             </div>
 
             <div className='timeline-item'>
-              <Field field={imageGallery}>
+              <Field field={gallery}>
                 <div className='upload-image' style={{ width: '100px' }}>
                   <button className='btn btn-block btn-success'>Gallery</button>
-                  <input data-name='imageGallery' data-folder='gallery' multiple id='upload-input' className='btn btn-block btn-success' type='file' name='uploadsImage[]' onChange={this.uploadGallery} />
+                  <input data-name='gallery' data-folder='product' multiple id='upload-input' className='btn btn-block btn-success' type='file' name='uploadsImage[]' onChange={this.uploadGallery} />
                 </div>
               </Field>
 
@@ -103,7 +110,6 @@ class Form extends React.PureComponent {
 
               <div className='timeline-body'>
                 {galleries.map((gallery, key) => <a key={key}><img width='150' src={`${domain}/${gallery}`} alt='...' className='margin' /><i className='fa fa-remove' /></a>)}
-                <a><img width='150' src={`https://www.thebeautysalon.ie/wp-content/uploads/2019/01/AGELESS_COLLECTION_clearbckgrnd-1024x438.png`} alt='...' className='margin' /><i className='fa fa-remove' /></a>
               </div>
             </div>
 
@@ -113,6 +119,10 @@ class Form extends React.PureComponent {
 
             <Field field={code}>
               <input type='text' className='form-control' placeholder={code.placeholder} onChange={onInputChange} defaultValue={code.value} />
+            </Field>
+
+            <Field field={categoryId}>
+              <Select isSelected={categoryId.value} name='categoryId' options={categories} classSelect='select2' onChange={(e) => onInputChange(null, {name: 'categoryId', value: e.target.value})} />
             </Field>
 
             <Field field={price}>
@@ -157,7 +167,8 @@ class FormWrapper extends React.PureComponent {
   constructor (props) {
     super(props)
     this.state = {
-      data: null
+      data: null,
+      categories: []
     }
   }
 
@@ -165,14 +176,33 @@ class FormWrapper extends React.PureComponent {
     let {match} = this.props
     if (!match) return
     let {params} = match
-    if (!params.id) return false
-    this.props.api.category.get({id: params.id}, (err, data) => {
-      if (err) return
-      this.setState({ data })
-    })
+
+    const data = (cb) => {
+      this.props.api.product.get({id: params.id}, (err, data) => {
+        if (err) return cb(err)
+        return cb(null, data)
+      })
+    }
+
+    const categories = (cb) => {
+      this.props.api.category.getAll({}, (err, data) => {
+        if (err) return cb(err)
+        let options = data.map((el) => ({text: el.title, value: el._id}))
+        return cb(null, options)
+      })
+    }
+
+    if (params.id === 'add') {
+      categories((err, data) => this.setState({ categories: data }))
+    } else {
+      async.parallel({data, categories}, (err, resp) => {
+        if (err) return
+        this.setState({ data: resp.data, categories: resp.categories })
+      })
+    }
   }
   render () {
-    return <FormBox data={this.state.data} api={this.props.api} {...this.props} />
+    return <FormBox data={this.state.data} api={this.props.api} categories={this.state.categories} {...this.props} />
   }
 }
 

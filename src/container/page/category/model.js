@@ -11,8 +11,7 @@ var model = {
         label: 'Title',
         placeholder: 'please input title',
         validators: [
-          { compare: 'required' },
-          { compare: 'minlen', compareTo: 6 }
+          { compare: 'required' }
         ]
       },
       description: {

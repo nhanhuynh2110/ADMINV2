@@ -52,7 +52,6 @@ module.exports = function (app) {
 
   // base api method put restfull api
   app.put('/base-api', (req, res) => {
-    console.log(11111111111111, req.body)
     if (!req.body.api) return res.status(500).json({ status: 500, message: 'api missing error' })
     var Adapter = new ApiAdapter({ url: req.body.api, headers: { token: req.user.token } })
     let body = req.body
@@ -60,7 +59,7 @@ module.exports = function (app) {
     Adapter.setBody(body)
     Adapter.put((error, resp) => {
       if (error) return res.status(500).json({ message: 'request api error' })
-      var result = JSON.parse(resp)
+      var result = resp
       var data = result.data
       return res.status(200).json({ status: 200, message: 'success', data })
     })

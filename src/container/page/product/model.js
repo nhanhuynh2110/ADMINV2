@@ -5,7 +5,7 @@ var model = {
       image: {
         validators: []
       },
-      imageGallery: {
+      gallery: {
         validators: []
       },
       title: {
@@ -37,6 +37,10 @@ var model = {
           { compare: 'required' },
           { compare: 'stringIsNumber' }
         ]
+      },
+      categoryId: {
+        label: 'Category',
+        validators: []
       },
       description: {
         label: 'Description',

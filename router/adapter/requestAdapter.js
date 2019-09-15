@@ -37,13 +37,11 @@ class RequestAdapter {
     const url = this.options.url
     const options = _.clone(this.options)
     delete options.url
-    console.log('options', options)
-    console.log('url', url)
+    options['body'] = JSON.stringify(this.options.form)
     fetch(url, options).then(response => response.json()).then(data => {
       console.log('data', data)
       return cb(null, data)
     }).catch(error => {
-      console.log('error', error)
       return cb(error)
     })
     // request(this.options, (error, response, body) => {

@@ -60,6 +60,7 @@ export default class Product extends Base {
 
   update (payload, cb) {
     payload['api'] = '/api/admin/product/' + payload.id
+    console.log('payload', payload)
     this.adapter.put('/base-api', null, payload, (error, resp) => {
       if (error) return handleError(error, false, cb)
       if (resp.status !== 200) return cb(resp.message)

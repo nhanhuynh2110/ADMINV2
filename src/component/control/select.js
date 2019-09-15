@@ -9,7 +9,10 @@ class Select extends React.PureComponent {
     return (
       <select className={'form-control ' + classSelect} style={{ width: '100%' }} onChange={onChange} defaultValue={isSelected}>
         <option>--choose--</option>
-        {opts.map((el, index) => <option value={el.value} key={index}>{el.text}</option>)}
+        {opts.map((el, index) => {
+          if (el.value === isSelected) return <option selected value={el.value} key={index}>{el.text}</option>
+          else return <option value={el.value} key={index}>{el.text}</option>
+        })}
       </select>
     )
   }

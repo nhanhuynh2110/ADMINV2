@@ -1,4 +1,5 @@
 import React from 'react'
+import _ from 'lodash'
 import THead from '../../collections/table/head'
 
 class TableLayout extends React.PureComponent {
