@@ -1,4 +1,9 @@
-var request = require('request')
+/* global fetch */
+const request = require('request')
+const _ = require('lodash')
+
+require('es6-promise').polyfill()
+require('isomorphic-fetch')
 
 class RequestAdapter {
   constructor (options) {
@@ -29,11 +34,21 @@ class RequestAdapter {
   }
 
   put (cb) {
-    request(this.options, (error, response, body) => {
-      console.log('response', error, body)
-      if (error) return cb(error)
-      return cb(null, body)
+    const url = this.options.url
+    const options = _.clone(this.options)
+    delete options.url
+    options['body'] = JSON.stringify(this.options.form)
+    fetch(url, options).then(response => response.json()).then(data => {
+      console.log('data', data)
+      return cb(null, data)
+    }).catch(error => {
+      return cb(error)
     })
+    // request(this.options, (error, response, body) => {
+    //   console.log('response', error, body)
+    //   if (error) return cb(error)
+    //   return cb(null, body)
+    // })
   }
 
   delete (cb) {

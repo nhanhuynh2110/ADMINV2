@@ -24,8 +24,7 @@ export default class File {
       return response.json()
     }).then(resp => {
       if (resp.status && resp.status === 200) return callback(null, multiple ? resp.data : resp.data[0])
-    }).catch(error => console.log(error) // Handle the error response object
-    )
+    }).catch(error => console.log(error))
   }
 
   upload1 (multiple, files, name, folder = '', callback) {
@@ -40,9 +39,7 @@ export default class File {
     $.ajax({
       url: domain + '/upload?folder=' + folder,
       type: 'POST',
-      data: {
-        form: formData
-      },
+      form: formData,
       processData: false,
       contentType: false,
       success: function (resp) {

@@ -32,10 +32,11 @@ export default class FetchAdapter {
 
   put (url, query = {}, body = {}, cb) {
     let { headers } = this.options
-    url = url + '?' + this.formatLink(query)
+    url = this.formatLink(query) ? url + '?' + this.formatLink(query) : url
     return fetch(url, {
       method: 'PUT',
       headers,
+      dataType: 'json',
       body: JSON.stringify(body)
     }).then(response => response.json()).then(data => cb(null, data)).catch(error => cb(error))
   }
@@ -61,6 +62,7 @@ export default class FetchAdapter {
 
   fetchApi (url, options, cb) {
     let { method, headers, query, body } = options
+    console.log('-------------------------------')
     url = url + '?' + this.formatLink(query)
     if (method.toLowerCase() === 'get') {
       fetch(url, {

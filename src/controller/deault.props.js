@@ -7,6 +7,7 @@ export default {
     category: null,
     categoryPost: null,
     post: null,
-    gallery: null
+    gallery: null,
+    product: null
   }
 }

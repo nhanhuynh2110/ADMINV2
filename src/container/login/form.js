@@ -5,11 +5,11 @@ export default class Form extends React.Component {
     return (
       <form action='/login' method='post'>
         <div className='form-group has-feedback'>
-          <input type='text' name='username' className='form-control' value='master' placeholder='Email or username' />
+          <input type='text' name='username' className='form-control' defaultValue='master' placeholder='Email or username' />
           <span className='glyphicon glyphicon-envelope form-control-feedback' />
         </div>
         <div className='form-group has-feedback'>
-          <input name='password' type='password' className='form-control' value='nhanhuynh' placeholder='Password' />
+          <input name='password' type='password' className='form-control' defaultValue='nhanhuynh' placeholder='Password' />
           <span className='glyphicon glyphicon-lock form-control-feedback' />
         </div>
         <div className='row'>

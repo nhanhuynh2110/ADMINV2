@@ -4,8 +4,8 @@ import Layout from '../layout/default'
 import { withContainer } from '../context'
 import LINKSTORE from '../helper/link'
 import hasPermission from '../helper/permissions.cli.util'
-import { Profile, Account, Category, CategoryPost, Post, Gallery, Home } from './page'
-const { ACCOUNTLINK, CATEGORYLINK, CATEGORYPOSTLINK, POSTLINK, GALLERYLINK } = LINKSTORE
+import { Profile, Account, Category, CategoryPost, Post, Gallery, Home, Product } from './page'
+const { ACCOUNTLINK, CATEGORYLINK, CATEGORYPOSTLINK, POSTLINK, GALLERYLINK, PRODUCTLINK } = LINKSTORE
 
 class App extends React.PureComponent {
   constructor (props) {
@@ -18,7 +18,9 @@ class App extends React.PureComponent {
       { key: 'main-category-post', path: CATEGORYPOSTLINK.GRID, component: CategoryPost },
       { key: 'main-post', path: POSTLINK.GRID, component: Post },
       { key: 'main-gallery', path: GALLERYLINK, component: Gallery },
-      { key: 'main-logout', path: '/logout', render: () => <Redirect to='/login' /> }
+      { key: 'main-product', path: PRODUCTLINK, component: Product },
+      { key: 'main-logout', path: '/logout', render: () => <Redirect to='/login' /> },
+      { key: 'page-error', path: '/error', render: () => <>Page not found</> }
     ]
   }
   render () {
@@ -29,7 +31,7 @@ class App extends React.PureComponent {
             <Switch>
               {this.routes.map(route => {
                 if (!route.permission) return <Route {...route} />
-                if (!hasPermission(route.permission, this.props.currentUser)) return null
+                if (!hasPermission(route.permission, this.props.currentUser)) return <Redirect to='/error' />
                 return <Route {...route} />
               })}
             </Switch>

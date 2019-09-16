@@ -4,6 +4,7 @@ import categoryPOstListener from './categoryPost'
 import postListener from './post'
 import accountListener from './account'
 import galleryListener from './gallery'
+import productListener from './product'
 
 export default (getCtr) => {
   return {
@@ -14,6 +15,7 @@ export default (getCtr) => {
       accountListener(getCtr)
       galleryListener(getCtr)
       roleListener(getCtr)
+      productListener(getCtr)
     }
   }
 }

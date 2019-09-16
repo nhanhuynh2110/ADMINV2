@@ -8,6 +8,7 @@ import Video from './video'
 import File from './file'
 import Gallery from './gallery'
 import Role from './roles'
+import Product from './product'
 
 export default () => {
   return {
@@ -20,6 +21,7 @@ export default () => {
     video: new Video(),
     file: new File(),
     gallery: new Gallery(),
-    role: new Role()
+    role: new Role(),
+    product: new Product()
   }
 }
