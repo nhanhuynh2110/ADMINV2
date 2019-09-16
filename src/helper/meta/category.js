@@ -10,9 +10,9 @@ class Order extends React.PureComponent {
     this.myRef = React.createRef()
   }
   updateOrder (id) {
-    let {getData, api, data} = this.props
+    let {getData, api} = this.props
     let value = this.myRef.current.value.trim()
-    if (!value || value.toString().trim() === data.order.toString().trim()) return false
+    if (!value) return false
 
     api.category.updateOrder({id: id, value: value}, (err, data) => {
       if (err) return alert('update order fail')
