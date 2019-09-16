@@ -261,3 +261,21 @@ th {
   position: relative;
   cursor: pointer;
 }
+
+.paginate_button a {
+  cursor: pointer;
+}
+
+.grid-input-group {
+  width: 100px;
+}
+
+.grid-input-group .input-group-addon {
+  cursor: pointer;
+}
+
+.grid-input-group .input-group-addon:hover {
+  background-color: #337ab7;
+  color: #fff;
+  
+}

@@ -8,6 +8,7 @@ import GridViewLayout from '../../layout/gridViewLayout'
 import { withContainer } from '../../context'
 import METADATA from '../../helper/meta'
 import dfdataModule from './defaultdata'
+import Paging from '../grid/paging'
 import _ from 'lodash'
 
 let dfdata = dfdataModule()
@@ -28,6 +29,7 @@ class GridView extends React.PureComponent {
     this.handleActionTrash = this.handleActionTrash.bind(this)
     this.handleTabs = this.handleTabs.bind(this)
     this.getData = this.getData.bind(this)
+    this.changePage = this.changePage.bind(this)
   }
 
   handleEntries (e) {
@@ -116,8 +118,15 @@ class GridView extends React.PureComponent {
     })
   }
 
+  changePage (e) {
+    let state = _.clone(this.state)
+    state.payload.pageNumber = e.currentTarget.getAttribute('data-page')
+    this.setState(state, () => { this.getData() })
+  }
+
   render () {
     let { meta, data } = this.props
+    console.log('data', data)
     let currentData = METADATA[meta]
     let { PAGE_HEADER, TABLEVIEW } = currentData
     let fnc = {
@@ -149,6 +158,8 @@ class GridView extends React.PureComponent {
             sortFooter={this.props.sortFooter || false}
             data={(data && data.list) ? data.list : []}
           />
+          {data && <Paging changePage={this.changePage} total={data.total || 0} currentPage={this.state.payload.pageNumber} pageSize={this.state.payload.pageSize} />}
+
         </GridViewLayout>
       </PageLayout>
     )

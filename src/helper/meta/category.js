@@ -21,12 +21,13 @@ class Order extends React.PureComponent {
   }
   componentDidUpdate () {
     if (this.props.data.order) this.myRef.current.value = this.props.data.order
+    else this.myRef.current.value = ''
   }
 
   render () {
     const {data} = this.props
     return (
-      <div className='input-group'>
+      <div className='input-group grid-input-group grid-input-group'>
         <input type='text' className='form-control' defaultValue={data.order} ref={this.myRef} />
         <span data-id={data._id} className='input-group-addon' onClick={this.updateOrder.bind(this, data._id)}><i className='fa fa-check' /></span>
       </div>
