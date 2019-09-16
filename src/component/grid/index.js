@@ -17,7 +17,7 @@ class GridView extends React.PureComponent {
     super(props)
     this.tabOptions = this.props.tabOptions || dfdata.tabOptions
     this.state = {
-      payload: dfdata.dfpayload,
+      payload: _.merge(dfdata.dfpayload, this.props.dfpayload || {}),
       tabCurrent: this.tabOptions[0].name
     }
     this.handleEntries = this.handleEntries.bind(this)
@@ -27,6 +27,7 @@ class GridView extends React.PureComponent {
     this.handleAction = this.handleAction.bind(this)
     this.handleActionTrash = this.handleActionTrash.bind(this)
     this.handleTabs = this.handleTabs.bind(this)
+    this.getData = this.getData.bind(this)
   }
 
   handleEntries (e) {
@@ -125,7 +126,8 @@ class GridView extends React.PureComponent {
     }
 
     let fncTable = {
-      handleSort: this.handleSort
+      handleSort: this.handleSort,
+      getData: this.getData
     }
 
     let { payload, tabCurrent } = this.state

@@ -21,7 +21,7 @@ class TableLayout extends React.PureComponent {
   }
 
   renderBody () {
-    let { data, tableModel } = this.props
+    let { data, tableModel, fnc } = this.props
     if (!data || data.length <= 0) return null
     return (
       <React.Fragment>
@@ -32,7 +32,7 @@ class TableLayout extends React.PureComponent {
                 {Object.keys(tableModel).map((key, i) => {
                   let field = tableModel[key]
                   if (i === 0) return <td className={tableModel[key].className || ''} key={i}>{index + 1}</td>
-                  return <td className={tableModel[key].className || ''} key={i}>{field.render(row)}</td>
+                  return <td className={tableModel[key].className || ''} key={i}>{field.render(row, fnc.getData)}</td>
                 })}
               </tr>
             )

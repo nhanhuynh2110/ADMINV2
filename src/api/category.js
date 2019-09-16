@@ -21,6 +21,17 @@ export default class Category extends Base {
     })
   }
 
+  getParents (payload, cb) {
+    payload['api'] = '/api/admin/category/parent'
+    this.adapter.get('/base-api', payload, (error, resp) => {
+      if (error) return handleError(error, false, cb)
+      if (resp.status !== 200) return cb(resp.message)
+      if (typeof cb === 'function') {
+        return cb(null, resp.data)
+      }
+    })
+  }
+
   gets (payload, cb) {
     payload['api'] = '/api/admin/category'
     this.adapter.get('/base-api', payload, (error, resp) => {
@@ -64,6 +75,17 @@ export default class Category extends Base {
       if (error) return handleError(error, false, cb)
       if (resp.status !== 200) return cb(resp.message)
       this.emit('update-category', resp.data)
+      if (typeof cb === 'function') {
+        return cb(null, resp.data)
+      }
+    })
+  }
+
+  updateOrder (payload, cb) {
+    payload['api'] = '/api/admin/category/' + payload.id + '/order/' + payload.value
+    this.adapter.put('/base-api', null, payload, (error, resp) => {
+      if (error) return handleError(error, false, cb)
+      if (resp.status !== 200) return cb(resp.message)
       if (typeof cb === 'function') {
         return cb(null, resp.data)
       }

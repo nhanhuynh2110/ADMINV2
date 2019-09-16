@@ -193,7 +193,10 @@ class FormWrapper extends React.PureComponent {
     }
 
     if (params.id === 'add') {
-      categories((err, data) => this.setState({ categories: data }))
+      categories((err, data) => {
+        if (err) return
+        this.setState({ categories: data })
+      })
     } else {
       async.parallel({data, categories}, (err, resp) => {
         if (err) return

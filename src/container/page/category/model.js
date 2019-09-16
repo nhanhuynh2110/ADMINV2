@@ -18,6 +18,9 @@ var model = {
         label: 'Description',
         validators: []
       },
+      parentId: {
+        label: 'Parent'
+      },
       isActive: {
         text: 'Active'
       },

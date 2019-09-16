@@ -1,5 +1,6 @@
 import React from 'react'
 import _ from 'lodash'
+import async from 'async'
 
 import Model from './model'
 import Field from '../../../component/form/field'
@@ -8,6 +9,7 @@ import FormLayoutDefault from '../../../component/form/layout/default'
 import { withContainer } from '../../../context'
 import config from '../../../../config'
 import STORELINK from '../../../helper/link'
+import Select from '../../../component/control/select'
 
 let domain = config.server.domain
 const LINK = STORELINK.CATEGORYLINK
@@ -50,8 +52,8 @@ class Form extends React.PureComponent {
   }
 
   render () {
-    let { img, title, description, isActive, isHome } = this.props.model
-    let {onInputChange} = this.props
+    let { img, title, description, parentId, isActive, isHome } = this.props.model
+    let {parents, onInputChange} = this.props
     var linkImg = (img.value) ? domain + img.value : 'http://placehold.it/250x150'
     return (
       <FormLayoutDefault
@@ -78,6 +80,10 @@ class Form extends React.PureComponent {
 
             <Field field={title}>
               <input type='text' className='form-control' placeholder={title.placeholder} onChange={onInputChange} defaultValue={title.value} />
+            </Field>
+
+            <Field field={parentId}>
+              <Select isSelected={parentId.value} name='categoryId' options={parents} classSelect='select2' onChange={(e) => onInputChange(null, {name: 'parentId', value: e.target.value})} />
             </Field>
 
             <Field field={description}>
@@ -107,7 +113,8 @@ class FormWrapper extends React.PureComponent {
   constructor (props) {
     super(props)
     this.state = {
-      data: null
+      data: null,
+      parents: []
     }
   }
 
@@ -115,14 +122,42 @@ class FormWrapper extends React.PureComponent {
     let {match} = this.props
     if (!match) return
     let {params} = match
-    if (!params.id) return false
-    this.props.api.category.get({id: params.id}, (err, data) => {
-      if (err) return
-      this.setState({ data })
-    })
+    console.log('params', params)
+    const parents = (cb) => {
+      this.props.api.category.getParents({}, (err, resp) => {
+        console.log('resp', resp)
+        if (err) return cb(err)
+        let data = resp.map(el => ({ text: el.title, value: el._id }))
+        return cb(null, data)
+      })
+    }
+
+    const data = (cb) => {
+      this.props.api.category.get({id: params.id}, (err, resp) => {
+        if (err) return cb(err)
+        return cb(null, resp)
+      })
+    }
+
+    if (params.id === 'add') {
+      parents((err, data) => {
+        if (err) return
+        this.setState({ parents: data })
+      })
+    } else {
+      async.parallel({ data, parents }, (err, resp) => {
+        if (err) return
+        const { data, parents } = resp
+        _.remove(parents, {
+          value: data._id
+        })
+        console.log('parents', parents)
+        this.setState({ data, parents })
+      })
+    }
   }
   render () {
-    return <FormBox data={this.state.data} api={this.props.api} {...this.props} />
+    return <FormBox data={this.state.data} parents={this.state.parents} api={this.props.api} {...this.props} />
   }
 }
 
