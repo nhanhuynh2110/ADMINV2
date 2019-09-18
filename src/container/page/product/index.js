@@ -12,7 +12,7 @@ export default class Category extends React.PureComponent {
     this.state = {
       routes: [
         { key: 'product-gridview', permissions: ['PRODUCTVIEW'], path: STORELINK.GRID, exact: true, render: (props) => <Grid search sortHeader sortFooter meta={KEY} {...props} /> },
-        { key: 'catagory-form', permissions: ['PRODUCTEDIT'], path: STORELINK.EDIT, render: (props) => <FormWrapper isEdit {...props} /> }
+        { key: 'product-form', permissions: ['PRODUCTEDIT'], path: STORELINK.EDIT, render: (props) => <FormWrapper isEdit {...props} /> }
       ]
     }
     this.getBaseUrl = this.getBaseUrl.bind(this)

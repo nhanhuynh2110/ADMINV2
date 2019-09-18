@@ -54,7 +54,6 @@ class Form extends React.PureComponent {
 
   render () {
     let {onInputChange, roles} = this.props
-    console.log('roles', roles)
     let { avatar, password, username, phone, address, gender, isActive, roleId } = this.props.model
 
     var linkImg = (avatar.value) ? domain + avatar.value : 'https://img7.androidappsapk.co/115/7/3/a/com.profile.admires_stalkers_unknown.png'

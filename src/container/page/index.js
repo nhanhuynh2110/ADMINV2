@@ -2,6 +2,7 @@
 import Home from './home'
 import Profile from './account/profile.form'
 import Account from './account'
+import ChangePassword from './account/changePassword'
 import Category from './category'
 import CategoryPost from './categoryPost'
 import Post from './post'
@@ -12,6 +13,7 @@ export {
   Home,
   Profile,
   Account,
+  ChangePassword,
   Category,
   CategoryPost,
   Post,

@@ -122,10 +122,8 @@ class FormWrapper extends React.PureComponent {
     let {match} = this.props
     if (!match) return
     let {params} = match
-    console.log('params', params)
     const parents = (cb) => {
       this.props.api.category.getParents({}, (err, resp) => {
-        console.log('resp', resp)
         if (err) return cb(err)
         let data = resp.map(el => ({ text: el.title, value: el._id }))
         return cb(null, data)
@@ -151,7 +149,6 @@ class FormWrapper extends React.PureComponent {
         _.remove(parents, {
           value: data._id
         })
-        console.log('parents', parents)
         this.setState({ data, parents })
       })
     }

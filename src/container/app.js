@@ -4,7 +4,7 @@ import Layout from '../layout/default'
 import { withContainer } from '../context'
 import LINKSTORE from '../helper/link'
 import hasPermission from '../helper/permissions.cli.util'
-import { Profile, Account, Category, CategoryPost, Post, Gallery, Home, Product } from './page'
+import { Profile, Account, Category, CategoryPost, Post, Gallery, Home, Product, ChangePassword } from './page'
 const { ACCOUNTLINK, CATEGORYLINK, CATEGORYPOSTLINK, POSTLINK, GALLERYLINK, PRODUCTLINK } = LINKSTORE
 
 class App extends React.PureComponent {
@@ -13,6 +13,7 @@ class App extends React.PureComponent {
     this.routes = [
       { key: 'main-cat', exact: true, path: '/', component: Home },
       { key: 'main-profile', path: ACCOUNTLINK.PROFILE, component: Profile },
+      { key: 'main-change-password', path: ACCOUNTLINK.CHANGEPASSWORD, component: ChangePassword },
       { key: 'main-account', path: ACCOUNTLINK.GRID, component: Account, permission: ['ACCOUNTVIEW'] },
       { key: 'main-category', path: CATEGORYLINK.GRID, component: Category, permission: ['CATEGORYVIEW'] },
       { key: 'main-category-post', path: CATEGORYPOSTLINK.GRID, component: CategoryPost },
@@ -20,7 +21,7 @@ class App extends React.PureComponent {
       { key: 'main-gallery', path: GALLERYLINK, component: Gallery },
       { key: 'main-product', path: PRODUCTLINK, component: Product },
       { key: 'main-logout', path: '/logout', render: () => <Redirect to='/login' /> },
-      { key: 'page-error', path: '/error', render: () => <>Page not found</> }
+      { key: 'page-error', path: '/error', render: () => 'Page not found' }
     ]
   }
   render () {
@@ -31,7 +32,7 @@ class App extends React.PureComponent {
             <Switch>
               {this.routes.map(route => {
                 if (!route.permission) return <Route {...route} />
-                if (!hasPermission(route.permission, this.props.currentUser)) return <Redirect to='/error' />
+                if (!hasPermission(route.permission, this.props.currentUser)) return <Redirect key='error' to='/error' />
                 return <Route {...route} />
               })}
             </Switch>

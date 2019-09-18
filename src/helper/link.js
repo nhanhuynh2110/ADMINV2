@@ -1,6 +1,7 @@
 export default {
   ACCOUNTLINK: {
     PROFILE: '/profile',
+    CHANGEPASSWORD: '/change-password',
     GRID: '/account/',
     ADD: '/account/add',
     EDIT: '/account/:id'

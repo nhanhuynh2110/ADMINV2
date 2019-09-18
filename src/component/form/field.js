@@ -47,6 +47,8 @@ class Field extends React.PureComponent {
 
     let childComponent = React.Children.toArray(this.props.children)[0]
 
+    // let childs = React.Children.toArray(this.props.children).filter((el, index) => index > 0)
+
     if (childComponent.props.hasOwnProperty('value')) {
       inputProps.value = defaultValue
       inputProps.defaultValue = undefined
@@ -62,9 +64,10 @@ class Field extends React.PureComponent {
     const inputComponent = React.cloneElement(childComponent, _.pickBy(inputProps, (v) => v))
 
     return (
-      <div className='form-group'>
+      <div className={`form-group ${className}`}>
         {label && <label htmlFor={id}>{label}</label>}
         {inputComponent}
+        {/* {childs.map(el => el)} */}
         {text && text}
         <br />
         {description && <p htmlFor={id}>{description}</p>}
