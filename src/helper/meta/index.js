@@ -3,11 +3,13 @@ import categoryPost from './categoryPost'
 import post from './post'
 import account from './account'
 import product from './product'
+import permission from './permission'
 
 export default {
   category,
   categoryPost,
   post,
   account,
-  product
+  product,
+  permission
 }

@@ -32,4 +32,9 @@ export default {
     ADD: '/product/add',
     EDIT: '/product/:id'
   },
+  PERMISSIONLINK: {
+    GRID: '/permission',
+    ADD: '/permission/add',
+    EDIT: '/permission/:id'
+  }
 }

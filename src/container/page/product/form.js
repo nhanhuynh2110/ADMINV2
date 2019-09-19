@@ -122,7 +122,7 @@ class Form extends React.PureComponent {
             </Field>
 
             <Field field={categoryId}>
-              <Select isSelected={categoryId.value} name='categoryId' options={categories} classSelect='select2' onChange={(e) => onInputChange(null, {name: 'categoryId', value: e.target.value})} />
+              <Select isSelected={categoryId.value} name='categoryId' options={categories} classSelect='select2' onChange={onInputChange} />
             </Field>
 
             <Field field={price}>

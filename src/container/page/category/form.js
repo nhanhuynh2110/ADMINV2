@@ -83,7 +83,7 @@ class Form extends React.PureComponent {
             </Field>
 
             <Field field={parentId}>
-              <Select isSelected={parentId.value} name='categoryId' options={parents} classSelect='select2' onChange={(e) => onInputChange(null, {name: 'parentId', value: e.target.value})} />
+              <Select name='parentId' isSelected={parentId.value} options={parents} classSelect='select2' onChange={onInputChange} />
             </Field>
 
             <Field field={description}>

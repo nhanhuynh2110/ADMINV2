@@ -126,7 +126,6 @@ class GridView extends React.PureComponent {
 
   render () {
     let { meta, data } = this.props
-    console.log('data', data)
     let currentData = METADATA[meta]
     let { PAGE_HEADER, TABLEVIEW } = currentData
     let fnc = {

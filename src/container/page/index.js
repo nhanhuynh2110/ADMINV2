@@ -8,6 +8,7 @@ import CategoryPost from './categoryPost'
 import Post from './post'
 import Gallery from './gallery'
 import Product from './product'
+import Permission from './permission'
 
 export {
   Home,
@@ -18,5 +19,6 @@ export {
   CategoryPost,
   Post,
   Gallery,
-  Product
+  Product,
+  Permission
 }

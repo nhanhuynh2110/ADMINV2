@@ -4,8 +4,8 @@ import Layout from '../layout/default'
 import { withContainer } from '../context'
 import LINKSTORE from '../helper/link'
 import hasPermission from '../helper/permissions.cli.util'
-import { Profile, Account, Category, CategoryPost, Post, Gallery, Home, Product, ChangePassword } from './page'
-const { ACCOUNTLINK, CATEGORYLINK, CATEGORYPOSTLINK, POSTLINK, GALLERYLINK, PRODUCTLINK } = LINKSTORE
+import { Profile, Account, Category, CategoryPost, Post, Gallery, Home, Product, ChangePassword, Permission } from './page'
+const { ACCOUNTLINK, CATEGORYLINK, CATEGORYPOSTLINK, POSTLINK, GALLERYLINK, PRODUCTLINK, PERMISSIONLINK } = LINKSTORE
 
 class App extends React.PureComponent {
   constructor (props) {
@@ -19,7 +19,8 @@ class App extends React.PureComponent {
       { key: 'main-category-post', path: CATEGORYPOSTLINK.GRID, component: CategoryPost },
       { key: 'main-post', path: POSTLINK.GRID, component: Post },
       { key: 'main-gallery', path: GALLERYLINK, component: Gallery },
-      { key: 'main-product', path: PRODUCTLINK, component: Product },
+      { key: 'main-product', path: PRODUCTLINK.GRID, component: Product },
+      { key: 'main-permisison', path: PERMISSIONLINK.GRID, component: Permission },
       { key: 'main-logout', path: '/logout', render: () => <Redirect to='/login' /> },
       { key: 'page-error', path: '/error', render: () => 'Page not found' }
     ]
