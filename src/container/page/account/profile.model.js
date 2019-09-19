@@ -31,7 +31,7 @@ var model = {
           { compare: 'stringIsNumber' }
         ]
       },
-      birthday: {
+      birthdate: {
         label: 'Birthday'
       },
       gender: {

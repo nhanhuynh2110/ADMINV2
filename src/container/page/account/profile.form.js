@@ -45,8 +45,8 @@ class Form extends React.PureComponent {
 
   render () {
     let {model, isFormValid, hasChanged, onInputChange, currentUser} = this.props
-    let {avatar, firstname, lastname, address, phone, birthday, gender} = model
-    let {email, username} = currentUser
+    let {avatar, firstname, lastname, address, phone, birthdate, gender} = model
+    let {email, username} = currentUser 
     var linkAvatar = (avatar.value) ? domain + avatar.value : 'https://img7.androidappsapk.co/115/7/3/a/com.profile.admires_stalkers_unknown.png'
     return (
       <section className='content'>
@@ -113,12 +113,12 @@ class Form extends React.PureComponent {
                     <input type='text' className='form-control' placeholder={phone.placeholder} onChange={onInputChange} defaultValue={phone.value} />
                   </Field>
 
-                  <Field field={birthday}>
-                    <DatePicker className='form-control' selected={birthday.value ? new Date(birthday.value) : new Date()} onChange={(date) => onInputChange(null, {name: 'birthday', value: date})} />
+                  <Field field={birthdate}>
+                    <DatePicker className='form-control' selected={birthdate.value ? new Date(birthdate.value) : new Date()} onChange={(date) => onInputChange(null, {name: 'birthdate', value: date})} />
                   </Field>
 
                   <Field field={gender}>
-                    <Select isSelected={parseInt(gender.value)} options={gender.options} classSelect='select2' onChange={onInputChange} />
+                    <Select name='gender' isSelected={parseInt(gender.value)} options={gender.options} classSelect='select2' onChange={onInputChange} />
                   </Field>
                 </div>
               </form>
@@ -171,11 +171,12 @@ const FormBox = withFormBehaviors(Form, Model)
 class FormWrapper extends React.PureComponent {
   render () {
     let data = {
+      avatar: this.props.currentUser.avatar,
       firstname: this.props.currentUser.firstname,
       lastname: this.props.currentUser.lastname,
       address: this.props.currentUser.address,
       phone: this.props.currentUser.phone,
-      birthday: this.props.currentUser.birthday,
+      birthdate: this.props.currentUser.birthdate,
       gender: this.props.currentUser.gender
     }
     return <FormBox data={data} currentUser={this.props.currentUser} api={this.props.api} />
