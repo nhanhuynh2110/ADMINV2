@@ -33,13 +33,7 @@ class Pages extends React.PureComponent {
         <div className={enableEntries ? 'col-sm-7' : 'col-sm-12'}>
           <div className='dataTables_paginate paging_simple_numbers pagging-react'>
             <ul className='pagination'>
-              {/* <li data-page='1' className='paginate_button previous disabled'>
-                                <a>Previous</a>
-                            </li> */}
               {pages}
-              {/* <li className='paginate_button next'>
-                                <a>Next</a>
-                            </li> */}
             </ul>
           </div>
         </div>

@@ -41,9 +41,9 @@ class Form extends React.PureComponent {
     this.props.api.file.upload(true, files, name, folder, (err, resp) => {
       if (err) return alert('upload gallery error')
       var galleries = []
-      if (gallery.value) galleries = gallery.value
+      if (gallery.value) galleries = JSON.parse(gallery.value)
       resp.forEach(el => galleries.push(el.img))
-      this.props.onInputChange(null, { name, value: galleries})
+      this.props.onInputChange(null, { name, value: JSON.stringify(galleries)})
     })
   }
 
@@ -72,7 +72,7 @@ class Form extends React.PureComponent {
     var linkImg = (image.value) ? domain + image.value : 'http://placehold.it/250x150'
     var galleries = []
     if (gallery.value) {
-      galleries = gallery.value
+      galleries = JSON.parse(gallery.value)
     }
     return (
       <FormLayoutDefault
@@ -93,7 +93,7 @@ class Form extends React.PureComponent {
               <Field field={image}>
                 <div className='upload-image'>
                   <button className='btn btn-block btn-success'>upload Image</button>
-                  <input data-name='image' data-folder='product' id='upload-input' className='btn btn-block btn-success' type='file' name='uploads[]' onChange={this.uploadFile} />
+                  <input data-name='image' data-folder='product' className='btn btn-block btn-success' type='file' name='uploads[]' onChange={this.uploadFile} />
                 </div>
               </Field>
             </div>
@@ -102,7 +102,7 @@ class Form extends React.PureComponent {
               <Field field={gallery}>
                 <div className='upload-image' style={{ width: '100px' }}>
                   <button className='btn btn-block btn-success'>Gallery</button>
-                  <input data-name='gallery' data-folder='product' multiple id='upload-input' className='btn btn-block btn-success' type='file' name='uploadsImage[]' onChange={this.uploadGallery} />
+                  <input data-name='gallery' data-folder='product' multiple className='btn btn-block btn-success' type='file' name='uploadsImage[]' onChange={this.uploadGallery} />
                 </div>
               </Field>
 
@@ -180,6 +180,7 @@ class FormWrapper extends React.PureComponent {
     const data = (cb) => {
       this.props.api.product.get({id: params.id}, (err, data) => {
         if (err) return cb(err)
+        data.gallery = JSON.stringify(data.gallery)
         return cb(null, data)
       })
     }
