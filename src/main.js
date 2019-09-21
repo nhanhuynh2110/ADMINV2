@@ -5,8 +5,6 @@ import App from './container/app'
 import Controller from './controller'
 import { setupAppControllerContext, ControllerProvider } from './context'
 
-import './scss/main.scss'
-
 var ctx = new Controller()
 setupAppControllerContext(ctx)
 ctx.runApplication(() => {

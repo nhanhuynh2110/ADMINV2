@@ -1,6 +1,4 @@
 import _ from 'lodash'
-import Joi from 'joi-browser'
-// import Utility from '../../../src/assets/js/utility_c'
 const lang = () => window.localize.lang.validator
 
 export default {
@@ -135,27 +133,27 @@ export default {
     }
     cb(null, true)
   },
-  haveLowercaseLetter: function (value, cb) {
-    const self = this || {}
-    const schema = Joi.string().regex(/[a-z]/g).error(self.error || new Error(''))
-    Joi.validate(value, schema, (error) => {
-      cb(error, value)
-    })
-  },
-  stringHaveNumber: function (value, cb) {
-    const self = this || {}
-    const schema = Joi.string().regex(/[0-9]/g).error(self.error || new Error(''))
-    Joi.validate(value, schema, (error) => {
-      cb(error, value)
-    })
-  },
-  haveUppercaseLetter: function (value, cb) {
-    const self = this || {}
-    const schema = Joi.string().regex(/[A-Z]/g).error(self.error || new Error(''))
-    Joi.validate(value, schema, (error) => {
-      cb(error, value)
-    })
-  },
+  // haveLowercaseLetter: function (value, cb) {
+  //   const self = this || {}
+  //   const schema = Joi.string().regex(/[a-z]/g).error(self.error || new Error(''))
+  //   Joi.validate(value, schema, (error) => {
+  //     cb(error, value)
+  //   })
+  // },
+  // stringHaveNumber: function (value, cb) {
+  //   const self = this || {}
+  //   const schema = Joi.string().regex(/[0-9]/g).error(self.error || new Error(''))
+  //   Joi.validate(value, schema, (error) => {
+  //     cb(error, value)
+  //   })
+  // },
+  // haveUppercaseLetter: function (value, cb) {
+  //   const self = this || {}
+  //   const schema = Joi.string().regex(/[A-Z]/g).error(self.error || new Error(''))
+  //   Joi.validate(value, schema, (error) => {
+  //     cb(error, value)
+  //   })
+  // },
   alphabet: function (value, cb) {
     if (!(/^[a-zA-Z\s]+$/).test(value)) {
       return cb(new Error(lang().alphabet))
