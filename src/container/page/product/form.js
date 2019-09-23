@@ -10,6 +10,7 @@ import { withContainer } from '../../../context'
 import config from '../../../../config'
 import STORELINK from '../../../helper/link'
 import Select from '../../../component/control/select'
+import TinyMCE from '../../../helper/tinyMCE'
 
 let domain = config.server.domain
 const LINK = STORELINK.PRODUCTLINK
@@ -20,6 +21,16 @@ class Form extends React.PureComponent {
     this.uploadFile = this.uploadFile.bind(this)
     this.uploadGallery = this.uploadGallery.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
+    this.deleteGallery = this.deleteGallery.bind(this)
+  }
+
+  deleteGallery (e) {
+    var img = e.target.getAttribute('data-img')
+    const galleries = _.get(this.props.model, 'gallery.value')
+    var gallery = galleries ? JSON.parse(galleries) : []
+    if (!gallery.includes(img)) return
+    const newGallery = _.pull(gallery, img)
+    this.props.onInputChange(null, { name: 'gallery', value: JSON.stringify(newGallery)})
   }
 
   uploadFile (e) {
@@ -41,14 +52,15 @@ class Form extends React.PureComponent {
     this.props.api.file.upload(true, files, name, folder, (err, resp) => {
       if (err) return alert('upload gallery error')
       var galleries = []
-      if (gallery.value) galleries = gallery.value
+      if (gallery.value) galleries = JSON.parse(gallery.value)
       resp.forEach(el => galleries.push(el.img))
-      this.props.onInputChange(null, { name, value: galleries})
+      this.props.onInputChange(null, { name, value: JSON.stringify(galleries)})
     })
   }
 
   handleSubmit () {
     this.props.handleSubmitSingle((data) => {
+      data.gallery = data.gallery ? JSON.parse(data.gallery) : []
       if (!this.props.data) {
         this.props.api.product.insert(data, (err, resp) => {
           if (err) return alert('save fail')
@@ -66,13 +78,20 @@ class Form extends React.PureComponent {
     })
   }
 
+  componentDidMount () {
+    let {content} = this.props.model
+    TinyMCE.init('content', this.props.onInputChange, () => {
+      if (content.value) tinymce.activeEditor.setContent(content.value)
+    })
+  }
+
   render () {
-    let { image, gallery, title, code, price, priceSale, description, isNewProduct, categoryId, isHot, isActive } = this.props.model
+    let { image, gallery, title, code, price, priceSale, description, content, isNewProduct, categoryId, isHot, isActive } = this.props.model
     let {onInputChange, categories} = this.props
     var linkImg = (image.value) ? domain + image.value : 'http://placehold.it/250x150'
     var galleries = []
     if (gallery.value) {
-      galleries = gallery.value
+      galleries = JSON.parse(gallery.value)
     }
     return (
       <FormLayoutDefault
@@ -93,7 +112,7 @@ class Form extends React.PureComponent {
               <Field field={image}>
                 <div className='upload-image'>
                   <button className='btn btn-block btn-success'>upload Image</button>
-                  <input data-name='image' data-folder='product' id='upload-input' className='btn btn-block btn-success' type='file' name='uploads[]' onChange={this.uploadFile} />
+                  <input data-name='image' data-folder='product' className='btn btn-block btn-success' type='file' name='uploads[]' onChange={this.uploadFile} />
                 </div>
               </Field>
             </div>
@@ -102,14 +121,14 @@ class Form extends React.PureComponent {
               <Field field={gallery}>
                 <div className='upload-image' style={{ width: '100px' }}>
                   <button className='btn btn-block btn-success'>Gallery</button>
-                  <input data-name='gallery' data-folder='product' multiple id='upload-input' className='btn btn-block btn-success' type='file' name='uploadsImage[]' onChange={this.uploadGallery} />
+                  <input data-name='gallery' data-folder='product' multiple className='btn btn-block btn-success' type='file' name='uploadsImage[]' onChange={this.uploadGallery} />
                 </div>
               </Field>
 
               <h3 className='timeline-header'><a href='#'></a> uploaded gallery</h3>
 
               <div className='timeline-body'>
-                {galleries.map((gallery, key) => <a key={key}><img width='150' src={`${domain}/${gallery}`} alt='...' className='margin' /><i className='fa fa-remove' /></a>)}
+                {galleries.map((gallery, key) => <a key={key}><img width='150' src={`${domain}/${gallery}`} alt='...' className='margin' /><i data-img={gallery} onClick={this.deleteGallery} className='fa fa-remove' /></a>)}
               </div>
             </div>
 
@@ -136,6 +155,12 @@ class Form extends React.PureComponent {
             <Field field={description}>
               <div>
                 <textarea style={{width: '100%', height: '200px'}} name='description' value={description.value} onChange={onInputChange} />
+              </div>
+            </Field>
+
+            <Field field={content}>
+              <div>
+                <textarea className='editor' />
               </div>
             </Field>
 
@@ -180,6 +205,7 @@ class FormWrapper extends React.PureComponent {
     const data = (cb) => {
       this.props.api.product.get({id: params.id}, (err, data) => {
         if (err) return cb(err)
+        data.gallery = JSON.stringify(data.gallery)
         return cb(null, data)
       })
     }

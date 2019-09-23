@@ -46,6 +46,10 @@ var model = {
         label: 'Description',
         validators: []
       },
+      content: {
+        label: 'Content',
+        validators: []
+      },
       isActive: {
         text: 'Active'
       },

@@ -113,8 +113,8 @@ module.exports = {
       // all options are optional
       filename: devMode ? '[name].css' : '[name].[hash].css',
       chunkFilename: devMode ? '[id].css' : '[id].[hash].css'
-    })
-    // new BundleAnalyzerPlugin(),
+    }),
+    // new BundleAnalyzerPlugin()
     // new CompressionPlugin({
     //   test: /\.js(\?.*)?$/i
     // })
