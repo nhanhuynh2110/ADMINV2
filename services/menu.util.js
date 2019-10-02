@@ -42,7 +42,7 @@ let init = (permissions) => {
         { text: 'List', link: '/advertise', permission: hasPermission(permissions.advertise.role, 'ADVERTISEVIEW') }
       ],
       icon: 'fa fa-book',
-      permission: hasPermission(permissions.product.role, 'ADVERTISEVIEW')
+      permission: hasPermission(permissions.advertise.role, 'ADVERTISEVIEW')
     },
     {
       key: 'post',

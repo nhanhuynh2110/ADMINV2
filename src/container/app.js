@@ -16,7 +16,7 @@ class App extends React.PureComponent {
       { key: 'main-change-password', path: ACCOUNTLINK.CHANGEPASSWORD, component: ChangePassword },
       { key: 'main-account', path: ACCOUNTLINK.GRID, component: Account, permission: ['ACCOUNTVIEW'] },
       { key: 'main-category', path: CATEGORYLINK.GRID, component: Category, permission: ['CATEGORYVIEW'] },
-      { key: 'main-category-post', path: CATEGORYPOSTLINK.GRID, component: CategoryPost },
+      // { key: 'main-category-post', path: CATEGORYPOSTLINK.GRID, component: CategoryPost },
       { key: 'main-post', path: POSTLINK.GRID, component: Post },
       { key: 'main-ad', path: ADVERTISELINK.GRID, component: Advertise },
       { key: 'main-gallery', path: GALLERYLINK, component: Gallery },
