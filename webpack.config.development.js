@@ -2,6 +2,7 @@ const path = require('path')
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 const CompressionPlugin = require('compression-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const webpack = require('webpack')
 
 // const devMode = process.env.NODE_ENV !== 'production'
 
@@ -24,7 +25,8 @@ module.exports = {
   resolve: {
     alias: {
       $: 'jquery',
-      jQuery: 'jquery'
+      jQuery: 'jquery',
+      'lib-module': path.join(__dirname, './src/lib-module')
     }
   },
   module: {
@@ -114,6 +116,9 @@ module.exports = {
       filename: devMode ? '[name].css' : '[name].[hash].css',
       chunkFilename: devMode ? '[id].css' : '[id].[hash].css'
     }),
+    new webpack.ProvidePlugin({
+      _: 'lodash'
+    })
     // new BundleAnalyzerPlugin()
     // new CompressionPlugin({
     //   test: /\.js(\?.*)?$/i

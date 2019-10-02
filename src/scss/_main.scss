@@ -16,11 +16,11 @@ body {
     background-color: #fff !important;
     min-height: 100vh !important;
   }
-  
+
   .main-sidebar {
     background: #222d32;
   }
-  
+
   .fs20 {
     font-size: 20px;
   }
@@ -28,7 +28,7 @@ body {
     position: relative;
     height: 300px
   }
-  
+
   .nh-sales-chart {
     position: relative;
     height: 300px
@@ -63,16 +63,16 @@ body {
   .arrow-check-list::before {
     font-size: 15px;
   }
-  
+
   .box-type-home {
     cursor: pointer;
   }
-  
+
   .list-blog-search i.arrow-check-list:hover {
     color: #00a65a;
     border: 1px solid #00a65a;
   }
-  
+
   .list-blog-search .item {
     padding: 10px 0;
     border-top: 1px solid #f4f4f4;
@@ -101,14 +101,14 @@ body {
     color: #00a65a;
     border-color: #00a65a;
   }
-  
+
   .tool-action a {
     margin-right: 10px;
   }
   .tool-action a:last-child {
     margin-right: 0px;
   }
-  
+
   .dataTables_wrapper .dataTables_filter {
     text-align: right;
   }
@@ -156,7 +156,7 @@ body {
   }
   .table thead th::after {
     opacity: 0.2;
-    
+
     position: absolute;
     top: 8px;
     right: 8px;
@@ -252,16 +252,16 @@ body {
     z-index: 9999;
     overflow-y: scroll;
   }
-  
+
   .content-wrapper,
   .right-side {
     /* background-color: #222d32 !important; */
   }
-  
+
   .modals-ta.modal {
     z-index: 9999;
   }
-  
+
   .ta-app .modal {
     bottom: auto
   }
@@ -269,22 +269,39 @@ body {
     position: relative;
     cursor: pointer;
   }
-  
+
   .paginate_button a {
     cursor: pointer;
   }
-  
+
   .grid-input-group {
     width: 100px;
   }
-  
+
   .grid-input-group .input-group-addon {
     cursor: pointer;
   }
-  
+
   .grid-input-group .input-group-addon:hover {
     background-color: #337ab7;
     color: #fff;
-    
+
   }
-  
+
+  .product-color {
+    margin-right: 5px;
+    border: 1px solid #c1c1c1;
+    border-radius: 50%;
+    height: 20px;
+    width: 20px;
+    display: inline-block;
+  }
+
+  .sketch-picker {
+    width: auto !important
+  }
+
+  .product-size .btn-app {
+    padding: 0;
+    margin: 0
+  }
