@@ -4,8 +4,8 @@ import Layout from '../layout/default'
 import { withContainer } from '../context'
 import LINKSTORE from '../helper/link'
 import hasPermission from '../helper/permissions.cli.util'
-import { Profile, Account, Category, CategoryPost, Post, Gallery, Home, Product, ChangePassword, Permission } from './page'
-const { ACCOUNTLINK, CATEGORYLINK, CATEGORYPOSTLINK, POSTLINK, GALLERYLINK, PRODUCTLINK, PERMISSIONLINK } = LINKSTORE
+import { Profile, Account, Category, CategoryPost, Post, Gallery, Home, Product, ChangePassword, Permission, Advertise } from './page'
+const { ACCOUNTLINK, CATEGORYLINK, CATEGORYPOSTLINK, POSTLINK, GALLERYLINK, PRODUCTLINK, PERMISSIONLINK, ADVERTISELINK } = LINKSTORE
 
 class App extends React.PureComponent {
   constructor (props) {
@@ -18,6 +18,7 @@ class App extends React.PureComponent {
       { key: 'main-category', path: CATEGORYLINK.GRID, component: Category, permission: ['CATEGORYVIEW'] },
       { key: 'main-category-post', path: CATEGORYPOSTLINK.GRID, component: CategoryPost },
       { key: 'main-post', path: POSTLINK.GRID, component: Post },
+      { key: 'main-ad', path: ADVERTISELINK.GRID, component: Advertise },
       { key: 'main-gallery', path: GALLERYLINK, component: Gallery },
       { key: 'main-product', path: PRODUCTLINK.GRID, component: Product },
       { key: 'main-permisison', path: PERMISSIONLINK.GRID, component: Permission },

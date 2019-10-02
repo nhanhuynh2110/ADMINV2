@@ -1,4 +1,5 @@
 import React from 'react'
+import _ from 'lodash'
 import {Link} from 'react-router-dom'
 import DatePicker from 'react-datepicker'
 
@@ -124,21 +125,6 @@ class Form extends React.PureComponent {
               </form>
             </div>
           </div>
-          {/* <div className='col-md-3'>
-            <div className='box box-primary'>
-              <div className='box-header with-border'>
-                <h3 className='box-title'>Cài Đặt</h3>
-              </div>
-              <form role='form'>
-                <div className='form-group'>
-                  <label>Nhận Mail</label>
-                  <span data-name='active' className='checkbox-react'>
-                    <i className='fa fa-check' />
-                  </span>
-                </div>
-              </form>
-            </div>
-          </div> */}
           <div className='col-md-12'>
             <div className='box box-success'>
               <div className='box-body'>
@@ -170,15 +156,7 @@ const FormBox = withFormBehaviors(Form, Model)
 
 class FormWrapper extends React.PureComponent {
   render () {
-    let data = {
-      avatar: this.props.currentUser.avatar,
-      firstname: this.props.currentUser.firstname,
-      lastname: this.props.currentUser.lastname,
-      address: this.props.currentUser.address,
-      phone: this.props.currentUser.phone,
-      birthdate: this.props.currentUser.birthdate,
-      gender: this.props.currentUser.gender
-    }
+    let data = _.pick(this.props.currentUser, ['avatar', 'firstname', 'lastname', 'address', 'phone', 'birthdate', 'gender'])
     return <FormBox data={data} currentUser={this.props.currentUser} api={this.props.api} />
   }
 }
