@@ -3,7 +3,6 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPl
 const CompressionPlugin = require('compression-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const webpack = require('webpack')
-
 // const devMode = process.env.NODE_ENV !== 'production'
 
 const devMode = 'Development'
@@ -13,10 +12,7 @@ module.exports = {
   entry: {
     style: './src/style.js',
     main: './src/main.js',
-    login: './src/login.js',
-    vendor: [
-      './lib/plugins/jQuery/jquery-2.2.3.min.js'
-    ]
+    login: './src/login.js'
   },
   watch: true,
   output: {
@@ -26,7 +22,8 @@ module.exports = {
     alias: {
       $: 'jquery',
       jQuery: 'jquery',
-      'lib-module': path.join(__dirname, './src/lib-module')
+      'lib-module': path.join(__dirname, './src/lib-module'),
+      'form-layout': path.join(__dirname, './src/component/form/layout')
     }
   },
   module: {

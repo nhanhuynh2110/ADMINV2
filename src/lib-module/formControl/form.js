@@ -1,11 +1,11 @@
 import React from 'react'
 
 export default (props) => {
-  const { children, Layout } = props
+  const { children, Layout, ...otherProps } = props
 
   if (Layout) {
     return (
-      <Layout>
+      <Layout {...otherProps}>
         {children}
       </Layout>
     )
@@ -13,7 +13,6 @@ export default (props) => {
 
   return (
     <form role='form'>
-      Form Group
       {children}
     </form>
   )
