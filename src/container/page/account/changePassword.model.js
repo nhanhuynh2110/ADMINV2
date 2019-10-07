@@ -1,37 +1,36 @@
-import _ from 'lodash'
+import ValidationError from 'lib-module/formControl/ValidationError'
 
-const model1 = {
-  model: function () {
-    return {
-      password: {
-        placeholder: 'Password',
-        validators: [
-          { compare: 'required' }
-        ]
-      },
-      newPassword: {
-        placeholder: 'New password',
-        validators: [
-          { compare: 'required' }
-        ]
-      },
-      confirmNewPassword: {
-        placeholder: 'Retype new password',
-        validators: [
-          { compare: 'required' },
-          {
-            compare: (value, cb) => {
-              const {password} = this.state.model
-              const pass = _.get(password, 'value')
-              const isSuccess = pass === value
-              return cb(null, isSuccess)
-            },
-            message: 'Retype password cannot be match'
-          }
-        ]
-      }
-    }
+export default {
+  password: {
+    name: 'password',
+    label: 'Password old',
+    className: 'form-group has-feedback',
+    validator: [
+      { compare: 'require'},
+      { compare: 'minlen', compareTo: 8},
+      { compare: 'maxlen', compareTo: 16},
+    ]
+  },
+  newPassword: {
+    name: 'newPassword',
+    label: 'New password',
+    className: 'form-group has-feedback',
+    validator: [
+      { compare: 'require'},
+      { compare: 'minlen', compareTo: 8},
+      { compare: 'maxlen', compareTo: 16}
+    ]
+  },
+  confirmPassword: {
+    name: 'confirmPassword',
+    label: 'Corfirm password',
+    className: 'form-group has-feedback',
+    validator: [
+      { compare: 'require'},
+      { compare: (value, model) => {
+        if (value === model.newPassword.value) return true
+        throw new ValidationError('confirm is not match!!')
+      }}
+    ]
   }
 }
-
-export default model1
