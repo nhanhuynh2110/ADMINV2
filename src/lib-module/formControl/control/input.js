@@ -2,8 +2,8 @@ import React, {useRef} from 'react'
 import Field from '../field/field'
 
 export default (props) => {
-  const {field} = props
-  const componentprops = _.pick(props, ['className', 'id', 'placeholder', 'defaultValue', 'name', 'disabled', 'readOnly'])
+  const {field, afterDom} = props
+  const componentprops = _.pick(props, ['className', 'id', 'placeholder', 'defaultValue', 'name', 'disabled', 'readOnly', 'type', 'autoComplete'])
 
   const ref = useRef(null)
 
@@ -22,11 +22,11 @@ export default (props) => {
     <React.Fragment>
       <Field field={field}>
         <input
-          type='text'
           ref={ref}
           onChange={onChangeDelay}
           {...componentprops}
         />
+        {afterDom}
       </Field>
     </React.Fragment>
   )

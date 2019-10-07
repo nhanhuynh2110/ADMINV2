@@ -16,7 +16,7 @@ module.exports = (passport) => {
       })
       request(api, function (error, response, body) {
         if (error) return done(null, false)
-        if (response.statusCode !== 200) return done(new Error('Get user fail'))
+        if (response.statusCode !== 200) return done(null, false)
         var resp = JSON.parse(body)
         return done(null, resp.user)
       })

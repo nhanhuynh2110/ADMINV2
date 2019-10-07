@@ -43,7 +43,7 @@ class UserNav extends React.PureComponent {
           <li className='user-body'>
             <div className='row'>
               <div className='col-xs-12 text-center'>
-                <a href='/admin/change-password'>Đổi mật khẩu</a>
+                <a href='/change-password'>Đổi mật khẩu</a>
               </div>
               {/* <div className='col-xs-4 text-center'>
                 <a>Đổi mật khẩu</a>

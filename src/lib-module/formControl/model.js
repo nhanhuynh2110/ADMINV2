@@ -25,14 +25,13 @@ const Model = (formModels, data) => {
 
   const createValidators = (validators, value) => {
     return validators.map(v => {
-      if (typeof v.compare === 'function') return v.compare
+      if (typeof v.compare === 'function') return v.compare.bind(null, value, model)
       return validatorsjs[v.compare].bind(null, value, v.compareTo )
     })
   }
 
   const validate = (fieldName, value) => {
     if (!newModel[fieldName].validator) return Promise.resolve(true)
-    console.log('fieldName', fieldName)
     const validators = createValidators(newModel[fieldName].validator, value )
     return utils
       .runSequentially(validators)
@@ -78,7 +77,8 @@ const Model = (formModels, data) => {
         dt[m] = model[m].value ? model[m].value : ''
       })
       return dt
-    }
+    },
+    configurable: true
   })
 
   const init = () => {
@@ -94,21 +94,6 @@ const Model = (formModels, data) => {
 
   return [model, init]
 }
-
-// const initModel = (formModels, data) => {
-//   const pro = new Promise(function(resolve) {
-//     Object.keys(formModels).forEach(name => {
-//       if (data) formModels[name].value = data[name] ? data[name] : null
-//       else formModels[name].value = ''
-//     })
-
-//     resolve('abc  ')
-//   }).then(dt => {
-//     return dt
-//   })
-
-//   return pro
-// }
 
 Model.initModel = () => {}
 

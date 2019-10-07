@@ -94,4 +94,16 @@ export default class Account extends Base {
       }
     })
   }
+
+  changePassword (payload, cb) {
+    payload['api'] = '/api/admin/change-password'
+    this.adapter.put('/base-api', null, payload, (error, resp) => {
+      if (error) return handleError(error, false, cb)
+      if (resp.status !== 200) return cb(resp.message)
+      this.emit('update-current-user', resp)
+      if (typeof cb === 'function') {
+        return cb(null, resp)
+      }
+    })
+  }
 }
