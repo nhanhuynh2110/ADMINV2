@@ -32,11 +32,7 @@ var model = {
       },
       priceSale: {
         label: 'Price Sale',
-        placeholder: 'please input price sale',
-        validators: [
-          { compare: 'required' },
-          { compare: 'stringIsNumber' }
-        ]
+        placeholder: 'please input price sale'
       },
       categoryId: {
         label: 'Category',
@@ -49,6 +45,18 @@ var model = {
       content: {
         label: 'Content',
         validators: []
+      },
+      altImage : {
+        label: 'Alt Image',
+        placeholder: 'please input altImage',
+      },
+      metaTitle : {
+        label: 'Meta Title',
+        placeholder: 'please input Meta Title',
+      },
+      metaDescription : {
+        label: 'Meta Description',
+        placeholder: 'please input Meta Description',
       },
       isActive: {
         text: 'Active'

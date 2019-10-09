@@ -1,64 +1,68 @@
-import React from 'react'
-import _ from 'lodash'
-import async from 'async'
+/* global _, tinymce */
 
+import React from 'react'
 import Model from './model'
 import Field from '../../../component/form/field'
+import _ from 'lodash'
+import STORELINK from '../../../helper/link'
 import { withFormBehaviors } from '../../../component/form/form'
 import FormLayoutDefault from '../../../component/form/layout/default'
 import { withContainer } from '../../../context'
-import config from '../../../../config'
-import STORELINK from '../../../helper/link'
-import Select from '../../../component/control/select'
+import conf from '../../../../config'
 
-let domain = config.server.domain
-const LINK = STORELINK.CATEGORYLINK
+const domain = conf.server.domain
 
+const LINK = STORELINK.ADVERTISELINK
 class Form extends React.PureComponent {
   constructor (props) {
     super(props)
-    this.uploadFile = this.uploadFile.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
+    this.uploadFile = this.uploadFile.bind(this)
+    // this.state.TinyMCE = false
   }
-
   uploadFile (e) {
     var files = e.target.files
     var name = e.target.getAttribute('data-name')
     var folder = e.target.getAttribute('data-folder')
 
+    const {onInputChange} = this.props
+
     this.props.api.file.upload(false, files, name, folder, (err, resp) => {
-      if (err) this.props.onInputChange(null, { name, value: null })
-      else this.props.onInputChange(null, {name, value: resp.img})
+      if (err) onInputChange(null, { name, value: null })
+      else onInputChange(null, {name, value: resp.img})
     })
   }
 
   handleSubmit () {
     this.props.handleSubmitSingle((data) => {
       if (!this.props.data) {
-        this.props.api.category.insert(data, (err, resp) => {
+        this.props.api.advertise.insert(data, (err, resp) => {
           if (err) return alert('save fail')
-          return this.props.history.push(LINK.GRID)
+          this.props.history.push(LINK.GRID)
         })
       } else {
         let dt = data
         dt.id = this.props.data._id
-        this.props.api.category.update(dt, (err, resp) => {
-          if (err) return alert('update fail')
-          return this.props.history.push(LINK.GRID)
+        this.props.api.advertise.update(dt, (err, resp) => {
+          if (err) alert('update fail')
+          this.props.history.push(LINK.GRID)
         })
       }
       this.props.handleSubmitFinish()
     })
   }
 
+  componentDidMount () {
+  }
+
   render () {
-    let { img, title, description, parentId, isActive, isHome, altImage, metaTitle, metaDescription } = this.props.model
-    let {parents, onInputChange} = this.props
+    const {onInputChange, model} = this.props
+    let { title, img, isActive, isHome, altImage, metaTitle } = model
     var linkImg = (img.value) ? domain + img.value : 'http://placehold.it/250x150'
     return (
       <FormLayoutDefault
-        title='Create Category'
-        linkCancleBtn='/category'
+        title='Create Advertise'
+        linkCancleBtn='/advertise'
         isFormValid={this.props.isFormValid}
         hasChanged={this.props.hasChanged}
         handleSubmit={this.handleSubmit}
@@ -66,30 +70,19 @@ class Form extends React.PureComponent {
       >
         <form role='form'>
           <div className='box-body'>
-
             <div className='box-body box-profile' style={{ width: '250px' }}>
               <img style={{ width: '100%' }} src={linkImg} />
-              <h3 className='profile-username text-center'>Image category</h3>
+              <h3 className='profile-username text-center'>Image</h3>
               <Field field={img}>
                 <div className='upload-image'>
                   <button className='btn btn-block btn-success'>Image</button>
-                  <input data-name='img' data-folder='categories' id='upload-input' className='btn btn-block btn-success' type='file' name='uploads[]' onChange={this.uploadFile} />
+                  <input data-name='img' data-folder='advertise' id='upload-input' className='btn btn-block btn-success' type='file' name='uploads[]' onChange={this.uploadFile} />
                 </div>
               </Field>
             </div>
 
             <Field field={title}>
               <input type='text' className='form-control' placeholder={title.placeholder} onChange={onInputChange} defaultValue={title.value} />
-            </Field>
-
-            <Field field={parentId}>
-              <Select name='parentId' isSelected={parentId.value} options={parents} classSelect='select2' onChange={onInputChange} />
-            </Field>
-
-            <Field field={description}>
-              <div>
-                <textarea style={{width: '100%', height: '200px'}} name='description' value={description.value} onChange={onInputChange} />
-              </div>
             </Field>
 
             <Field field={isActive}>
@@ -111,10 +104,6 @@ class Form extends React.PureComponent {
             <Field field={metaTitle}>
               <input type='text' className='form-control' placeholder={metaTitle.placeholder} onChange={onInputChange} defaultValue={(metaTitle) ? metaTitle.value : ''} />
             </Field>
-
-            <Field field={metaDescription}>
-              <input type='text' className='form-control' placeholder={metaDescription} onChange={onInputChange} defaultValue={(metaDescription) ? metaDescription.value : ''} />
-            </Field>
           </div>
         </form>
       </FormLayoutDefault>
@@ -126,8 +115,7 @@ class FormWrapper extends React.PureComponent {
   constructor (props) {
     super(props)
     this.state = {
-      data: null,
-      parents: []
+      data: null
     }
   }
 
@@ -135,39 +123,14 @@ class FormWrapper extends React.PureComponent {
     let {match} = this.props
     if (!match) return
     let {params} = match
-    const parents = (cb) => {
-      this.props.api.category.getParents({}, (err, resp) => {
-        if (err) return cb(err)
-        let data = resp.map(el => ({ text: el.title, value: el._id }))
-        return cb(null, data)
-      })
-    }
-
-    const data = (cb) => {
-      this.props.api.category.get({id: params.id}, (err, resp) => {
-        if (err) return cb(err)
-        return cb(null, resp)
-      })
-    }
-
-    if (params.id === 'add') {
-      parents((err, data) => {
-        if (err) return
-        this.setState({ parents: data })
-      })
-    } else {
-      async.parallel({ data, parents }, (err, resp) => {
-        if (err) return
-        const { data, parents } = resp
-        _.remove(parents, {
-          value: data._id
-        })
-        this.setState({ data, parents })
-      })
-    }
+    if (!params.id || params.id === 'add') return false
+    this.props.api.advertise.get({id: params.id}, (err, data) => {
+      if (err) return
+      this.setState({ data })
+    })
   }
   render () {
-    return <FormBox data={this.state.data} parents={this.state.parents} api={this.props.api} {...this.props} />
+    return <FormBox data={this.state.data} {...this.props} />
   }
 }
 
