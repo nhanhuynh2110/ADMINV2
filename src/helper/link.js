@@ -32,6 +32,11 @@ export default {
     ADD: '/product/add',
     EDIT: '/product/:id'
   },
+  ADVERTISELINK: {
+    GRID: '/advertise/',
+    ADD: '/advertise/add',
+    EDIT: '/advertise/:id'
+  },
   PERMISSIONLINK: {
     GRID: '/permission',
     ADD: '/permission/add',

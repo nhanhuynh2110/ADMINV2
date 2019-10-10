@@ -14,13 +14,6 @@ var model = {
           { compare: 'required' }
         ]
       },
-      description: {
-        label: 'Description',
-        validators: []
-      },
-      parentId: {
-        label: 'Parent'
-      },
       altImage : {
         label: 'Alt Image',
         placeholder: 'please input altImage',
@@ -28,10 +21,6 @@ var model = {
       metaTitle : {
         label: 'Meta Title',
         placeholder: 'please input Meta Title',
-      },
-      metaDescription : {
-        label: 'Meta Description',
-        placeholder: 'please input Meta Description',
       },
       isActive: {
         text: 'Active'
