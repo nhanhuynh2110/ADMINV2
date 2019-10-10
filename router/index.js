@@ -6,6 +6,7 @@ var menuData = require('../services/menu.util')
 
 module.exports = function (app) {
   app.get('/login', (req, res, next) => {
+    req.session.destroy()
     req.logout()
     return res.render('page/login')
   })
@@ -60,8 +61,7 @@ module.exports = function (app) {
     Adapter.put((error, resp) => {
       if (error) return res.status(500).json({ message: 'request api error' })
       var result = resp
-      var data = result.data
-      return res.status(200).json({ status: 200, message: 'success', data })
+      return res.status(result.status || 500).json({ status: result.status || 500, message: result.message, data: result.data })
     })
   })
 

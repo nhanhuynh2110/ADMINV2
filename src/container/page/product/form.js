@@ -1,6 +1,7 @@
 import React from 'react'
 import async from 'async'
 import _ from 'lodash'
+import { SketchPicker } from 'react-color'
 
 import Model from './model'
 import Field from '../../../component/form/field'
@@ -11,6 +12,7 @@ import config from '../../../../config'
 import STORELINK from '../../../helper/link'
 import Select from '../../../component/control/select'
 import TinyMCE from '../../../helper/tinyMCE'
+import Size from './size'
 
 let domain = config.server.domain
 const LINK = STORELINK.PRODUCTLINK
@@ -18,10 +20,19 @@ const LINK = STORELINK.PRODUCTLINK
 class Form extends React.PureComponent {
   constructor (props) {
     super(props)
+    this.state = {
+      color: ''
+    }
     this.uploadFile = this.uploadFile.bind(this)
     this.uploadGallery = this.uploadGallery.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
     this.deleteGallery = this.deleteGallery.bind(this)
+    this.handleChangeColorComplete = this.handleChangeColorComplete.bind(this)
+    this.color = ''
+  }
+
+  handleChangeColorComplete (color, event) {
+    this.color = color.hex
   }
 
   deleteGallery (e) {
@@ -30,7 +41,7 @@ class Form extends React.PureComponent {
     var gallery = galleries ? JSON.parse(galleries) : []
     if (!gallery.includes(img)) return
     const newGallery = _.pull(gallery, img)
-    this.props.onInputChange(null, { name: 'gallery', value: JSON.stringify(newGallery)})
+    this.props.onInputChange(null, { name: 'gallery', value: JSON.stringify(newGallery) })
   }
 
   uploadFile (e) {
@@ -54,7 +65,7 @@ class Form extends React.PureComponent {
       var galleries = []
       if (gallery.value) galleries = JSON.parse(gallery.value)
       resp.forEach(el => galleries.push(el.img))
-      this.props.onInputChange(null, { name, value: JSON.stringify(galleries)})
+      this.props.onInputChange(null, { name, value: JSON.stringify(galleries) })
     })
   }
 
@@ -105,7 +116,16 @@ class Form extends React.PureComponent {
       >
         <form role='form'>
           <div className='box-body'>
-
+            {/* <SketchPicker onChangeComplete={this.handleChangeColorComplete} />
+            <a className='btn btn-app'>
+              <i class='fa fa-save' /> Save
+            </a>
+            <div>
+              <span><a className='product-color' /><i class='fa fa-remove' /></span>
+              <span><a className='product-color' /><i class='fa fa-remove' /></span>
+              <span><a className='product-color' /><i class='fa fa-remove' /></span>
+            </div> */}
+            <Size />
             <div className='box-body box-profile' style={{ width: '250px' }}>
               <img style={{ width: '100%' }} src={linkImg} />
               <h3 className='profile-username text-center'>Image Primary</h3>
@@ -125,7 +145,7 @@ class Form extends React.PureComponent {
                 </div>
               </Field>
 
-              <h3 className='timeline-header'><a href='#'></a> uploaded gallery</h3>
+              <h3 className='timeline-header'>uploaded gallery</h3>
 
               <div className='timeline-body'>
                 {galleries.map((gallery, key) => <a key={key}><img width='150' src={`${domain}/${gallery}`} alt='...' className='margin' /><i data-img={gallery} onClick={this.deleteGallery} className='fa fa-remove' /></a>)}
