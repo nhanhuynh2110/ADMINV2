@@ -1,6 +1,12 @@
 @import './adminLTE';
 @import './main';
 // @import './css/'
+
+@import './fileManager';
 .wrapper {
   min-height: 100%;
+}
+
+.modal-fluid {
+  width: 100% !important
 }

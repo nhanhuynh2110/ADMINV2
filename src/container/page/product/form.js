@@ -1,9 +1,10 @@
+/* global FileReader */
+
 import React from 'react'
 import async from 'async'
 import _ from 'lodash'
-import SmartCrop from 'smartcrop'
-import Canvas from 'canvas'
-import { SketchPicker } from 'react-color'
+import CropImage from 'lib-module/cropImage'
+import FileManager from 'lib-module/formControl/control/fileManager'
 
 import Model from './model'
 import Field from '../../../component/form/field'
@@ -15,6 +16,7 @@ import STORELINK from '../../../helper/link'
 import Select from '../../../component/control/select'
 import TinyMCE from '../../../helper/tinyMCE'
 import Size from './size'
+
 
 let domain = config.server.domain
 const LINK = STORELINK.PRODUCTLINK
@@ -52,57 +54,32 @@ class Form extends React.PureComponent {
     var name = e.target.getAttribute('data-name')
     var folder = e.target.getAttribute('data-folder')
     var reader = new FileReader()
-    // var image = new Image()
-    var processed = {}
-    const options = { width: 100, height: 100 }
 
-    function waitForImageToLoad (imageElement) { return new Promise(resolve => { imageElement.onload = resolve }) }
-
-    reader.onload = function(e) {
+    reader.onload = function (e) {
       var image = document.getElementById('img')
-      var imgCrop = document.getElementById('img-crop')
       image.src = e.target.result
-  
-      waitForImageToLoad(image).then(() => {
-        var img = image;
-        if (processed[img.src]) return
-        processed[img.src] = true
-        return SmartCrop.crop(img, options, function(result) {
-          console.log('result', result)
-          var crop = result.topCrop,
-            canvas = document.createElement('canvas'),
-            ctx = canvas.getContext('2d')
-          canvas.width = options.width
-          canvas.height = options.height
-          ctx.drawImage(img, crop.x, crop.y, crop.width, crop.height, 0, 0, canvas.width, canvas.height)
+      CropImage({
+        image,
+        originWidth: 100,
+        originHeight: 100,
+        fileName: 'filename.crop.png',
+        type: 'image/png' })
+        .then(res => {
           const imgCrop = document.getElementById('img-crop')
-          imgCrop.src = canvas.toDataURL('image/png')
-          return
+          imgCrop.src = res.dataURL
+          return res.file
         })
-      })
-      .then(() => {
-        const filesUpload = files
-        console.log('filesUpload', filesUpload)
-
-        fetch(imgCrop.src)
-        .then(res => res.blob())
-        .then(blob => {
-          const file = new File([blob], 'crop file.png', blob)
-          console.log('new file', file)
+        .then(file => {
         })
-        
-
-      })
     }
-
     reader.readAsDataURL(files[0])
-    
-    
+
     // this.props.api.file.upload(false, files, name, folder, (err, resp) => {
     //   if (err) this.props.onInputChange(null, { name, value: null })
     //   else this.props.onInputChange(null, {name, value: resp.img})
     // })
   }
+
 
   uploadGallery (e) {
     var files = e.target.files
@@ -165,6 +142,9 @@ class Form extends React.PureComponent {
       >
         <form role='form'>
           <div className='box-body'>
+
+            <FileManager api={this.props.api} />
+
             {/* <SketchPicker onChangeComplete={this.handleChangeColorComplete} />
             <a className='btn btn-app'>
               <i class='fa fa-save' /> Save

@@ -10,6 +10,7 @@ import Gallery from './gallery'
 import Role from './roles'
 import Product from './product'
 import Permission from './permission'
+import FileManager from './fileManager'
 
 export default () => {
   return {
@@ -24,6 +25,7 @@ export default () => {
     gallery: new Gallery(),
     role: new Role(),
     product: new Product(),
-    permission: new Permission()
+    permission: new Permission(),
+    fileManager: new FileManager()
   }
 }
