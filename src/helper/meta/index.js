@@ -4,6 +4,7 @@ import post from './post'
 import account from './account'
 import product from './product'
 import advertise from './advertise'
+import slide from './slide'
 import permission from './permission'
 
 export default {
@@ -13,5 +14,6 @@ export default {
   account,
   product,
   advertise,
+  slide,
   permission
 }
