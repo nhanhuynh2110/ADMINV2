@@ -74,9 +74,9 @@ class Size extends React.PureComponent {
                     <SketchPicker width={'100%'} onChangeComplete={this.handleChangeColorComplete} />
                     <div>
                       <button type='button' className='btn btn-primary'>Add Color</button>
-                      <span><a className='product-color' /><i class='fa fa-remove' /></span>
-                      <span><a className='product-color' /><i class='fa fa-remove' /></span>
-                      <span><a className='product-color' /><i class='fa fa-remove' /></span>
+                      <span><a className='product-color' /><i className='fa fa-remove' /></span>
+                      <span><a className='product-color' /><i className='fa fa-remove' /></span>
+                      <span><a className='product-color' /><i className='fa fa-remove' /></span>
                     </div>
                   </div>
                 </Field>
