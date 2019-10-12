@@ -66,6 +66,9 @@ var model = {
       },
       isHot: {
         text: 'Is Hot'
+      },
+      inStock: {
+        text: 'In Stock'
       }
     }
   }

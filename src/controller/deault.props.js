@@ -10,6 +10,7 @@ export default {
     gallery: null,
     product: null,
     permission: null,
-    advertise: null
+    advertise: null,
+    slide: null
   }
 }

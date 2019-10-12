@@ -123,7 +123,7 @@ class Form extends React.PureComponent {
   }
 
   render () {
-    let { image, gallery, title, code, price, priceSale, description, content, isNewProduct, categoryId, isHot, isActive, altImage, metaTitle, metaDescription } = this.props.model
+    let { image, gallery, title, code, price, priceSale, description, content, isNewProduct, categoryId, isHot, isActive, altImage, metaTitle, metaDescription, inStock } = this.props.model
     let {onInputChange, categories} = this.props
     var linkImg = (image.value) ? domain + image.value : 'http://placehold.it/250x150'
     var galleries = []
@@ -223,6 +223,12 @@ class Form extends React.PureComponent {
             <Field field={isHot}>
               <span className='checkbox-react' onClick={() => onInputChange(null, { name: 'isHot', value: !isHot.value })}>
                 {isHot.value && <i className='fa fa-check' />}
+              </span>
+            </Field>
+
+            <Field field={inStock}>
+              <span className='checkbox-react' onClick={() => onInputChange(null, { name: 'inStock', value: !inStock.value })}>
+                {inStock.value && <i className='fa fa-check' />}
               </span>
             </Field>
 

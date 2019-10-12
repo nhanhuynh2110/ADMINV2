@@ -10,6 +10,7 @@ import Gallery from './gallery'
 import Role from './roles'
 import Product from './product'
 import Advertise from './advertise'
+import Slide from './slide'
 import Permission from './permission'
 import FileManager from './fileManager'
 
@@ -29,5 +30,6 @@ export default () => {
     permission: new Permission(),
     fileManager: new FileManager(),
     advertise: new Advertise(),
+    slide: new Slide()
   }
 }
