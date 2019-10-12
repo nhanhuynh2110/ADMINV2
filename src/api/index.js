@@ -10,6 +10,7 @@ import Gallery from './gallery'
 import Role from './roles'
 import Product from './product'
 import Advertise from './advertise'
+import Slide from './slide'
 import Permission from './permission'
 
 export default () => {
@@ -26,6 +27,7 @@ export default () => {
     role: new Role(),
     product: new Product(),
     advertise: new Advertise(),
+    slide: new Slide(),
     permission: new Permission()
   }
 }
