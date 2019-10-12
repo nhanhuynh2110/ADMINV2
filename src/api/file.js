@@ -7,7 +7,7 @@ export default class File {
   upload (multiple, files, name, folder = '', callback) {
     if (!files || files.length <= 0) return callback(new Error('No file'))
     var formData = new FormData()
-    for (var i = 0; i < files.length; i++) { formData.append(name, files[i], file.name) }
+    for (var i = 0; i < files.length; i++) { formData.append(name, files[i], files[i].name) }
 
     fetch(domain + '/upload?folder=' + folder, {
       method: 'POST',

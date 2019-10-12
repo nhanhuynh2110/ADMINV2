@@ -1,4 +1,4 @@
-import React, {useRef} from 'react'
+import React, {useRef, useEffect} from 'react'
 import Field from '../field/field'
 
 export default (props) => {
@@ -18,12 +18,23 @@ export default (props) => {
     props.hanldCheck()
   }
 
+  const onClose = () => {
+    if (typeof props.onClose !== 'function') return
+    props.onClose()
+  }
+
   const onChangeDelay = () => {
     clearTimeout(timeout)
     timeout = setTimeout(() => onChange(), 500)
   }
 
   const disableCheck = isCheckSubmit ? 'input-group-addon' : 'input-group-addon input-check-disabled'
+
+  useEffect (() => {
+    // init()
+    // if (model)
+    ref.current.focus()
+  }, [])
 
   return (
     <React.Fragment>
@@ -36,7 +47,7 @@ export default (props) => {
             {...componentprops}
           />
           <span className={disableCheck} onClick={hanldCheck} ><i className='fa fa-check'></i></span>
-          <span className='input-group-addon'><i className='fa fa-remove'></i></span>
+          <span className='input-group-addon' onClick={onClose}><i className='fa fa-remove'></i></span>
         </div>
         {afterDom}
       </Field>

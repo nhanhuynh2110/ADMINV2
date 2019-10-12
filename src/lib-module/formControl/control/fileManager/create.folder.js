@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import Form, { Field, Model as useModel } from 'lib-module/formControl'
 import modelForm from './create.folder.model'
 
@@ -12,14 +12,25 @@ const FormFolder = (props) => {
   }
 
   const onAdd = () => {
+    if (typeof props.addFolder !== 'function') return
     const data = model.data
-    console.log(props.api)
-    props.api.fileManager.createFolder({dirPath: data.folder}, (error, res) => {
-      console.log('error, res')
-      console.log(error, res)
+    const dirPath = props.currentPath ? props.currentPath + '/' + data.folder : data.folder
+    props.api.fileManager.createFolder({dirPath}, (error, res) => {
+      if (error) props.addFolder(false)
+      else props.addFolder(true)
     })
   }
 
+  const onClose = () => {
+    if (typeof props.onClose !== 'function') return
+    props.onClose()
+  }
+
+  useEffect (() => {
+    // init()
+    // if (model)
+    model.validateModel()
+  }, [model.valid])
   return <Form>
     <Field.Input.Groups
       field={folder}
@@ -29,7 +40,8 @@ const FormFolder = (props) => {
       placeholder='Please enter folder name'
       className='form-control'
       onChange={onChange}
-      isCheckSubmit={model.valid}
+      isCheckSubmit={true}
+      onClose={onClose}
       hanldCheck={onAdd} />
   </Form>
 }

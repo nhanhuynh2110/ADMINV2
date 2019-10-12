@@ -38,16 +38,66 @@
           background-color: #fff;
           padding: 15px;
 
+          .file-manager-item {
+            width: 80px;
+            height: 60px;
+            overflow-y: hidden;
+            position: relative;
+            cursor: pointer;
+            text-align: center;
+            &.context-menu-active {
+              position: absolute;
+              top: 0;
+              right: 0;
+              left: 0;
+              bottom: 0;
+              opacity: 0.5;
+              background-color: #ccc;
+              content: "";
+            }
+            &:hover:after {
+              position: absolute;
+              top: 0;
+              right: 0;
+              left: 0;
+              bottom: 0;
+              opacity: 0.5;
+              background-color: #ccc;
+              content: "";
+            }
+            .file-manager-item-file {
+              width: 80%;
+            }
+          }
+
+          .file-manager-item-name {
+            word-wrap: break-word;
+          }
+
           .file-manager-folder {
             width: 80px;
             text-align: center;
             display: inline-block;
+            .fa-arrow-left {
+              color: #000;
+              font-size: 60px;
+            }
             .fa-folder {
               color: #FFD44D;
               font-size: 60px;
             }
           }
           
+        }
+      }
+
+      .file-manager-context-menu {
+        position: relative;
+        .dropdown-menu {
+          display: block;
+          a {
+            cursor: pointer;
+          }
         }
       }
     }
