@@ -1,5 +1,4 @@
 import React from 'react'
-import { withContainer } from '../../../../context'
 import FormFolder from './create.folder'
 import conf from '../../../../../config'
 import ContextMenu from './contextMenu'
