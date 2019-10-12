@@ -123,7 +123,7 @@ class Form extends React.PureComponent {
   }
 
   render () {
-    let { image, gallery, title, code, price, priceSale, description, content, isNewProduct, categoryId, isHot, isActive } = this.props.model
+    let { image, gallery, title, code, price, priceSale, description, content, isNewProduct, categoryId, isHot, isActive, altImage, metaTitle, metaDescription } = this.props.model
     let {onInputChange, categories} = this.props
     var linkImg = (image.value) ? domain + image.value : 'http://placehold.it/250x150'
     var galleries = []
@@ -230,6 +230,19 @@ class Form extends React.PureComponent {
               <span className='checkbox-react' onClick={() => onInputChange(null, { name: 'isActive', value: !isActive.value })}>
                 {isActive.value && <i className='fa fa-check' />}
               </span>
+            </Field>
+
+            <label>SEO META</label>
+            <Field field={altImage}>
+              <input type='text' className='form-control' placeholder={altImage.placeholder} onChange={onInputChange} defaultValue={(altImage) ? altImage.value : ''} />
+            </Field>
+
+            <Field field={metaTitle}>
+              <input type='text' className='form-control' placeholder={metaTitle.placeholder} onChange={onInputChange} defaultValue={(metaTitle) ? metaTitle.value : ''} />
+            </Field>
+
+            <Field field={metaDescription}>
+              <input type='text' className='form-control' placeholder={metaDescription} onChange={onInputChange} defaultValue={(metaDescription) ? metaDescription.value : ''} />
             </Field>
           </div>
         </form>

@@ -9,6 +9,7 @@ import File from './file'
 import Gallery from './gallery'
 import Role from './roles'
 import Product from './product'
+import Advertise from './advertise'
 import Permission from './permission'
 import FileManager from './fileManager'
 
@@ -26,6 +27,7 @@ export default () => {
     role: new Role(),
     product: new Product(),
     permission: new Permission(),
-    fileManager: new FileManager()
+    fileManager: new FileManager(),
+    advertise: new Advertise(),
   }
 }
