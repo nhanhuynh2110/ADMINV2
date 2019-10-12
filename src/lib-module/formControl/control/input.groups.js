@@ -10,11 +10,21 @@ export default (props) => {
   let timeout = null
 
   const onChange = () => {
+    if (typeof props.onChange !== 'function') return
     props.onChange({ ref, value: ref.current.value, name: ref.current.name })
+  }
+
+  const onKeyDown = (e) => {
+    if (typeof props.hanldCheck !== 'function' || !isCheckSubmit) return
+    if (e.key === 'Enter') {
+      props.hanldCheck()
+    }
+    
   }
 
   const hanldCheck = () => {
     if (typeof props.hanldCheck !== 'function' || !isCheckSubmit) return
+    
     props.hanldCheck()
   }
 
@@ -44,6 +54,7 @@ export default (props) => {
           <input
             ref={ref}
             onChange={onChangeDelay}
+            onKeyDown={onKeyDown}
             {...componentprops}
           />
           <span className={disableCheck} onClick={hanldCheck} ><i className='fa fa-check'></i></span>

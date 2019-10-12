@@ -3,6 +3,10 @@ import { withContainer } from '../../../../context'
 import FormFolder from './create.folder'
 import conf from '../../../../../config'
 import ContextMenu from './contextMenu'
+import Header from './header'
+import Breadcrumb from './breadcrumb'
+import Folders from './folders'
+import Files from './files'
 
 const domain = conf.server.domain
 
@@ -156,32 +160,15 @@ export default class FileManager extends React.PureComponent {
 
       <div className='modal file-manager' id='modal-default1'>
           <div className='modal-dialog modal-fluid file-manager-modal'>
-            <div className='modal-content'>
+            <div className='modal-content file-manager-model-content'>
             {this.state.isActiveContextMenu && this.componentContextMenu()}
-              <div className='modal-header'>
-                <div className='groups-buttons' onClick={this.createFolder} >
-                  <a><i className='fa fa-arrow-left' /></a>
-                  <a><i className='fa fa-upload' /></a>
-                  <a><i className='fa fa-plus' /> <i className='fa fa-folder' /></a>
-                </div>
-              </div>
+              
+              <Header createFolder={this.createFolder} />
               
               <div className='modal-body file-manager-container'>
-                <nav aria-label='breadcrumb'>
-                  <ol className='breadcrumb'>
-                    <li className='breadcrumb-item'><a><i className='fa fa-home' /> Home</a></li>
-                    {arrPath.map((el, k) => {
-                      if (el.length === (k + 1)) return <li className='breadcrumb-item active' aria-current='page'>{el}</li>
-                      return <li className='breadcrumb-item'><a>{el}</a></li>
-                    })}
-                  </ol>
-                </nav>
+                <Breadcrumb arrPath={arrPath} />
 
-                {isCreateFolder && <FormFolder
-                  currentPath={currentPath}
-                  api={api}
-                  onClose={this.closeFormCreateFolder}
-                  addFolder={this.addFolder}/>}
+                {isCreateFolder && <FormFolder currentPath={currentPath} api={api} onClose={this.closeFormCreateFolder} addFolder={this.addFolder}/>}
                 
                 <div className='file-manager-content'>
                   
@@ -191,36 +178,8 @@ export default class FileManager extends React.PureComponent {
                     </div>
                     <p className='file-manager-item-name'>BACK</p>
                   </div>}
-                  {folders.map((el, k) => {
-                    return <div
-                      onDoubleClick={() => this.showItemFolder(el.name)}
-                      key={`folder-${k}`}
-                      className='file-manager-folder'>
-                      <div
-                        onContextMenu={this.handleContextMenu}
-                        data-type='folder'
-                        data-path={el.name}
-                        className='file-manager-item'>
-                        <a><i className='fa fa-folder' /></a>
-                      </div>
-                      <p className='file-manager-item-name'>{el.name}</p>
-                    </div>
-                  })}
-
-                  {files.map((el, k) => {
-                    return <div
-                      key={`files-${k}`}
-                      className='file-manager-folder'>
-                      <div
-                        data-type='file'
-                        data-path={el.name}
-                        onContextMenu={this.handleContextMenu}
-                        className='file-manager-item'>
-                        <img className='file-manager-item-file' src={`${pathFileManager}/${el.name}`} />
-                      </div>
-                      <p className='file-manager-item-name'>{el.name}</p>
-                    </div>
-                  })}
+                    <Folders folders={folders} showItemFolder={this.showItemFolder} handleContextMenu={this.handleContextMenu} />
+                    <Files files={files} handleContextMenu={this.handleContextMenu} />
                 </div>
 
               </div>
