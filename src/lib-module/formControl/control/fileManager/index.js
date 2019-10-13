@@ -1,15 +1,11 @@
 import React from 'react'
 import FormFolder from './create.folder'
-import conf from '../../../../../config'
 import ContextMenu from './contextMenu'
 import Header from './header'
 import Breadcrumb from './breadcrumb'
 import Folders from './folders'
 import Files from './files'
 
-const domain = conf.server.domain
-
-const pathFileManager = domain +  '/file-manager'
 
 export default class FileManager extends React.PureComponent {
 
@@ -25,6 +21,9 @@ export default class FileManager extends React.PureComponent {
     this.handleBack = this.handleBack.bind(this)
     this.componentContextMenu = this.componentContextMenu.bind(this)
     this.handleClickOutsideContext = this.handleClickOutsideContext.bind(this)
+    this.handleClickOutsideFile = this.handleClickOutsideFile.bind(this)
+    this.setFileArrays = this.setFileArrays.bind(this)
+    this.addFileArrays = this.addFileArrays.bind(this)
     this.state = {
       isCreateFolder: false,
       back: '',
@@ -32,6 +31,7 @@ export default class FileManager extends React.PureComponent {
       folders: [],
       files: [],
       isActiveContextMenu: false,
+      filesArray: [],
       location: {
         x: 0,
         y: 0,
@@ -127,6 +127,10 @@ export default class FileManager extends React.PureComponent {
       this.setState({isActiveContextMenu: false})
     }
   }
+
+  handleClickOutsideFile () {
+    console.log('111 handleClickOutside')
+  }
   
   componentContextMenu () {
     const {location} = this.state
@@ -150,8 +154,21 @@ export default class FileManager extends React.PureComponent {
     </ContextMenu>
   }
 
+  setFileArrays (e) {
+    if (!e.currentTarget.getAttribute('data-path')) return
+    const pathName = e.currentTarget.getAttribute('data-path')
+    let filesArr = _.clone(this.state.filesArray)
+    if (e.ctrlKey) filesArr.push(pathName)
+    else filesArr = [pathName]
+    this.setState({ filesArray: filesArr})
+  }
+
+  addFileArrays (e) {
+    // console.log(e.which)
+  }
+
   render () {
-    const {isCreateFolder, folders, files, currentPath} = this.state
+    const {isCreateFolder, folders, files, currentPath, filesArray} = this.state
     const arrPath = currentPath.split('/')
     const {api} = this.props
     return <>
@@ -177,8 +194,18 @@ export default class FileManager extends React.PureComponent {
                     </div>
                     <p className='file-manager-item-name'>BACK</p>
                   </div>}
-                    <Folders folders={folders} showItemFolder={this.showItemFolder} handleContextMenu={this.handleContextMenu} />
-                    <Files files={files} handleContextMenu={this.handleContextMenu} />
+                    <Folders
+                      handleClickOutside = {this.handleClickOutsideFile}
+                      filesArray={filesArray}
+                      onClick={this.setFileArrays}
+                      folders={folders}
+                      showItemFolder={this.showItemFolder}
+                      handleContextMenu={this.handleContextMenu} />
+                    <Files
+                      files={files}
+                      filesArray={filesArray}
+                      onClick={this.setFileArrays}
+                      handleContextMenu={this.handleContextMenu} />
                 </div>
 
               </div>
