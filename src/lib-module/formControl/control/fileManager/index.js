@@ -1,5 +1,6 @@
 import React from 'react'
 import FormFolder from './create.folder'
+import FormUploads from './formUploads'
 import ContextMenu from './contextMenu'
 import Header from './header'
 import Breadcrumb from './breadcrumb'
@@ -24,6 +25,7 @@ export default class FileManager extends React.PureComponent {
     this.setFileArrays = this.setFileArrays.bind(this)
     this.renameFile = this.renameFile.bind(this)
     this.renameAction = this.renameAction.bind(this)
+    this.toggleFormUploadDrop = this.toggleFormUploadDrop.bind(this)
     this.reset = this.reset.bind(this)
     this.state = {
       isCreateFolder: false,
@@ -34,6 +36,7 @@ export default class FileManager extends React.PureComponent {
       isActiveContextMenu: false,
       filesArray: [],
       pathRename: '',
+      isUploadDrop: false,
       location: {
         x: 0,
         y: 0,
@@ -51,7 +54,6 @@ export default class FileManager extends React.PureComponent {
   }
 
   createFolder () {
-    console.log(122)
     const {isCreateFolder} = this.state
     this.setState({ isCreateFolder: !isCreateFolder, isActiveContextMenu: false, filesArray: [] })
   }
@@ -219,8 +221,14 @@ export default class FileManager extends React.PureComponent {
     }
   }
 
+  toggleFormUploadDrop () {
+    const {isUploadDrop} = this.state
+    console.log('isUploadDrop', isUploadDrop)
+    this.setState({ isUploadDrop: !isUploadDrop, isActiveContextMenu: false, filesArray: [] })
+  }
+
   render () {
-    const {isCreateFolder, folders, files, currentPath, filesArray, pathRename} = this.state
+    const {isCreateFolder, folders, files, currentPath, filesArray, pathRename, isUploadDrop} = this.state
     const arrPath = currentPath.split('/')
     return <>
       <button data-target='#modal-default1' data-toggle='modal' type='button' className='btn btn-primary'>Add Style</button>
@@ -230,11 +238,11 @@ export default class FileManager extends React.PureComponent {
             <div className='modal-content file-manager-model-content'>
             {this.state.isActiveContextMenu && this.componentContextMenu()}
 
-              <Header createFolder={this.createFolder} />
-
+              <Header folders={folders} toggleFormUploadDrop={this.toggleFormUploadDrop} createFolder={this.createFolder} />
               <div className='modal-body file-manager-container'>
                 <Breadcrumb arrPath={arrPath} />
 
+                {isUploadDrop && <FormUploads folders={folders} />}
                 {/* {isCreateFolder && <FormFolder currentPath={currentPath} api={api} onClose={this.closeFormCreateFolder} addFolder={this.addFolder}/>} */}
 
                 <div className='file-manager-content'>
