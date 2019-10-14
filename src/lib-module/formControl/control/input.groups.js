@@ -19,12 +19,10 @@ export default (props) => {
     if (e.key === 'Enter') {
       props.hanldCheck()
     }
-    
   }
 
   const hanldCheck = () => {
     if (typeof props.hanldCheck !== 'function' || !isCheckSubmit) return
-    
     props.hanldCheck()
   }
 

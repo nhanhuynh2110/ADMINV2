@@ -21,9 +21,10 @@ export default class FileManager extends React.PureComponent {
     this.handleBack = this.handleBack.bind(this)
     this.componentContextMenu = this.componentContextMenu.bind(this)
     this.handleClickOutsideContext = this.handleClickOutsideContext.bind(this)
-    this.handleClickOutsideFile = this.handleClickOutsideFile.bind(this)
     this.setFileArrays = this.setFileArrays.bind(this)
-    this.addFileArrays = this.addFileArrays.bind(this)
+    this.renameFile = this.renameFile.bind(this)
+    this.renameAction = this.renameAction.bind(this)
+    this.reset = this.reset.bind(this)
     this.state = {
       isCreateFolder: false,
       back: '',
@@ -32,12 +33,14 @@ export default class FileManager extends React.PureComponent {
       files: [],
       isActiveContextMenu: false,
       filesArray: [],
+      pathRename: '',
       location: {
         x: 0,
         y: 0,
         data: {
           type: '',
-          path: ''
+          path: '',
+          inputId: '',
         }
       }
     }
@@ -48,18 +51,30 @@ export default class FileManager extends React.PureComponent {
   }
 
   createFolder () {
+    console.log(122)
     const {isCreateFolder} = this.state
-    this.setState({ isCreateFolder: !isCreateFolder })
+    this.setState({ isCreateFolder: !isCreateFolder, isActiveContextMenu: false, filesArray: [] })
   }
 
-  addFolder (isSuccess) {
-    if (isSuccess) this.loadContent(this.state.currentPath)
+  // addFolder1 (isSuccess) {
+  //   if (isSuccess) this.loadContent(this.state.currentPath)
+  // }
+
+  addFolder (e) {
+    const value = e.currentTarget.value
+    // if (isSuccess) this.loadContent(this.state.currentPath)
+    const {currentPath} = this.state
+    const dirPath = currentPath ? currentPath + '/' + value : value
+    this.props.api.fileManager.createFolder({dirPath}, (error, res) => {
+      if (error) return alert('create folder fail')
+      this.loadContent(currentPath)
+    })
   }
 
   deleteFile ({ type, path }) {
-    const {currentPath} = this.state
-    const dirPath = currentPath ? currentPath + '/' + path : path
-    this.props.api.fileManager.delete({ path: dirPath }, (error, res) => {
+    const {currentPath, filesArray} = this.state
+    const paths = filesArray.map(f => currentPath ? currentPath + '/' + f : f)
+    this.props.api.fileManager.delete({ paths }, (error, res) => {
       if (error || !res) return alert('delete fail')
       this.loadContent(currentPath)
     })
@@ -84,8 +99,8 @@ export default class FileManager extends React.PureComponent {
       backPath = arrPath.join('/')
     }
     this.props.api.fileManager.getContent({dirPath}, (err, res) => {
-      if (err) this.setState({ isActiveContextMenu: false, back: backPath, currentPath: dirPath, folders: [], files: [] })
-      this.setState({ isActiveContextMenu: false, back: backPath, currentPath: dirPath, folders: res.folders, files: res.files })
+      if (err) this.setState({ isCreateFolder: false, pathRename: '', isActiveContextMenu: false, back: backPath, currentPath: dirPath, folders: [], files: [] })
+      this.setState({ isCreateFolder: false, pathRename: '', isActiveContextMenu: false, back: backPath, currentPath: dirPath, folders: res.folders, files: res.files })
     })
   }
 
@@ -102,7 +117,7 @@ export default class FileManager extends React.PureComponent {
     this.loadContent(newDirPath)
   }
 
-  handleContextMenu (e) { 
+  handleContextMenu (e) {
     e.preventDefault()
     const locationParentDom = document.getElementsByClassName('modal-content')[0]
     const locationParent = locationParentDom.getBoundingClientRect()
@@ -111,15 +126,25 @@ export default class FileManager extends React.PureComponent {
 
     const mouseX = e.clientX
     const mouseY = e.clientY
+
+    const path = e.currentTarget.getAttribute('data-path')
+    const type = e.currentTarget.getAttribute('data-type')
+    const inputId = e.currentTarget.getAttribute('data-id')
+
     const location = {
       x: mouseX - locationParentX,
       y:  mouseY - locationParentY,
       data: {
-        type: e.currentTarget.getAttribute('data-type'),
-        path: e.currentTarget.getAttribute('data-path')
+        type,
+        path,
+        inputId
       }
     }
-    this.setState({isActiveContextMenu: true, location})
+
+    let filesArr = _.clone(this.state.filesArray)
+    if (!filesArr.includes(path)) filesArr.push(path)
+
+    this.setState({isActiveContextMenu: true, location, filesArray: filesArr})
   }
 
   handleClickOutsideContext () {
@@ -128,10 +153,6 @@ export default class FileManager extends React.PureComponent {
     }
   }
 
-  handleClickOutsideFile () {
-    console.log('111 handleClickOutside')
-  }
-  
   componentContextMenu () {
     const {location} = this.state
     let style = {
@@ -145,8 +166,8 @@ export default class FileManager extends React.PureComponent {
     return <ContextMenu style={style} handleClickOutside={this.handleClickOutsideContext}>
       <div className='file-manager-context-menu'>
         <ul className='dropdown-menu'>
-          <li><a><i className='fa fa-folder' />New Folder</a></li>
-          <li><a><i className='fa fa-edit' />Rename</a></li>
+          <li onClick={this.createFolder}><a><i className='fa fa-folder' />New Folder</a></li>
+          <li onClick={() => this.renameAction(data)}><a><i className='fa fa-edit' />Rename</a></li>
           <li className='divider'></li>
           <li onClick={(() => this.deleteFile(data))}><a>Delete</a></li>
         </ul>
@@ -158,36 +179,66 @@ export default class FileManager extends React.PureComponent {
     if (!e.currentTarget.getAttribute('data-path')) return
     const pathName = e.currentTarget.getAttribute('data-path')
     let filesArr = _.clone(this.state.filesArray)
-    if (e.ctrlKey) filesArr.push(pathName)
-    else filesArr = [pathName]
+    if (e.ctrlKey) {
+      if (filesArr.includes(pathName)) {
+        filesArr = filesArr.filter(el => el !== pathName)
+
+      } else filesArr.push(pathName)
+    } else filesArr = [pathName]
     this.setState({ filesArray: filesArr})
   }
 
-  addFileArrays (e) {
-    // console.log(e.which)
+  renameAction (data) {
+    const {type, path, inputId} = data
+    this.setState({pathRename: path, filesArray: [path], isActiveContextMenu: false})
+  }
+
+  renameFile (e) {
+    const path = e.currentTarget.getAttribute('data-path')
+    const value = e.currentTarget.value
+    if (!path) this.addFolder(e)
+    else {
+      if (this.state.folders.find(el => el.name === value)) { return alert('file is exist!!') }
+
+      this.props.api.fileManager.rename({ dirPath: this.state.currentPath, name: value, currentName: path }, (error, res) => {
+        if (error || !res) return alert('Rename fail')
+        this.loadContent(this.state.currentPath)
+      })
+    }
+  }
+
+  reset (e) {
+    if (e.target.className !== 'file-manager-item') {
+      if (e.ctrlKey) {
+        if (e.target.className !== 'file-manager-item file-manager-item-active') {
+          this.setState({ filesArray: []})
+        }
+      } else {
+        this.setState({ filesArray: []})
+      }
+    }
   }
 
   render () {
-    const {isCreateFolder, folders, files, currentPath, filesArray} = this.state
+    const {isCreateFolder, folders, files, currentPath, filesArray, pathRename} = this.state
     const arrPath = currentPath.split('/')
-    const {api} = this.props
     return <>
       <button data-target='#modal-default1' data-toggle='modal' type='button' className='btn btn-primary'>Add Style</button>
 
-      <div className='modal file-manager' id='modal-default1'>
+      <div onClick={this.reset} className='modal file-manager' id='modal-default1'>
           <div className='modal-dialog modal-fluid file-manager-modal'>
             <div className='modal-content file-manager-model-content'>
             {this.state.isActiveContextMenu && this.componentContextMenu()}
-              
+
               <Header createFolder={this.createFolder} />
-              
+
               <div className='modal-body file-manager-container'>
                 <Breadcrumb arrPath={arrPath} />
 
-                {isCreateFolder && <FormFolder currentPath={currentPath} api={api} onClose={this.closeFormCreateFolder} addFolder={this.addFolder}/>}
-                
+                {/* {isCreateFolder && <FormFolder currentPath={currentPath} api={api} onClose={this.closeFormCreateFolder} addFolder={this.addFolder}/>} */}
+
                 <div className='file-manager-content'>
-                  
+
                   {currentPath && <div onClick={this.handleBack} className='file-manager-folder'>
                     <div className='file-manager-item'>
                       <a><i className='fa fa-arrow-left' /></a>
@@ -195,10 +246,13 @@ export default class FileManager extends React.PureComponent {
                     <p className='file-manager-item-name'>BACK</p>
                   </div>}
                     <Folders
-                      handleClickOutside = {this.handleClickOutsideFile}
+                      addFolder={this.addFolder}
+                      isNewFolder={isCreateFolder}
                       filesArray={filesArray}
                       onClick={this.setFileArrays}
+                      onBlur={this.renameFile}
                       folders={folders}
+                      pathRename={pathRename}
                       showItemFolder={this.showItemFolder}
                       handleContextMenu={this.handleContextMenu} />
                     <Files
@@ -210,8 +264,8 @@ export default class FileManager extends React.PureComponent {
 
               </div>
               <div className='modal-footer'>
-                {/* <button type='button' className='btn btn-default pull-left' data-dismiss='modal'>Close</button>
-                <button type='button' className='btn btn-primary'>Save changes</button> */}
+                <button type='button' className='btn btn-default pull-left' data-dismiss='modal'>Close</button>
+                {/* <button type='button' className='btn btn-primary'>Save changes</button> */}
               </div>
             </div>
           </div>

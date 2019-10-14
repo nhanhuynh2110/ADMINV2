@@ -13,7 +13,7 @@
           border-color: #8c8c8c;
           margin-right: 5px;
           cursor: pointer;
-          
+
         }
       }
     }
@@ -45,6 +45,7 @@
             position: relative;
             cursor: pointer;
             text-align: center;
+            margin-right: 10px;
             &.context-menu-active {
               position: absolute;
               top: 0;
@@ -52,7 +53,7 @@
               left: 0;
               bottom: 0;
               opacity: 0.5;
-              background-color: #ccc;
+              background-color: #3c8dbc;
               content: "";
             }
             &.file-manager-item-active:after, &:hover:after {
@@ -62,7 +63,7 @@
               left: 0;
               bottom: 0;
               opacity: 0.5;
-              background-color: #ccc;
+              background-color: #3c8dbc;
               content: "";
             }
             .file-manager-item-file {
@@ -74,8 +75,14 @@
             word-wrap: break-word;
           }
 
+          .file-manager-item-input {
+            // border: none;
+            width: 100%;
+          }
+
           .file-manager-folder {
             width: 80px;
+            margin-right: 10px;
             text-align: center;
             display: inline-block;
             .fa-arrow-left {
@@ -87,7 +94,7 @@
               font-size: 60px;
             }
           }
-          
+
         }
       }
 
