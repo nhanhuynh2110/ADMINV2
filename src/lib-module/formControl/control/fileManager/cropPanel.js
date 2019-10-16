@@ -16,7 +16,7 @@ function FileListItem (a) {
 }
 
 const FormLayout = ({children, title, onClose}) => {
-  return <div className='file-manager-crop-form col-md-4 col-xm-4 col-xs-10'>
+  return <div className='file-manager-crop-form col-md-3 col-xm-3 col-xs-10'>
     <div className='box box-info'>
       <div className='box-header with-border'>
         <h3 className='box-title'>{title}</h3>
@@ -32,16 +32,16 @@ const FormLayout = ({children, title, onClose}) => {
 
       <div className='box-body'>
         {children}
-        {/* <div className='overlay'>
-          <i className='fa fa-refresh fa-spin' />
-        </div> */}
+        
       </div>
 
       <div className='box-footer'>
         <button type='button' onClick={onClose} className='btn btn-default'>Cancel</button>
         <button type='submit' className='btn btn-info pull-right'>Crop &ensp; <span className='fa fa-save' /></button>
       </div>
-
+      {/* <div className='overlay'>
+          <i className='fa fa-refresh fa-spin' />
+      </div> */}
     </div>
   </div>
 }

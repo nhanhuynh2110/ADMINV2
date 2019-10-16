@@ -75,7 +75,7 @@ class Form extends React.PureComponent {
 
             <img id='img' style={{ width: '250px', marginBottom: '20px' }} src={linkImg} />
             <br />
-            <FileManager multiple api={this.props.api} onChange={this.onChangeFileManager} />
+            <FileManager title='Upload Image' api={this.props.api} onChange={this.onChangeFileManager} />
 
             {/* <div className='box-body box-profile' style={{ width: '250px' }}>
               <img style={{ width: '100%' }} src={linkImg} />

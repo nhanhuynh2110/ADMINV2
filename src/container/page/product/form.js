@@ -20,7 +20,11 @@ import Size from './size'
 let domain = config.server.domain
 const LINK = STORELINK.PRODUCTLINK
 
-class Form extends React.PureComponent {
+function FileManagerFnc (props) {
+  return <FileManager {...props} />
+}
+
+class Form extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -32,6 +36,7 @@ class Form extends React.PureComponent {
     this.deleteGallery = this.deleteGallery.bind(this)
     this.handleChangeColorComplete = this.handleChangeColorComplete.bind(this)
     this.onChangeFileManager = this.onChangeFileManager.bind(this)
+    this.onChangeFileManagerMutil = this.onChangeFileManagerMutil.bind(this)
     this.color = ''
     this.fileMain = null
   }
@@ -123,7 +128,18 @@ class Form extends React.PureComponent {
   }
 
   onChangeFileManager (resp) {
+    console.log(1)
     this.props.onInputChange(null, { name: 'image', value: resp.path })
+  }
+
+  onChangeFileManagerMutil (resp) {
+    const {paths} = resp
+    const {gallery} = this.props.model
+    let galleries = []
+    const value = _.get(gallery, 'value')
+    if (value) galleries = JSON.parse(value)
+    paths.forEach(el => galleries.push(el))
+    this.props.onInputChange(null, { name: 'gallery', value: JSON.stringify(galleries) })
   }
 
   render () {
@@ -160,16 +176,12 @@ class Form extends React.PureComponent {
             <div className='box-body box-profile' style={{ width: '250px' }}>
               <img id='img' style={{ width: '100%', marginBottom: '20px' }} src={linkImg} />
               <br />
-              <FileManager multiple api={this.props.api} onChange={this.onChangeFileManager} />
+              {/* {new FileManagerFnc({ api: this.props.api, onChange: this.onChangeFileManager})} */}
+              <FileManager title='Upload Image' api={this.props.api} onChange={this.onChangeFileManager} />
             </div>
 
             <div className='timeline-item'>
-              <Field field={gallery}>
-                <div className='upload-image' style={{ width: '100px' }}>
-                  <button className='btn btn-block btn-success'>Gallery</button>
-                  <input data-name='gallery' data-folder='product' multiple className='btn btn-block btn-success' type='file' name='uploadsImage[]' onChange={this.uploadGallery} />
-                </div>
-              </Field>
+              <FileManager title='Gallery' multiple api={this.props.api} onChange={this.onChangeFileManagerMutil} />
 
               <h3 className='timeline-header'>uploaded gallery</h3>
 

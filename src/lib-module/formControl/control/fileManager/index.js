@@ -5,8 +5,9 @@ import Breadcrumb from './breadcrumb'
 import Folders from './folders'
 import UploadButton from './UploadButton'
 import CropPanel from './cropPanel'
+import { withContainer } from '../../../../context'
 
-export default class FileManager extends React.PureComponent {
+ class FileManager extends React.PureComponent {
   constructor (props) {
     super(props)
     this.handleContextMenu = this.handleContextMenu.bind(this)
@@ -28,6 +29,9 @@ export default class FileManager extends React.PureComponent {
     this.setUploadRef = this.setUploadRef.bind(this)
     this.callUpload = this.callUpload.bind(this)
     this.onDoubleClickFile = this.onDoubleClickFile.bind(this)
+    this.selectFiles = this.selectFiles.bind(this)
+    this.renderContent = this.renderContent.bind(this)
+    this.modalId = ''
     this.state = {
       isCreateFolder: false,
       back: '',
@@ -167,8 +171,10 @@ export default class FileManager extends React.PureComponent {
     return <ContextMenu style={style} handleClickOutside={this.handleClickOutsideContext}>
       <div className='file-manager-context-menu'>
         <ul className='dropdown-menu'>
+          {this.props.multiple}
           <li onClick={this.createFolder}><a><i className='fa fa-folder' />New Folder</a></li>
           {data.type === 'file' && <li onClick={this.toggleFormUploadDrop}><a><i className='fa fa-image' />Crop</a></li>}
+          {data.type === 'file' && <li onClick={this.selectFiles} ><a><i className='fa fa-image' />Choose</a></li>}
           <li onClick={() => this.renameAction(data)}><a><i className='fa fa-edit' />Rename</a></li>
           <li className='divider' />
           <li onClick={(() => this.deleteFile(data))}><a>Delete</a></li>
@@ -244,25 +250,57 @@ export default class FileManager extends React.PureComponent {
   }
 
   onDoubleClickFile (res) {
-    this.props.onChange(res)
-    document.getElementById('closeModel').click()
+    if (this.props.multiple) {
+      const obj = {
+        paths: [res.path]
+      }
+      this.props.onChange(obj)
+    } else {
+      this.props.onChange(res)
+    }
+
+    document.getElementById(`closeModel-${this.modalId}`).click()
+    
+  }
+
+  selectFiles () {
+    if (this.props.multiple) {
+      const paths = _.clone(this.state.filesArray).map(el => {
+        return this.state.currentPath ? `file-manager/${this.state.currentPath}/${el}` : `file-manager/${el}`
+      })
+      this.props.onChange({paths})
+    } else {
+      const path = this.state.currentPath ? `file-manager/${this.state.currentPath}/${this.state.location.data.path}` : `file-manager/${this.state.location.data.path}`
+      this.props.onChange({path: path})
+    }
+
+    document.getElementById(`closeModel-${this.modalId}`).click()
+    
   }
 
   render () {
-    const {isCreateFolder, folders, files, currentPath, filesArray, pathRename, isUploadDrop, location} = this.state
-    const arrPath = currentPath.split('/')
+    this.modalId = Math.floor(100000 + Math.random() * 900000)
+    const {title} = this.props
     return <React.Fragment>
       <UploadButton setRef={this.setUploadRef} onChange={this.uploads} />
-      <button data-target='#modal-default1' data-toggle='modal' type='button' className='btn btn-success'>File Manager</button>
+      <button data-target={`#${this.modalId}`} data-toggle='modal' type='button' className='btn btn-success'>{title}</button>
 
-      <div onClick={this.reset} className='modal file-manager' id='modal-default1'>
+      {this.renderContent(`${this.modalId}`)}
+      
+    </React.Fragment>
+  }
+
+  renderContent (modalId) {
+    const {isCreateFolder, folders, files, currentPath, filesArray, pathRename, isUploadDrop, location} = this.state
+    const arrPath = currentPath.split('/')
+    return (
+      <div onClick={this.reset} className='modal file-manager' id={modalId}>
 
         <div className='modal-dialog modal-fluid file-manager-modal'>
           <div className='modal-content file-manager-model-content'>
-            {this.state.isActiveContextMenu && this.componentContextMenu()}
+            {this.state.isActiveContextMenu && this.componentContextMenu(this.props.multiple)}
 
             {isUploadDrop && <CropPanel onSubmit={this.uploads} onClose={() => { this.setState({ isUploadDrop: false }) }} cropImage={this.cropImage} folders={folders} currentPath={currentPath} data={location.data} />}
-
             <Header multiple={this.props.multiple} callUpload={this.callUpload} folders={folders} toggleFormUploadDrop={this.toggleFormUploadDrop} createFolder={this.createFolder} />
             <div className='modal-body file-manager-container'>
               <Breadcrumb arrPath={arrPath} />
@@ -292,12 +330,16 @@ export default class FileManager extends React.PureComponent {
 
             </div>
             <div className='modal-footer'>
-              <button id='closeModel' type='button' className='btn btn-default pull-left' data-dismiss='modal'>Close</button>
+              <button id={`closeModel-${modalId}`} type='button' className='btn btn-default pull-left' data-dismiss='modal'>Close</button>
               {/* <button type='button' className='btn btn-primary'>Save changes</button> */}
             </div>
           </div>
         </div>
       </div>
-    </React.Fragment>
+    )
   }
+}
+
+export default (props) => {
+  return <FileManager {...props} />
 }

@@ -1,7 +1,14 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import Actions from './actions'
 
 export default (props) => {
+  const {multiple} = props
+  console.log('multipleheader', props.multiple)
+
+  useEffect(() => {
+
+  }, [multiple])
+
   return <div className='modal-header'>
     <div className='groups-buttons' >
       {/* <Actions /> */}
