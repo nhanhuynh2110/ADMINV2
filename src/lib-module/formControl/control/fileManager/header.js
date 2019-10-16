@@ -4,8 +4,11 @@ import Actions from './actions'
 export default (props) => {
   return <div className='modal-header'>
     <div className='groups-buttons' >
-      {/* <a><i className='fa fa-upload' /></a> */}
-      <Actions />
+      {/* <Actions /> */}
+      {props.multiple && <button type='button' className='btn btn-primary'>
+        Choose Image &ensp;
+        <span className='fa fa-file-image-o' />
+      </button>}
       &ensp; &ensp;
       <button onClick={props.callUpload} type='button' className='btn btn-default'>
         Uploads &ensp;
@@ -20,9 +23,7 @@ export default (props) => {
       <button onClick={props.createFolder} type='button' className='btn btn-default'>
         New Folder &ensp;
         <span className='fa fa-plus' />
-        {/* <i className='fa fa-plus' /> */}
       </button>
-      {/* <a onClick={props.createFolder}><i className='fa fa-plus' /> <i className='fa fa-folder' /></a> */}
     </div>
   </div>
 }

@@ -10,6 +10,7 @@ import { withContainer } from '../../../context'
 import config from '../../../../config'
 import STORELINK from '../../../helper/link'
 import Select from '../../../component/control/select'
+import FileManager from 'lib-module/formControl/control/fileManager'
 
 let domain = config.server.domain
 const LINK = STORELINK.CATEGORYLINK
@@ -19,6 +20,7 @@ class Form extends React.PureComponent {
     super(props)
     this.uploadFile = this.uploadFile.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
+    this.onChangeFileManager = this.onChangeFileManager.bind(this)
   }
 
   uploadFile (e) {
@@ -51,10 +53,14 @@ class Form extends React.PureComponent {
     })
   }
 
+  onChangeFileManager (resp) {
+    this.props.onInputChange(null, { name: 'img', value: resp.path })
+  }
+
   render () {
     let { img, title, description, parentId, isActive, isHome, altImage, metaTitle, metaDescription } = this.props.model
     let {parents, onInputChange} = this.props
-    var linkImg = (img.value) ? domain + img.value : 'http://placehold.it/250x150'
+    var linkImg = (img.value) ? domain + '/' + img.value : 'http://placehold.it/250x150'
     return (
       <FormLayoutDefault
         title='Create Category'
@@ -67,7 +73,11 @@ class Form extends React.PureComponent {
         <form role='form'>
           <div className='box-body'>
 
-            <div className='box-body box-profile' style={{ width: '250px' }}>
+            <img id='img' style={{ width: '250px', marginBottom: '20px' }} src={linkImg} />
+            <br />
+            <FileManager multiple api={this.props.api} onChange={this.onChangeFileManager} />
+
+            {/* <div className='box-body box-profile' style={{ width: '250px' }}>
               <img style={{ width: '100%' }} src={linkImg} />
               <h3 className='profile-username text-center'>Image category</h3>
               <Field field={img}>
@@ -76,7 +86,7 @@ class Form extends React.PureComponent {
                   <input data-name='img' data-folder='categories' id='upload-input' className='btn btn-block btn-success' type='file' name='uploads[]' onChange={this.uploadFile} />
                 </div>
               </Field>
-            </div>
+            </div> */}
 
             <Field field={title}>
               <input type='text' className='form-control' placeholder={title.placeholder} onChange={onInputChange} defaultValue={title.value} />

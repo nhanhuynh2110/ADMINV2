@@ -19,8 +19,6 @@ export default (props) => {
     )
   }
 
-  
-
   return (
     <form onSubmit={onSubmit} role='form'>
       {children}

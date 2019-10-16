@@ -1,4 +1,4 @@
-  
+
 export default {
   title: {
     name: 'title',
@@ -16,9 +16,9 @@ export default {
     name: 'sl',
     label: 'Select Field',
     options: [
-      { key: 'opt', value: '', test: 'choose' },
-      { key: 'opt1', value: 'option1', test: 'option1' },
-      { key: 'opt2', value: 'option2', test: 'option2' }
+      { key: 'opt', value: '', text: 'choose' },
+      { key: 'opt1', value: 'option1', text: 'option1' },
+      { key: 'opt2', value: 'option2', text: 'option2' }
     ]
   }
 }

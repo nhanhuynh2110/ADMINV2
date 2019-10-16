@@ -17,7 +17,6 @@ import Select from '../../../component/control/select'
 import TinyMCE from '../../../helper/tinyMCE'
 import Size from './size'
 
-
 let domain = config.server.domain
 const LINK = STORELINK.PRODUCTLINK
 
@@ -32,6 +31,7 @@ class Form extends React.PureComponent {
     this.handleSubmit = this.handleSubmit.bind(this)
     this.deleteGallery = this.deleteGallery.bind(this)
     this.handleChangeColorComplete = this.handleChangeColorComplete.bind(this)
+    this.onChangeFileManager = this.onChangeFileManager.bind(this)
     this.color = ''
     this.fileMain = null
   }
@@ -122,10 +122,14 @@ class Form extends React.PureComponent {
     })
   }
 
+  onChangeFileManager (resp) {
+    this.props.onInputChange(null, { name: 'image', value: resp.path })
+  }
+
   render () {
     let { image, gallery, title, code, price, priceSale, description, content, isNewProduct, categoryId, isHot, isActive, altImage, metaTitle, metaDescription, inStock } = this.props.model
     let {onInputChange, categories} = this.props
-    var linkImg = (image.value) ? domain + image.value : 'http://placehold.it/250x150'
+    var linkImg = (image.value) ? domain + '/' + image.value : 'http://placehold.it/250x150'
     var galleries = []
     if (gallery.value) {
       galleries = JSON.parse(gallery.value)
@@ -143,8 +147,6 @@ class Form extends React.PureComponent {
         <form role='form'>
           <div className='box-body'>
 
-            <FileManager api={this.props.api} />
-
             {/* <SketchPicker onChangeComplete={this.handleChangeColorComplete} />
             <a className='btn btn-app'>
               <i class='fa fa-save' /> Save
@@ -156,15 +158,9 @@ class Form extends React.PureComponent {
             </div> */}
             <Size />
             <div className='box-body box-profile' style={{ width: '250px' }}>
-              <img id='img-crop' style={{ width: '100px' }} />
-              <img id='img' style={{ width: '100%' }} src={linkImg} />
-              <h3 className='profile-username text-center'>Image Primary</h3>
-              <Field field={image}>
-                <div className='upload-image'>
-                  <button className='btn btn-block btn-success'>upload Image</button>
-                  <input data-name='image' data-folder='product' className='btn btn-block btn-success' type='file' name='uploads[]' onChange={this.uploadFile} />
-                </div>
-              </Field>
+              <img id='img' style={{ width: '100%', marginBottom: '20px' }} src={linkImg} />
+              <br />
+              <FileManager multiple api={this.props.api} onChange={this.onChangeFileManager} />
             </div>
 
             <div className='timeline-item'>

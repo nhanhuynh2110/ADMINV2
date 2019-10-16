@@ -1,18 +1,12 @@
 import React from 'react'
-import FormUploads from './formUploads'
 import ContextMenu from './contextMenu'
 import Header from './header'
 import Breadcrumb from './breadcrumb'
 import Folders from './folders'
 import UploadButton from './UploadButton'
-import conf from '../../../../../config'
-import CropImage from 'lib-module/cropImage'
-import SmartCrop from 'smartcrop'
-
-const domain = conf.server.domain
+import CropPanel from './cropPanel'
 
 export default class FileManager extends React.PureComponent {
-
   constructor (props) {
     super(props)
     this.handleContextMenu = this.handleContextMenu.bind(this)
@@ -33,7 +27,7 @@ export default class FileManager extends React.PureComponent {
     this.uploads = this.uploads.bind(this)
     this.setUploadRef = this.setUploadRef.bind(this)
     this.callUpload = this.callUpload.bind(this)
-    this.cropImage = this.cropImage.bind(this)
+    this.onDoubleClickFile = this.onDoubleClickFile.bind(this)
     this.state = {
       isCreateFolder: false,
       back: '',
@@ -68,13 +62,8 @@ export default class FileManager extends React.PureComponent {
     this.setState({ isCreateFolder: !isCreateFolder, isActiveContextMenu: false, filesArray: [] })
   }
 
-  // addFolder1 (isSuccess) {
-  //   if (isSuccess) this.loadContent(this.state.currentPath)
-  // }
-
   addFolder (e) {
     const value = e.currentTarget.value
-    // if (isSuccess) this.loadContent(this.state.currentPath)
     const {currentPath} = this.state
     const dirPath = currentPath ? currentPath + '/' + value : value
     this.props.api.fileManager.createFolder({dirPath}, (error, res) => {
@@ -122,7 +111,7 @@ export default class FileManager extends React.PureComponent {
     let dirArr = currentPath.split('/')
     if (dirArr.length === 1) newDirPath = ''
     else if (dirArr.length > 1) {
-      dirArr.splice(-1,1)
+      dirArr.splice(-1, 1)
       newDirPath = dirArr.join('/')
     }
 
@@ -145,7 +134,7 @@ export default class FileManager extends React.PureComponent {
 
     const location = {
       x: mouseX - locationParentX,
-      y:  mouseY - locationParentY,
+      y: mouseY - locationParentY,
       data: {
         type,
         path,
@@ -168,7 +157,7 @@ export default class FileManager extends React.PureComponent {
   componentContextMenu () {
     const {location} = this.state
     let style = {
-      backgroundColor : '#c1c1c1',
+      backgroundColor: '#c1c1c1',
       position: 'absolute',
       left: location.x,
       top: location.y,
@@ -181,7 +170,7 @@ export default class FileManager extends React.PureComponent {
           <li onClick={this.createFolder}><a><i className='fa fa-folder' />New Folder</a></li>
           {data.type === 'file' && <li onClick={this.toggleFormUploadDrop}><a><i className='fa fa-image' />Crop</a></li>}
           <li onClick={() => this.renameAction(data)}><a><i className='fa fa-edit' />Rename</a></li>
-          <li className='divider'></li>
+          <li className='divider' />
           <li onClick={(() => this.deleteFile(data))}><a>Delete</a></li>
         </ul>
       </div>
@@ -193,18 +182,13 @@ export default class FileManager extends React.PureComponent {
     const pathName = e.currentTarget.getAttribute('data-path')
     let filesArr = _.clone(this.state.filesArray)
     if (e.ctrlKey) {
-      if (filesArr.includes(pathName)) {
-        filesArr = filesArr.filter(el => el !== pathName)
-
-      } else filesArr.push(pathName)
+      if (filesArr.includes(pathName)) filesArr = filesArr.filter(el => el !== pathName)
+      else filesArr.push(pathName)
     } else filesArr = [pathName]
-    this.setState({ filesArray: filesArr})
+    this.setState({ filesArray: filesArr })
   }
 
-  renameAction (data) {
-    const {type, path, inputId} = data
-    this.setState({pathRename: path, filesArray: [path], isActiveContextMenu: false})
-  }
+  renameAction (data) { this.setState({pathRename: data.path, filesArray: [data.path], isActiveContextMenu: false}) }
 
   renameFile (e) {
     const path = e.currentTarget.getAttribute('data-path')
@@ -224,10 +208,10 @@ export default class FileManager extends React.PureComponent {
     if (e.target.className !== 'file-manager-item') {
       if (e.ctrlKey) {
         if (e.target.className !== 'file-manager-item file-manager-item-active') {
-          this.setState({ filesArray: []})
+          this.setState({ filesArray: [] })
         }
       } else {
-        this.setState({ filesArray: []})
+        this.setState({ filesArray: [] })
       }
     }
   }
@@ -238,214 +222,82 @@ export default class FileManager extends React.PureComponent {
   }
 
   setUploadRef (input) {
-    this.uploadRef = input;
+    this.uploadRef = input
   }
 
   callUpload () {
     this.uploadRef.click()
   }
 
-  uploads (e) {
-    var files = e.target.files
-    var folder = this.state.currentPath ? 'file-manager/' + this.state.currentPath : 'file-manager'
-    this.props.api.file.upload(true, files, 'uploads', folder, (err, resp) => {
-
+  uploads (e, options) {
+    let files = e ? e.target.files : options.files
+    let folder = ''
+    if (options && options.folder) {
+      folder = 'file-manager/' + this.state.currentPath + '/' + options.folder
+    } else {
+      folder = this.state.currentPath ? 'file-manager/' + this.state.currentPath : 'file-manager'
+    }
+    this.props.api.file.uploadFileManager(true, files, 'uploads', folder, (err, resp) => {
+      // if (err) return alert(err)
       this.loadContent(this.state.currentPath)
     })
   }
 
-  convertImgToBase64URL (url, callback, outputFormat = 'image/png'){
-      var img = new Image();
-      img.crossOrigin = 'Anonymous';
-      img.onload = function(){
-          var canvas = document.createElement('CANVAS'),
-          ctx = canvas.getContext('2d'), dataURL;
-          canvas.height = img.height;
-          canvas.width = img.width;
-          ctx.drawImage(img, 0, 0);
-          dataURL = canvas.toDataURL(outputFormat);
-          callback(dataURL);
-          canvas = null; 
-      };
-      img.src = url;
-  }
-
-  cropImage ({path}) {
-    // const pathLink = this.state.currentPath ? `${domain}/file-manager/${this.state.currentPath}/${path}` : `${domain}/file-manager/${path}`
-    const pathLink = this.state.currentPath ? `${this.state.currentPath}/${path}` : path
-    console.log('pathLink', pathLink)
-    
-
-    // this.props.api.fileManager.getFile({path: pathLink}, () => {
-      
-    // })
-    // fetch(`http://localhost:3100/download?path=${pathLink}`)
-    // // fetch(`http://localhost:3100/api/admin/file-manager/file`)
-    // .then(res => {
-    //   console.log(res.blob())
-    //   return res.blob()
-    // })
-    // .then(blob => {
-    //   console.log('blob', blob)
-    // })
-    // .catch(err => {
-    //   console.log(err)
-    // })
-    // let myImg = document.createElement('img')
-    // myImg.src = pathLink
-    // const toDataURL = myImg.toDataURL()
-    // console.log('toDataURL', toDataURL)
-    var processed = {}
-    var image = new Image();
-    image.crossOrigin = 'Anonymous';
-    const options = { width: 100, height: 100 }
-    new Promise((resolve, resject) => {
-      image.onload = function () {
-      
-        window.setTimeout(function() {
-          var img = image;
-          if (processed[img.src]) return;
-          processed[img.src] = true;
-          SmartCrop.crop(image, options).then(function(result) {
-            let crop = result.topCrop
-            let canvas = document.createElement('canvas')
-            let ctx = canvas.getContext('2d')
-            canvas.width = options.width
-            canvas.height = options.height
-
-            ctx.drawImage(img, crop.x, crop.y, crop.width, crop.height, 0, 0, canvas.width, canvas.height)
-            resolve(canvas)
-            });
-        }.bind(this), 100);
-      }
-      image.src = `http://localhost:3100/download?path=${pathLink}`
-    })
-    .then(canvas => canvas.toDataURL('image/png'))
-    .then(dataURL => fetch(dataURL)
-      .then(res => res.blob())
-      .then(blob => {
-        const newImage = new Image()
-        newImage.src = dataURL
-        console.log('dataURL', dataURL)
-        const file = new File([blob], fileName, blob)
-        console.log('{ dataURL, file, image: newImage }', { dataURL, file, image: newImage })
-        return { dataURL, file, image: newImage }
-      })
-    )
-    .catch(error => error.toString())
-    
-
-    
-    // CropImage({
-    //   url: pathLink,
-    //   image,
-    //   originWidth: 100,
-    //   originHeight: 100,
-    //   fileName: 'filename.crop.png',
-    //   type: 'image/png' })
-      // .then(res => {
-      //  console.log(res)
-      //   return res.file
-      // })
-      // .then(file => {
-      // })
-
-    // fetch(pathLink, {mode: 'no-cors'})
-    // .then(res => {
-    //   console.log('res', res)
-    //   return res.blob()
-    // })
-    // .then(blob => {
-    //   console.log('blob', blob)
-    //   const file = new File([blob], '', blob)
-    //   return file
-    // })
-    // .then(file => {
-    //   var reader = new FileReader()
-    //   reader.onload = function (e) {
-       
-    //   }
-    //   reader.readAsDataURL(file)
-    // })
-
-    // const image = document.getElementById('img1')
-    // image.crossOrigin = "Anonymous"
-    // image.src = pathLink
-
-    // CropImage({
-    //   image,
-    //   originWidth: 100,
-    //   originHeight: 100,
-    //   fileName: 'filename.crop.png',
-    //   type: 'image/png' })
-    //   .then(res => {
-    //     console.log('res', res)
-    //     // const imgCrop = document.getElementById('img-crop')
-    //     // imgCrop.src = res.dataURL
-    //     return res.file
-    //   })
-    //   .then(file => {
-    //     console.log('file', file)
-    //   })
-    //   .catch(err => console.log(err))
+  onDoubleClickFile (res) {
+    this.props.onChange(res)
+    document.getElementById('closeModel').click()
   }
 
   render () {
     const {isCreateFolder, folders, files, currentPath, filesArray, pathRename, isUploadDrop, location} = this.state
     const arrPath = currentPath.split('/')
-    return <>
+    return <React.Fragment>
       <UploadButton setRef={this.setUploadRef} onChange={this.uploads} />
-      
-      <button data-target='#modal-default1' data-toggle='modal' type='button' className='btn btn-primary'>Add Style</button>
+      <button data-target='#modal-default1' data-toggle='modal' type='button' className='btn btn-success'>File Manager</button>
 
       <div onClick={this.reset} className='modal file-manager' id='modal-default1'>
-          <div className='modal-dialog modal-fluid file-manager-modal'>
-            <div className='modal-content file-manager-model-content'>
+
+        <div className='modal-dialog modal-fluid file-manager-modal'>
+          <div className='modal-content file-manager-model-content'>
             {this.state.isActiveContextMenu && this.componentContextMenu()}
 
-              <Header callUpload={this.callUpload} folders={folders} toggleFormUploadDrop={this.toggleFormUploadDrop} createFolder={this.createFolder} />
-              <div className='modal-body file-manager-container'>
-                <Breadcrumb arrPath={arrPath} />
-                <img id='img1' width='100' height='100'/>
-                {isUploadDrop && <FormUploads cropImage={this.cropImage} currentPath={currentPath} data={location.data} folders={folders} />}
-                {/* {isCreateFolder && <FormFolder currentPath={currentPath} api={api} onClose={this.closeFormCreateFolder} addFolder={this.addFolder}/>} */}
+            {isUploadDrop && <CropPanel onSubmit={this.uploads} onClose={() => { this.setState({ isUploadDrop: false }) }} cropImage={this.cropImage} folders={folders} currentPath={currentPath} data={location.data} />}
 
-                <div className='file-manager-content'>
+            <Header multiple={this.props.multiple} callUpload={this.callUpload} folders={folders} toggleFormUploadDrop={this.toggleFormUploadDrop} createFolder={this.createFolder} />
+            <div className='modal-body file-manager-container'>
+              <Breadcrumb arrPath={arrPath} />
 
-                  {currentPath && <div onClick={this.handleBack} className='file-manager-folder'>
-                    <div className='file-manager-item'>
-                      <a><i className='fa fa-arrow-left' /></a>
-                    </div>
-                    <p className='file-manager-item-name'>BACK</p>
-                  </div>}
-                    <Folders
-                      addFolder={this.addFolder}
-                      isNewFolder={isCreateFolder}
-                      filesArray={filesArray}
-                      onClick={this.setFileArrays}
-                      onBlur={this.renameFile}
-                      files={files}
-                      currentPath={currentPath}
-                      folders={folders}
-                      pathRename={pathRename}
-                      showItemFolder={this.showItemFolder}
-                      handleContextMenu={this.handleContextMenu} />
-                    {/* <Files
-                      files={files}
-                      currentPath={currentPath}
-                      filesArray={filesArray}
-                      onClick={this.setFileArrays}
-                      handleContextMenu={this.handleContextMenu} /> */}
-                </div>
+              <div className='file-manager-content'>
 
+                {currentPath && <div onClick={this.handleBack} className='file-manager-folder'>
+                  <div className='file-manager-item'>
+                    <a><i className='fa fa-arrow-left' /></a>
+                  </div>
+                  <p className='file-manager-item-name'>BACK</p>
+                </div>}
+                <Folders
+                  addFolder={this.addFolder}
+                  isNewFolder={isCreateFolder}
+                  filesArray={filesArray}
+                  onClick={this.setFileArrays}
+                  onBlur={this.renameFile}
+                  files={files}
+                  onDoubleClickFile={this.onDoubleClickFile}
+                  currentPath={currentPath}
+                  folders={folders}
+                  pathRename={pathRename}
+                  showItemFolder={this.showItemFolder}
+                  handleContextMenu={this.handleContextMenu} />
               </div>
-              <div className='modal-footer'>
-                <button type='button' className='btn btn-default pull-left' data-dismiss='modal'>Close</button>
-                {/* <button type='button' className='btn btn-primary'>Save changes</button> */}
-              </div>
+
+            </div>
+            <div className='modal-footer'>
+              <button id='closeModel' type='button' className='btn btn-default pull-left' data-dismiss='modal'>Close</button>
+              {/* <button type='button' className='btn btn-primary'>Save changes</button> */}
             </div>
           </div>
         </div>
-    </>
+      </div>
+    </React.Fragment>
   }
 }

@@ -19,7 +19,7 @@ export default (props) => {
         {...componentProps}
         defaultValue={selectedValue}
         onChange={onChange}>
-        { options.map(el => <option key={el.key} value={el.value}>{el.test}</option>) }
+        { options.map(el => <option key={el.key} value={el.value}>{el.text}</option>) }
       </select>
     </Field>
   )

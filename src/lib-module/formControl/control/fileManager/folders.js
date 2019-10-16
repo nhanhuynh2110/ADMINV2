@@ -5,7 +5,7 @@ const domain = conf.server.domain
 const pathFileManager = domain +  '/file-manager'
 
 export default (props) => {
-  const {folders = [], files = [], showItemFolder, handleContextMenu, filesArray = [], style, pathRename, isNewFolder, currentPath } = props
+  const {folders = [], files = [], showItemFolder, handleContextMenu, filesArray = [], pathRename, isNewFolder, currentPath} = props
   let refs = useRef(new Map()).current
   let refNewFolder = useRef(null)
   let isFocus = ''
@@ -27,8 +27,14 @@ export default (props) => {
     props.onBlur(e)
   }
 
-  useEffect (() => {
-    console.log('refs', refs)
+  const onDoubleClickFile = (e) => {
+    const path = e.target.getAttribute('data-path')
+    const pathLink = currentPath ? `file-manager/${currentPath}/${path}` : `file-manager/${path}`
+
+    props.onDoubleClickFile({path: pathLink})
+  }
+
+  useEffect(() => {
     if (isFocus !== '') {
       refs.get(isFocus).value = folders[isFocus].name
       refs.get(isFocus).focus()
@@ -39,8 +45,7 @@ export default (props) => {
     }
   }, [pathRename, isNewFolder])
 
-
-  return <>
+  return <React.Fragment>
     {isNewFolder && <div className='file-manager-folder'>
       <div
         data-type='folder'
@@ -54,7 +59,7 @@ export default (props) => {
           ref={refNewFolder}
           defaultValue='New Folder'
           className='file-manager-item-input'
-          />
+        />
       </div>
     </div>}
     {folders.map((el, k) => {
@@ -85,7 +90,7 @@ export default (props) => {
               className='file-manager-item-input'
               defaultValue={el.name}
               onKeyDown={onKeyDown}
-              />
+            />
             : <p className='file-manager-item-name'>{el.name}</p>
           }
         </div>
@@ -105,6 +110,7 @@ export default (props) => {
         <div
           data-type='file'
           data-path={el.name}
+          onDoubleClick={onDoubleClickFile}
           onContextMenu={handleContextMenu}
           className={classNameItem}>
           <img className='file-manager-item-file' src={image} />
@@ -119,13 +125,13 @@ export default (props) => {
               className='file-manager-item-input'
               defaultValue={el.name}
               onKeyDown={onKeyDown}
-              />
+            />
             : <p className='file-manager-item-name'>{el.name}</p>
           }
         </div>
         {/* <p className='file-manager-item-name'>{el.name}</p> */}
       </div>
-      
+
     })}
-  </>
+  </React.Fragment>
 }
