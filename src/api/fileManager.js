@@ -12,6 +12,18 @@ export default class FileManager extends Base {
     this.adapter = new Adapter(conf.get())
   }
 
+  getFile (payload, cb) {
+    payload['api'] = prefix + '/file'
+    this.adapter.get('/base-api', payload, (error, resp) => {
+      console.log('resp', resp)
+      if (error) return handleError(error, false, cb)
+      if (resp.status !== 200) return cb(resp.message)
+      if (typeof cb === 'function') {
+        return cb(null, resp.data)
+      }
+    })
+  }
+
   rename (payload, cb) {
     payload['api'] = prefix + '/' + payload.name
     this.adapter.put('/base-api', null, payload, (error, resp) => {

@@ -5,7 +5,17 @@ export default (props) => {
   return <div className='modal-header'>
     <div className='groups-buttons' >
       {/* <a><i className='fa fa-upload' /></a> */}
-      <Actions toggleFormUploadDrop={props.toggleFormUploadDrop} />
+      <Actions />
+      &ensp; &ensp;
+      <button onClick={props.callUpload} type='button' className='btn btn-default'>
+        Uploads &ensp;
+        <span className='fa fa-upload' />
+      </button>
+      &ensp; &ensp;
+      <button onClick={props.toggleFormUploadDrop} type='button' className='btn btn-default'>
+        Uploads Crop &ensp;
+        <span className='fa fa-upload' />
+      </button>
       &ensp; &ensp;
       <button onClick={props.createFolder} type='button' className='btn btn-default'>
         New Folder &ensp;

@@ -1,8 +1,11 @@
 import React, {useEffect, useRef, createRef} from 'react'
-import ContextMenu from './contextMenu'
+import conf from '../../../../../config'
+
+const domain = conf.server.domain
+const pathFileManager = domain +  '/file-manager'
 
 export default (props) => {
-  const {folders = [], showItemFolder, handleContextMenu, filesArray = [], style, pathRename, isNewFolder } = props
+  const {folders = [], files = [], showItemFolder, handleContextMenu, filesArray = [], style, pathRename, isNewFolder, currentPath } = props
   let refs = useRef(new Map()).current
   let refNewFolder = useRef(null)
   let isFocus = ''
@@ -25,6 +28,7 @@ export default (props) => {
   }
 
   useEffect (() => {
+    console.log('refs', refs)
     if (isFocus !== '') {
       refs.get(isFocus).value = folders[isFocus].name
       refs.get(isFocus).focus()
@@ -87,6 +91,41 @@ export default (props) => {
         </div>
 
       </div>
+    })}
+
+    {files.map((el, k) => {
+      const isRename = pathRename === el.name
+      const classNameItem = filesArray.includes(el.name) ? 'file-manager-item file-manager-item-active' : 'file-manager-item'
+      const image = currentPath ? `${pathFileManager}/${currentPath}/${el.name}` : `${pathFileManager}/${el.name}`
+      return <div
+        onClick={onClick}
+        data-path={el.name}
+        key={`files-${k}`}
+        className='file-manager-folder'>
+        <div
+          data-type='file'
+          data-path={el.name}
+          onContextMenu={handleContextMenu}
+          className={classNameItem}>
+          <img className='file-manager-item-file' src={image} />
+        </div>
+        <div>
+          {isRename
+            ? <input
+              ref={inst => inst === null ? refs.delete(k) : refs.set(k, inst)}
+              id={`input-path-${k}`}
+              data-path={el.name}
+              onBlur={onBlur}
+              className='file-manager-item-input'
+              defaultValue={el.name}
+              onKeyDown={onKeyDown}
+              />
+            : <p className='file-manager-item-name'>{el.name}</p>
+          }
+        </div>
+        {/* <p className='file-manager-item-name'>{el.name}</p> */}
+      </div>
+      
     })}
   </>
 }
