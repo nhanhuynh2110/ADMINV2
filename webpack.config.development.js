@@ -22,6 +22,7 @@ module.exports = {
     alias: {
       $: 'jquery',
       jQuery: 'jquery',
+      _: 'lodash',
       'lib-module': path.join(__dirname, './src/lib-module'),
       'form-layout': path.join(__dirname, './src/component/form/layout')
     }

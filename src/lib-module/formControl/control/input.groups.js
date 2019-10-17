@@ -38,7 +38,7 @@ export default (props) => {
 
   const disableCheck = isCheckSubmit ? 'input-group-addon' : 'input-group-addon input-check-disabled'
 
-  useEffect (() => {
+  useEffect(() => {
     // init()
     // if (model)
     ref.current.focus()
@@ -48,15 +48,15 @@ export default (props) => {
     <React.Fragment>
       <Field field={field}>
         <div className='input-group'>
-          <span className='input-group-addon'><i className='fa fa-folder'></i></span>
+          <span className='input-group-addon'><i className='fa fa-folder' /></span>
           <input
             ref={ref}
             onChange={onChangeDelay}
             onKeyDown={onKeyDown}
             {...componentprops}
           />
-          <span className={disableCheck} onClick={hanldCheck} ><i className='fa fa-check'></i></span>
-          <span className='input-group-addon' onClick={onClose}><i className='fa fa-remove'></i></span>
+          <span className={disableCheck} onClick={hanldCheck} ><i className='fa fa-check' /></span>
+          <span className='input-group-addon' onClick={onClose}><i className='fa fa-remove' /></span>
         </div>
         {afterDom}
       </Field>

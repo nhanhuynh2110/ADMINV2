@@ -176,12 +176,11 @@ class Form extends React.Component {
             <div className='box-body box-profile' style={{ width: '250px' }}>
               <img id='img' style={{ width: '100%', marginBottom: '20px' }} src={linkImg} />
               <br />
-              {/* {new FileManagerFnc({ api: this.props.api, onChange: this.onChangeFileManager})} */}
-              <FileManager title='Upload Image' api={this.props.api} onChange={this.onChangeFileManager} />
+              {/* <FileManager title='Upload Image' api={this.props.api} onChange={this.onChangeFileManager} /> */}
             </div>
 
             <div className='timeline-item'>
-              <FileManager title='Gallery' multiple api={this.props.api} onChange={this.onChangeFileManagerMutil} />
+              {/* <FileManager title='Gallery' multiple api={this.props.api} onChange={this.onChangeFileManagerMutil} /> */}
 
               <h3 className='timeline-header'>uploaded gallery</h3>
 

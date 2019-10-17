@@ -4,7 +4,7 @@ export default {
     name: 'title',
     label: 'Title',
     validator: [
-      { compare: 'require'},
+      { compare: 'require' },
       { compare: 'minlen', compareTo: 2 }
     ]
   },

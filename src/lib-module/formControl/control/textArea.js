@@ -3,7 +3,7 @@ import Field from '../field/field'
 
 export default (props) => {
   const { field } = props
-  const componentprops = _.pick(props, ['className', 'rows', 'placeholder', 'id', 'defaultValue', 'name', 'disabled', 'readOnly'])
+  const componentprops = _.pick(props, ['className', 'rows', 'placeholder', 'id', 'defaultValue', 'value', 'name', 'disabled', 'readOnly'])
 
   const ref = useRef(null)
 

@@ -122,6 +122,21 @@
   }
 }
 
+.file-manager-image {
+  &:hover ~.file-manager-upload-image {
+    display: block;
+  }
+}
+
+.file-manager-upload-image {
+  &:hover {
+    display: block;
+  }
+  top: 50%; right: 50%;
+  display: none;
+  transform: translate(50%,-50%);
+}
+
 
 .input-check-disabled {
   i.fa {

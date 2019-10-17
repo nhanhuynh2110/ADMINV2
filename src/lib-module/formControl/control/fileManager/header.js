@@ -3,7 +3,6 @@ import Actions from './actions'
 
 export default (props) => {
   const {multiple} = props
-  console.log('multipleheader', props.multiple)
 
   useEffect(() => {
 

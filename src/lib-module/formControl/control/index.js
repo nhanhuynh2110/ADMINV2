@@ -4,6 +4,7 @@ import InputGroups from './input.groups'
 import Select from './select'
 import CheckBox from './checkbox'
 import Area from './textArea'
+import FileManagerImage from './fileManager'
 
 export {
   Input,
@@ -11,5 +12,6 @@ export {
   CheckBox,
   Area,
   InputPhone,
-  InputGroups
+  InputGroups,
+  FileManagerImage
 }

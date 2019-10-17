@@ -10,6 +10,7 @@ export default (props) => {
   let timeout = null
 
   const onChange = () => {
+    if (typeof props.onChange !== 'function') return
     props.onChange({ ref, value: ref.current.value, name: ref.current.name })
   }
 

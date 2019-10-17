@@ -1,4 +1,4 @@
-import React, {useRef} from 'react'
+import React, {useEffect, useRef} from 'react'
 import Field from '../field/field'
 
 export default (props) => {
@@ -12,6 +12,14 @@ export default (props) => {
     props.onChange({ ref, value: ref.current.value, name: ref.current.name })
   }
 
+  useEffect(() => {
+    if (selectedValue) {
+      ref.current.value = selectedValue
+    }
+  }, [selectedValue])
+
+  console.log('selectedValue', selectedValue)
+
   return (
     <Field field={field}>
       <select
@@ -19,6 +27,7 @@ export default (props) => {
         {...componentProps}
         defaultValue={selectedValue}
         onChange={onChange}>
+        <option value=''>...choose...</option>
         { options.map(el => <option key={el.key} value={el.value}>{el.text}</option>) }
       </select>
     </Field>
