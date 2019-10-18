@@ -16,5 +16,11 @@ export default {
       throw new ValidationError('The text entered exceeds the maximum length')
     }
     return true
+  },
+  stringIsNumber: function (value) {
+    if (!(/^(\d{0,99}(\.\d{0,99}){0,1})$/).test(value)) {
+      throw new ValidationError('Only numeric characters can be used in field')
+    }
+    return true
   }
 }

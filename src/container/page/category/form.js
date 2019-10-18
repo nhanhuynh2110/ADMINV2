@@ -47,8 +47,6 @@ const FormHandle = (props) => {
   let homeChecked = isHome.value
   var linkImg = (img && img.value) ? domain + '/' + img.value : 'http://placehold.it/250x150'
 
-  console.log('model', model)
-
   return <Form
     Layout={Basic}
     title='Category Form'
@@ -61,6 +59,11 @@ const FormHandle = (props) => {
         <Field.FileImage id='category-modal-upload' name={img.name} field={img} value={linkImg} title='Upload Image' api={api} onChange={onChange} />
       </div>
     </div>
+    {/* <div className='row'>
+      <div className='col-md-12'>
+        <Field.FileGalleries id='category-modal-upload-gallery' name={img.name} field={img} value={linkImg} title='Upload Image' api={api} onChange={onChange} />
+      </div>
+    </div> */}
     <div className='row'>
       <div className='col-md-6'>
         <Field.Input field={title} defaultValue={title.value} name={title.name} id='category-title-id' placeholder='please enter' className='form-control' onChange={onChange} />

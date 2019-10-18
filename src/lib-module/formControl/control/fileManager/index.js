@@ -1,3 +1,7 @@
 import Image from './image'
+import Galleries from './galleries'
 
-export default Image
+export {
+  Image as default,
+  Galleries
+}
