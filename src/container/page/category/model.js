@@ -1,8 +1,8 @@
 export default {
   img: {
     name: 'img',
-    validators: [
-      { compare: 'required' }
+    validator: [
+      { compare: 'require' }
     ]
   },
   title: {

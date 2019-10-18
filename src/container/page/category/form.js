@@ -47,7 +47,7 @@ const FormHandle = (props) => {
   let homeChecked = isHome.value
   var linkImg = (img && img.value) ? domain + '/' + img.value : 'http://placehold.it/250x150'
 
-  console.log('parentId.value', parentId.value)
+  console.log('model', model)
 
   return <Form
     Layout={Basic}
