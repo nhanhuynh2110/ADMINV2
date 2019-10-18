@@ -1,7 +1,7 @@
 .file-manager {
   padding-right: 0 !important;
   i.fa {
-    color: #333;
+    // color: #333;
   }
   .file-manager-modal {
     .modal-header {
@@ -124,17 +124,41 @@
 
 .file-manager-image {
   &:hover ~.file-manager-upload-image {
-    display: block;
+    display: flex;
+    transition: opacity .13s ease-out;
   }
 }
 
 .file-manager-upload-image {
   &:hover {
-    display: block;
+    display: flex;
+    transition: opacity .13s ease-out;
   }
-  top: 50%; right: 50%;
+  cursor: pointer;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  position: absolute;
   display: none;
-  transform: translate(50%,-50%);
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient( transparent, rgba(0, 0, 0, .6) 50%, rgba(0, 0, 0, .6) 100% );
+  .fa-camera {
+    font-size: 30px;
+    color: #000;
+  }
+}
+
+.add-galleries-icon {
+  font-size: 40px;
+  color: #fff;
+  padding: 3px 12px;
+  vertical-align: middle;
+  background-color: #3c8dbc;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
 }
 
 

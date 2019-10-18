@@ -4,7 +4,8 @@ import InputGroups from './input.groups'
 import Select from './select'
 import CheckBox from './checkbox'
 import Area from './textArea'
-import FileManagerImage from './fileManager'
+import Image, { Galleries } from './fileManager'
+import EditorTiny from './tinyEditor'
 
 export {
   Input,
@@ -13,5 +14,7 @@ export {
   Area,
   InputPhone,
   InputGroups,
-  FileManagerImage
+  Image,
+  Galleries,
+  EditorTiny
 }

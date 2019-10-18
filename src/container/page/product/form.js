@@ -1,316 +1,126 @@
-/* global FileReader */
-
-import React from 'react'
+import React, {useEffect, useState, forwardRef} from 'react'
 import async from 'async'
-import _ from 'lodash'
-import CropImage from 'lib-module/cropImage'
-import FileManager from 'lib-module/formControl/control/fileManager'
 
-import Model from './model'
-import Field from '../../../component/form/field'
-import { withFormBehaviors } from '../../../component/form/form'
-import FormLayoutDefault from '../../../component/form/layout/default'
-import { withContainer } from '../../../context'
-import config from '../../../../config'
+import { Basic } from 'form-layout'
+import Form, { Field, Model as useModel } from 'lib-module/formControl'
 import STORELINK from '../../../helper/link'
-import Select from '../../../component/control/select'
-import TinyMCE from '../../../helper/tinyMCE'
-import Size from './size'
+import { withContainer } from '../../../context'
+import modelForm from './model'
+import conf from '../../../../config'
+import useReactRouter from 'use-react-router'
 
-let domain = config.server.domain
+const domain = conf.server.domain
+
 const LINK = STORELINK.PRODUCTLINK
 
-function FileManagerFnc (props) {
-  return <FileManager {...props} />
+const FormHandle = (props) => {
+  const {isAdd, data, categories, api} = props
+  const { history } = useReactRouter()
+  const [model] = useModel(modelForm, data)
+
+  const {image, gallery, title, code, price, priceSale,
+    categoryId, description, content, altImage, metaTitle,
+    metaDescription, isActive, isNewProduct, isHot, inStock} = model
+
+  const onChange = ({name, value}) => {
+    model.validate(name, value).then(() => model.setValue(name, value))
+  }
+
+  const onSubmit = () => {
+    return false
+  }
+
+  let activeChecked = isActive.value
+  let newProductChecked = isNewProduct.value
+  let hotChecked = isHot.value
+  let inStockChecked = inStock.value
+  var linkImg = (image && image.value) ? domain + '/' + image.value : 'http://placehold.it/250x150'
+
+  return <Form
+    Layout={Basic}
+    title='Product Form'
+    cancle={LINK.GRID}
+    onSubmit={onSubmit}
+    formValid={model.valid}
+  >
+    <div className='row'>
+      <div className='col-md-4'>
+        <Field.FileImage id='pro-modal-upload' name={image.name} field={image} value={linkImg} title='Upload Image' api={api} onChange={onChange} />
+      </div>
+    </div>
+    <div className='row'>
+      <div className='col-md-6'>
+        <Field.Input field={title} defaultValue={title.value} name={title.name} id='pro-title-id' placeholder={title.placeholder} className='form-control' onChange={onChange} />
+        <Field.Input field={code} defaultValue={code.value} name={code.name} id='pro-code-id' placeholder={code.placeholder} className='form-control' onChange={onChange} />
+        <Field.Select field={categoryId} name={categoryId.name} selectedValue={categoryId.value} options={categories} id='pro-categoryId-id' className='form-control' onChange={onChange} />
+        <Field.Input field={price} defaultValue={price.value} name={price.name} id='pro-price-id' placeholder={price.placeholder} className='form-control' onChange={onChange} />
+        <Field.Input field={priceSale} defaultValue={priceSale.value} name={priceSale.name} id='pro-priceSale-id' placeholder={priceSale.placeholder} className='form-control' onChange={onChange} />
+      </div>
+      <div className='col-md-6'>
+        <Field.Input field={altImage} defaultValue={altImage.value} name={altImage.name} id='pro-altImage-id' placeholder={altImage.placeholder} className='form-control' onChange={onChange} />
+        <Field.Input field={metaTitle} defaultValue={metaTitle.value} name={metaTitle.name} id='pro-metaTitle-id' placeholder={metaTitle.placeholder} className='form-control' onChange={onChange} />
+        <Field.Area field={metaDescription} rows='4' name={metaDescription.name} defaultValue={metaDescription.value} id='pro-description-id' className='form-control' onChange={onChange} />
+      </div>
+      <div className='col-md-12'>
+        <Field.Area field={description} rows='6' name={description.name} defaultValue={description.value} id='pro-description-id' className='form-control' onChange={onChange} />
+        <Field.Tiny field={content} id='product-content' name={content.name} defaultValue={content.value} />
+      </div>
+      <div className='col-md-2'>
+        <Field.CheckBox field={isActive} id='pro-active-id' defaultChecked={activeChecked} value={isActive.value} name={isActive.name} text={isActive.text} onChange={onChange} />
+      </div>
+      <div className='col-md-2'>
+        <Field.CheckBox field={isNewProduct} id='pro-isNewProduct-id' defaultChecked={newProductChecked} value={isNewProduct.value} name={isNewProduct.name} text={isNewProduct.text} onChange={onChange} />
+      </div>
+      <div className='col-md-2'>
+        <Field.CheckBox field={isHot} id='pro-isHot-id' defaultChecked={hotChecked} value={isHot.value} name={isHot.name} text={isHot.text} onChange={onChange} />
+      </div>
+      <div className='col-md-2'>
+        <Field.CheckBox field={inStock} id='pro-isHot-id' defaultChecked={inStockChecked} value={inStock.value} name={inStock.name} text={inStock.text} onChange={onChange} />
+      </div>
+    </div>
+  </Form>
 }
 
-class Form extends React.Component {
-  constructor (props) {
-    super(props)
-    this.state = {
-      color: ''
-    }
-    this.uploadFile = this.uploadFile.bind(this)
-    this.uploadGallery = this.uploadGallery.bind(this)
-    this.handleSubmit = this.handleSubmit.bind(this)
-    this.deleteGallery = this.deleteGallery.bind(this)
-    this.handleChangeColorComplete = this.handleChangeColorComplete.bind(this)
-    this.onChangeFileManager = this.onChangeFileManager.bind(this)
-    this.onChangeFileManagerMutil = this.onChangeFileManagerMutil.bind(this)
-    this.color = ''
-    this.fileMain = null
-  }
+const FormWrapper = forwardRef((props, ref) => {
+  const {match, api} = props
+  let {params} = match
 
-  handleChangeColorComplete (color, event) {
-    this.color = color.hex
-  }
+  let [formData, setFormData] = useState(null)
+  console.log('formData', formData)
 
-  deleteGallery (e) {
-    var img = e.target.getAttribute('data-img')
-    const galleries = _.get(this.props.model, 'gallery.value')
-    var gallery = galleries ? JSON.parse(galleries) : []
-    if (!gallery.includes(img)) return
-    const newGallery = _.pull(gallery, img)
-    this.props.onInputChange(null, { name: 'gallery', value: JSON.stringify(newGallery) })
-  }
-
-  uploadFile (e) {
-    var files = e.target.files
-    var name = e.target.getAttribute('data-name')
-    var folder = e.target.getAttribute('data-folder')
-    var reader = new FileReader()
-
-    reader.onload = function (e) {
-      var image = document.getElementById('img')
-      image.src = e.target.result
-      CropImage({
-        image,
-        originWidth: 100,
-        originHeight: 100,
-        fileName: 'filename.crop.png',
-        type: 'image/png' })
-        .then(res => {
-          const imgCrop = document.getElementById('img-crop')
-          imgCrop.src = res.dataURL
-          return res.file
-        })
-        .then(file => {
-        })
-    }
-    reader.readAsDataURL(files[0])
-
-    // this.props.api.file.upload(false, files, name, folder, (err, resp) => {
-    //   if (err) this.props.onInputChange(null, { name, value: null })
-    //   else this.props.onInputChange(null, {name, value: resp.img})
-    // })
-  }
-
-
-  uploadGallery (e) {
-    var files = e.target.files
-    var name = e.target.getAttribute('data-name')
-    var folder = e.target.getAttribute('data-folder')
-    var {gallery} = this.props.model
-    this.props.api.file.upload(true, files, name, folder, (err, resp) => {
-      if (err) return alert('upload gallery error')
-      var galleries = []
-      if (gallery.value) galleries = JSON.parse(gallery.value)
-      resp.forEach(el => galleries.push(el.img))
-      this.props.onInputChange(null, { name, value: JSON.stringify(galleries) })
-    })
-  }
-
-  handleSubmit () {
-    this.props.handleSubmitSingle((data) => {
-      data.gallery = data.gallery ? JSON.parse(data.gallery) : []
-      if (!this.props.data) {
-        this.props.api.product.insert(data, (err, resp) => {
-          if (err) return alert('save fail')
-          return this.props.history.push(LINK.GRID)
-        })
-      } else {
-        let dt = data
-        dt.id = this.props.data._id
-        this.props.api.product.update(dt, (err, resp) => {
-          if (err) return alert('update fail')
-          return this.props.history.push(LINK.GRID)
-        })
-      }
-      this.props.handleSubmitFinish()
-    })
-  }
-
-  componentDidMount () {
-    let {content} = this.props.model
-    TinyMCE.init('content', this.props.onInputChange, () => {
-      if (content.value) tinymce.activeEditor.setContent(content.value)
-    })
-  }
-
-  onChangeFileManager (resp) {
-    console.log(1)
-    this.props.onInputChange(null, { name: 'image', value: resp.path })
-  }
-
-  onChangeFileManagerMutil (resp) {
-    const {paths} = resp
-    const {gallery} = this.props.model
-    let galleries = []
-    const value = _.get(gallery, 'value')
-    if (value) galleries = JSON.parse(value)
-    paths.forEach(el => galleries.push(el))
-    this.props.onInputChange(null, { name: 'gallery', value: JSON.stringify(galleries) })
-  }
-
-  render () {
-    let { image, gallery, title, code, price, priceSale, description, content, isNewProduct, categoryId, isHot, isActive, altImage, metaTitle, metaDescription, inStock } = this.props.model
-    let {onInputChange, categories} = this.props
-    var linkImg = (image.value) ? domain + '/' + image.value : 'http://placehold.it/250x150'
-    var galleries = []
-    if (gallery.value) {
-      galleries = JSON.parse(gallery.value)
-    }
-    return (
-      <FormLayoutDefault
-        className='col-md-12'
-        title='Create Product'
-        linkCancleBtn='/product'
-        isFormValid={this.props.isFormValid}
-        hasChanged={this.props.hasChanged}
-        handleSubmit={this.handleSubmit}
-        isSubmit
-      >
-        <form role='form'>
-          <div className='box-body'>
-
-            {/* <SketchPicker onChangeComplete={this.handleChangeColorComplete} />
-            <a className='btn btn-app'>
-              <i class='fa fa-save' /> Save
-            </a>
-            <div>
-              <span><a className='product-color' /><i class='fa fa-remove' /></span>
-              <span><a className='product-color' /><i class='fa fa-remove' /></span>
-              <span><a className='product-color' /><i class='fa fa-remove' /></span>
-            </div> */}
-            <Size />
-            <div className='box-body box-profile' style={{ width: '250px' }}>
-              <img id='img' style={{ width: '100%', marginBottom: '20px' }} src={linkImg} />
-              <br />
-              {/* <FileManager title='Upload Image' api={this.props.api} onChange={this.onChangeFileManager} /> */}
-            </div>
-
-            <div className='timeline-item'>
-              {/* <FileManager title='Gallery' multiple api={this.props.api} onChange={this.onChangeFileManagerMutil} /> */}
-
-              <h3 className='timeline-header'>uploaded gallery</h3>
-
-              <div className='timeline-body'>
-                {galleries.map((gallery, key) => <a key={key}><img width='150' src={`${domain}/${gallery}`} alt='...' className='margin' /><i data-img={gallery} onClick={this.deleteGallery} className='fa fa-remove' /></a>)}
-              </div>
-            </div>
-
-            <Field field={title}>
-              <input type='text' className='form-control' placeholder={title.placeholder} onChange={onInputChange} defaultValue={title.value} />
-            </Field>
-
-            <Field field={code}>
-              <input type='text' className='form-control' placeholder={code.placeholder} onChange={onInputChange} defaultValue={code.value} />
-            </Field>
-
-            <Field field={categoryId}>
-              <Select isSelected={categoryId.value} name='categoryId' options={categories} classSelect='select2' onChange={onInputChange} />
-            </Field>
-
-            <Field field={price}>
-              <input type='text' className='form-control' placeholder={price.placeholder} onChange={onInputChange} defaultValue={price.value} />
-            </Field>
-
-            <Field field={priceSale}>
-              <input type='text' className='form-control' placeholder={priceSale.placeholder} onChange={onInputChange} defaultValue={priceSale.value} />
-            </Field>
-
-            <Field field={description}>
-              <div>
-                <textarea style={{width: '100%', height: '200px'}} name='description' value={description.value} onChange={onInputChange} />
-              </div>
-            </Field>
-
-            <Field field={content}>
-              <div>
-                <textarea className='editor' />
-              </div>
-            </Field>
-
-            <Field field={isNewProduct}>
-              <span className='checkbox-react' onClick={() => onInputChange(null, { name: 'isNewProduct', value: !isNewProduct.value })}>
-                {isNewProduct.value && <i className='fa fa-check' />}
-              </span>
-            </Field>
-
-            <Field field={isHot}>
-              <span className='checkbox-react' onClick={() => onInputChange(null, { name: 'isHot', value: !isHot.value })}>
-                {isHot.value && <i className='fa fa-check' />}
-              </span>
-            </Field>
-
-            <Field field={inStock}>
-              <span className='checkbox-react' onClick={() => onInputChange(null, { name: 'inStock', value: !inStock.value })}>
-                {inStock.value && <i className='fa fa-check' />}
-              </span>
-            </Field>
-
-            <Field field={isActive}>
-              <span className='checkbox-react' onClick={() => onInputChange(null, { name: 'isActive', value: !isActive.value })}>
-                {isActive.value && <i className='fa fa-check' />}
-              </span>
-            </Field>
-
-            <label>SEO META</label>
-            <Field field={altImage}>
-              <input type='text' className='form-control' placeholder={altImage.placeholder} onChange={onInputChange} defaultValue={(altImage) ? altImage.value : ''} />
-            </Field>
-
-            <Field field={metaTitle}>
-              <input type='text' className='form-control' placeholder={metaTitle.placeholder} onChange={onInputChange} defaultValue={(metaTitle) ? metaTitle.value : ''} />
-            </Field>
-
-            <Field field={metaDescription}>
-              <input type='text' className='form-control' placeholder={metaDescription} onChange={onInputChange} defaultValue={(metaDescription) ? metaDescription.value : ''} />
-            </Field>
-          </div>
-        </form>
-      </FormLayoutDefault>
-    )
-  }
-}
-const FormBox = withFormBehaviors(Form, Model)
-class FormWrapper extends React.PureComponent {
-  constructor (props) {
-    super(props)
-    this.state = {
-      data: null,
-      categories: []
-    }
-  }
-
-  componentDidMount () {
-    let {match} = this.props
-    if (!match) return
-    let {params} = match
-
-    const data = (cb) => {
-      this.props.api.product.get({id: params.id}, (err, data) => {
-        if (err) return cb(err)
-        data.gallery = JSON.stringify(data.gallery)
-        return cb(null, data)
-      })
-    }
-
+  useEffect(() => {
     const categories = (cb) => {
-      this.props.api.category.getAll({}, (err, data) => {
+      props.api.category.getAll({}, (err, data) => {
         if (err) return cb(err)
-        let options = data.map((el) => ({text: el.title, value: el._id}))
+        let options = data.map((el) => ({key: el._id, text: el.title, value: el._id}))
         return cb(null, options)
       })
     }
 
-    if (params.id === 'add') {
-      categories((err, data) => {
-        if (err) return
-        this.setState({ categories: data })
-      })
-    } else {
-      async.parallel({data, categories}, (err, resp) => {
-        if (err) return
-        this.setState({ data: resp.data, categories: resp.categories })
+    const data = (cb) => {
+      props.api.product.get({id: params.id}, (err, dt) => {
+        if (err) return cb(err)
+        dt.gallery = JSON.stringify(data.gallery)
+        return cb(null, dt)
       })
     }
-  }
-  render () {
-    return <FormBox data={this.state.data} api={this.props.api} categories={this.state.categories} {...this.props} />
-  }
-}
 
-export default withContainer(React.memo(FormWrapper), (c, props) => ({
+    if (params.id === 'add') {
+      categories((err, cats) => {
+        if (err) return
+        setFormData({ categories: cats, isAdd: true })
+      })
+    } else {
+      async.parallel({ data, categories }, (err, resp) => {
+        if (err) return
+        const { data, categories } = resp
+        setFormData({ categories, data, isAdd: false })
+      })
+    }
+  }, [params])
+  return formData && <FormHandle isAdd={formData.isAdd} categories={formData.categories} data={formData.data} api={api} />
+})
+
+export default withContainer(React.memo(FormWrapper), (c) => ({
   api: c.api
 }))
