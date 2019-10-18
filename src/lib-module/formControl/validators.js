@@ -17,10 +17,10 @@ export default {
     }
     return true
   },
-  stringIsNumber: function (value) {
-    if (!(/^(\d{0,99}(\.\d{0,99}){0,1})$/).test(value)) {
-      throw new ValidationError('Only numeric characters can be used in field')
-    }
-    return true
-  }
+  // stringIsNumber: function (value) {
+  //   if (!(/^(\d{0,99}(\.\d{0,99}){0,1})$/).test(value)) {
+  //     throw new ValidationError('Only numeric characters can be used in field')
+  //   }
+  //   return true
+  // }
 }

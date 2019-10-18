@@ -1,10 +1,12 @@
-import React, {useEffect} from 'react'
+import React, {useState, useEffect} from 'react'
 import Form, { Field, Model as useModel } from 'lib-module/formControl'
 import { Basic } from 'form-layout'
 import modelForm from './test.model'
 
 export default () => {
-  const [model] = useModel(modelForm, {title: 'n'})
+  const [model] = useModel(modelForm)
+
+  // const [editorState, setEditorState] = useState(EditorState.createEmpty())
   const { title, title1, sl } = model
   const onChange = ({name, value}) => {
     model.validate(name, value).then(() => model.setValue(name, value))
@@ -20,5 +22,7 @@ export default () => {
     <Field.Select field={fieldSelect} name='select-field' selectedValue='option1' options={options} id='select-id' className='form-control' onChange={onChange} />
     <Field.CheckBox field={fieldCheckBox} value='isActive' text='Active' onChange={onChange} />
     <Field.Area field={areafield} name='area-field' rows='8' defaultValue='value default' placeholder='please enter' className='form-control' id='area-id' onChange={onChange} /> */}
+ 
+  
   </Form>
 }

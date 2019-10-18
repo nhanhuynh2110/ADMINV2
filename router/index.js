@@ -75,7 +75,6 @@ module.exports = function (app) {
     Adapter.delete((error, resp) => {
       if (error) return res.status(500).json({ message: 'request api error' })
       var result = resp
-      console.log('resp', resp)
       return res.status(result.status || 500).json({ status: result.status || 500, message: result.message, data: result.data })
       // return res.status(200).json({ status: 200, message: 'success', data })
     })

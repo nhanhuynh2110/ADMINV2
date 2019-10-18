@@ -15,10 +15,12 @@ export default (props) => {
   useEffect(() => {
     if (selectedValue) {
       ref.current.value = selectedValue
+    } else {
+      ref.current.value = ''
     }
   }, [selectedValue])
 
-  console.log('selectedValue', selectedValue)
+  
 
   return (
     <Field field={field}>

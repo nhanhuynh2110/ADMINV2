@@ -1,4 +1,4 @@
-import React, {useRef} from 'react'
+import React, {useEffect, useRef} from 'react'
 import Field from '../field/field'
 
 export default (props) => {
@@ -18,6 +18,10 @@ export default (props) => {
     clearTimeout(timeout)
     timeout = setTimeout(() => onChange(), 500)
   }
+
+  useEffect(() => {
+    ref.current.value = props.defaultValue
+  }, [props.defaultValue])
 
   return (
     <Field field={field}>

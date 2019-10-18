@@ -1,15 +1,27 @@
 import React from 'react'
 import Field from '../../field/field'
 import FileManager from './fileManager'
+import conf from '../../../../../config'
+
+const domain = conf.server.domain
 
 export default (props) => {
-  const {field, value, name} = props
+  const {field, value = [], name} = props
 
   const onChange = (res) => {
     if (typeof props.onChange !== 'function') return
     props.onChange({ value: res.paths, name })
   }
 
+  const deleteImage = (e) => {
+    let newValue = []
+    var img = e.target.getAttribute('data-img')
+    if (!value.includes(img)) return
+    newValue = value.filter(el => el !== img)
+    onChange({ paths: newValue })
+  }
+
+  console.log('value', value)
   return <Field field={field}>
     <div className='timeline-body'>
       <FileManager
@@ -19,9 +31,10 @@ export default (props) => {
         triggerId={props.id}
         trigger={<a data-target={`#${props.id}`} data-toggle='modal' className='add-galleries-icon'><i className='fa fa-plus' /></a>}
       />
-      <img src='http://placehold.it/150x100' alt='...' className='margin' />
-      <img src='http://placehold.it/150x100' alt='...' className='margin' />
-      <img src='http://placehold.it/150x100' alt='...' className='margin' />
+
+      {value && value.map(el => {
+        return <a key={el}><img src={`${domain}/${el}`} alt='...' className='margin' /><i data-img={el} onClick={deleteImage} className='fa fa-remove' /></a>
+      })}
     </div>
   </Field>
 

@@ -98,7 +98,7 @@ const Model = (formModels, data) => {
   useEffect(() => {
     init()
     model.validateModel()
-  }, [])
+  }, [data])
 
   return [model, init]
 }

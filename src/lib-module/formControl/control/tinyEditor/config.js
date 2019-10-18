@@ -23,6 +23,7 @@ export default (selector, onChange, cb) => {
     images_upload_url: domain + '/upload',
     plugins: 'print preview fullpage searchreplace autolink directionality visualblocks visualchars fullscreen image link media template codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists textcolor wordcount imagetools contextmenu colorpicker textpattern help image code',
     toolbar1: 'formatselect | bold italic strikethrough forecolor backcolor | link | alignleft aligncenter alignright alignjustify  | numlist bullist outdent indent  | removeformat | undo redo | image code',
+    extended_valid_elements : "iframe[src|frameborder|style|scrolling|class|width|height|name|align]",
     image_advtab: true,
     templates: [{
       title: 'Test template 1',
@@ -43,7 +44,15 @@ export default (selector, onChange, cb) => {
         // return onChange(null, {name, value: tinymce.activeEditor.getContent().replace(/&/g, 'vanhan')})
       }, 500))
     },
-    init_instance_callback: cb,
+    // onchange_callback: (inst) => {
+    //   return delay(function (e) {
+    //     onChange(inst.getBody().innerHTML)
+    //     // return onChange(null, {name, value: tinymce.activeEditor.getContent().replace(/&/g, 'vanhan')})
+    //   }, 500)
+    // },
+    init_instance_callback: function (inst) {
+      return cb(inst)
+    },
 
     images_upload_handler: function (blobInfo, success, failure) {
       var xhr, formData

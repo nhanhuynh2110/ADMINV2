@@ -26,8 +26,8 @@ export default {
     name: 'price',
     placeholder: 'please input price',
     validator: [
-      { compare: 'require' },
-      { compare: 'stringIsNumber' }
+      { compare: 'require' }
+      // { compare: 'stringIsNumber' }
     ]
   },
   priceSale: {

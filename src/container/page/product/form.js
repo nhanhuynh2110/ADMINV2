@@ -16,7 +16,7 @@ const LINK = STORELINK.PRODUCTLINK
 const FormHandle = (props) => {
   const {isAdd, data, categories, api} = props
   const { history } = useReactRouter()
-  const [model] = useModel(modelForm, data)
+  const [model] = useModel(modelForm, isAdd ? null : data)
 
   const {image, gallery, title, code, price, priceSale,
     categoryId, description, content, altImage, metaTitle,
@@ -27,7 +27,20 @@ const FormHandle = (props) => {
   }
 
   const onSubmit = () => {
-    return false
+    const formData = model.data
+    if (isAdd) {
+      props.api.product.insert(formData, (err, resp) => {
+        if (err) return alert('save fail')
+        return window.location.href = LINK.GRID
+      })
+    } else {
+      let dt = formData
+      dt.id = props.data._id
+      props.api.product.update(dt, (err, resp) => {
+        if (err) return alert('update fail')
+        return window.location.href = LINK.GRID
+      })
+    }
   }
 
   let activeChecked = isActive.value
@@ -35,7 +48,6 @@ const FormHandle = (props) => {
   let hotChecked = isHot.value
   let inStockChecked = inStock.value
   var linkImg = (image && image.value) ? domain + '/' + image.value : 'http://placehold.it/250x150'
-
   return <Form
     Layout={Basic}
     title='Product Form'
@@ -46,6 +58,11 @@ const FormHandle = (props) => {
     <div className='row'>
       <div className='col-md-4'>
         <Field.FileImage id='pro-modal-upload' name={image.name} field={image} value={linkImg} title='Upload Image' api={api} onChange={onChange} />
+      </div>
+    </div>
+    <div className='row'>
+      <div className='col-md-12'>
+        <Field.FileGalleries id='pro-modal-galleries' value={gallery.value} name={gallery.name} field={gallery} title='Upload Image' api={api} onChange={onChange} />
       </div>
     </div>
     <div className='row'>
@@ -63,7 +80,7 @@ const FormHandle = (props) => {
       </div>
       <div className='col-md-12'>
         <Field.Area field={description} rows='6' name={description.name} defaultValue={description.value} id='pro-description-id' className='form-control' onChange={onChange} />
-        <Field.Tiny field={content} id='product-content' name={content.name} defaultValue={content.value} />
+        <Field.Tiny field={content} id='product-content' name={content.name} defaultValue={content.value} onChange={onChange} />
       </div>
       <div className='col-md-2'>
         <Field.CheckBox field={isActive} id='pro-active-id' defaultChecked={activeChecked} value={isActive.value} name={isActive.name} text={isActive.text} onChange={onChange} />
@@ -86,7 +103,6 @@ const FormWrapper = forwardRef((props, ref) => {
   let {params} = match
 
   let [formData, setFormData] = useState(null)
-  console.log('formData', formData)
 
   useEffect(() => {
     const categories = (cb) => {
@@ -100,7 +116,6 @@ const FormWrapper = forwardRef((props, ref) => {
     const data = (cb) => {
       props.api.product.get({id: params.id}, (err, dt) => {
         if (err) return cb(err)
-        dt.gallery = JSON.stringify(data.gallery)
         return cb(null, dt)
       })
     }
@@ -108,7 +123,7 @@ const FormWrapper = forwardRef((props, ref) => {
     if (params.id === 'add') {
       categories((err, cats) => {
         if (err) return
-        setFormData({ categories: cats, isAdd: true })
+        setFormData({ categories: cats, data: null, isAdd: true })
       })
     } else {
       async.parallel({ data, categories }, (err, resp) => {
