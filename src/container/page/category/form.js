@@ -123,7 +123,7 @@ const FormWrapper = forwardRef((props, ref) => {
         setFormData({ parents, data })
       })
     }
-  }, [])
+  }, [params])
   return formData && <FormHandle isAdd={!formData.data} parents={formData.parents} data={formData.data} api={api} />
 })
 

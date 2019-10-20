@@ -21,6 +21,9 @@ const Model = (formModels, data) => {
   const setValue = (fieldName, value) => {
     if (newModel[fieldName].value === value) return
     newModel[fieldName].value = value
+
+    delete newModel.valid
+    newModel.valid = _.valuesIn(newModel).every(el => el.valid === true)
     setModel({...newModel})
   }
 
@@ -96,6 +99,7 @@ const Model = (formModels, data) => {
   }
 
   useEffect(() => {
+    console.log(333333333333)
     init()
     model.validateModel()
   }, [data])

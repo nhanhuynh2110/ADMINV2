@@ -6,6 +6,7 @@ import CheckBox from './checkbox'
 import Area from './textArea'
 import Image, { Galleries } from './fileManager'
 import EditorTiny from './tinyEditor'
+import InputColorPicker from './input.colorpicker'
 
 export {
   Input,
@@ -14,6 +15,7 @@ export {
   Area,
   InputPhone,
   InputGroups,
+  InputColorPicker,
   Image,
   Galleries,
   EditorTiny

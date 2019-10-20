@@ -6,7 +6,7 @@ export default (props) => {
   const onSubmit = event => {
     event.preventDefault()
     if (typeof props.onSubmit !== 'function') return
-    props.onSubmit()
+    props.onSubmit(event)
   }
 
   if (Layout) {

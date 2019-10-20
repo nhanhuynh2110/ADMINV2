@@ -7,7 +7,8 @@ import STORELINK from '../../../helper/link'
 import { withContainer } from '../../../context'
 import modelForm from './model'
 import conf from '../../../../config'
-import useReactRouter from 'use-react-router'
+
+import Size from './size'
 
 const domain = conf.server.domain
 
@@ -15,7 +16,6 @@ const LINK = STORELINK.PRODUCTLINK
 
 const FormHandle = (props) => {
   const {isAdd, data, categories, api} = props
-  const { history } = useReactRouter()
   const [model] = useModel(modelForm, isAdd ? null : data)
 
   const {image, gallery, title, code, price, priceSale,
@@ -26,19 +26,20 @@ const FormHandle = (props) => {
     model.validate(name, value).then(() => model.setValue(name, value))
   }
 
-  const onSubmit = () => {
+  const onSubmit = (e) => {
+    e.preventDefault()
     const formData = model.data
     if (isAdd) {
       props.api.product.insert(formData, (err, resp) => {
         if (err) return alert('save fail')
-        return window.location.href = LINK.GRID
+        window.location.href = LINK.GRID
       })
     } else {
       let dt = formData
       dt.id = props.data._id
       props.api.product.update(dt, (err, resp) => {
         if (err) return alert('update fail')
-        return window.location.href = LINK.GRID
+        window.location.href = LINK.GRID
       })
     }
   }
@@ -65,8 +66,16 @@ const FormHandle = (props) => {
         <Field.FileGalleries id='pro-modal-galleries' value={gallery.value} name={gallery.name} field={gallery} title='Upload Image' api={api} onChange={onChange} />
       </div>
     </div>
+
+    <div className='row'>
+      <div className='col-md-12'>
+        {/* <Field.FileGalleries id='pro-modal-galleries' value={gallery.value} name={gallery.name} field={gallery} title='Upload Image' api={api} onChange={onChange} /> */}
+        <Size />
+      </div>
+    </div>
     <div className='row'>
       <div className='col-md-6'>
+
         <Field.Input field={title} defaultValue={title.value} name={title.name} id='pro-title-id' placeholder={title.placeholder} className='form-control' onChange={onChange} />
         <Field.Input field={code} defaultValue={code.value} name={code.name} id='pro-code-id' placeholder={code.placeholder} className='form-control' onChange={onChange} />
         <Field.Select field={categoryId} name={categoryId.name} selectedValue={categoryId.value} options={categories} id='pro-categoryId-id' className='form-control' onChange={onChange} />

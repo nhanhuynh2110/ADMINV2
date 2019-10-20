@@ -15,7 +15,7 @@ function FileListItem (a) {
   return b.files
 }
 
-const FormLayout = ({children, title, onClose}) => {
+const FormLayout = ({children, title, onClose, onCropSubmit}) => {
   return <div className='file-manager-crop-form col-md-3 col-xm-3 col-xs-10'>
     <div className='box box-info'>
       <div className='box-header with-border'>
@@ -32,12 +32,11 @@ const FormLayout = ({children, title, onClose}) => {
 
       <div className='box-body'>
         {children}
-        
       </div>
 
       <div className='box-footer'>
         <button type='button' onClick={onClose} className='btn btn-default'>Cancel</button>
-        <button type='submit' className='btn btn-info pull-right'>Crop &ensp; <span className='fa fa-save' /></button>
+        <button type='button' onClick={onCropSubmit} className='btn btn-info pull-right'>Crop &ensp; <span className='fa fa-save' /></button>
       </div>
       {/* <div className='overlay'>
           <i className='fa fa-refresh fa-spin' />
@@ -57,7 +56,8 @@ export default React.forwardRef((props, ref) => {
     model.validate(name, value).then(() => model.setValue(name, value))
   }
 
-  const onSubmit = () => {
+  const onSubmit = (e) => {
+    e.preventDefault()
     const dataModel = model.data
     const pathLink = currentPath ? `${currentPath}/${data.path}` : data.path
     const url = `${domain}/download?path=${pathLink}`
@@ -91,7 +91,7 @@ export default React.forwardRef((props, ref) => {
 
   return <Form
     Layout={FormLayout}
-    onSubmit={onSubmit}
+    onCropSubmit={onSubmit}
     title='Crop Image Form'
     onClose={onClose}>
     <div className='form-group'>
