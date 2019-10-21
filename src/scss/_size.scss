@@ -14,6 +14,7 @@
     vertical-align: middle;
     border-radius: 50%;
     margin-left: 10px;
+    cursor: pointer;
   }
 
   .color-by-size-active {
@@ -34,8 +35,21 @@
 
 .size-image-item {
   overflow: hidden;
-  img {
-    width: 100%;
-    height: calc(width * 1.75)
+  padding-bottom : 50%; /* = width for a 1:1 aspect ratio */
+  // margin:1.66%;
+  background-position:center center;
+  background-repeat:no-repeat;
+  background-size:cover;
+  @media (min-width: 576px) {
+    padding-bottom : 50%;
+  }
+  @media (min-width: 768px) {
+    padding-bottom : 25%;
+  }
+  @media (min-width: 992px) {
+    padding-bottom : 25%;
+  }
+  @media (min-width: 1200px) {
+    padding-bottom : 16.66666667%;
   }
 }

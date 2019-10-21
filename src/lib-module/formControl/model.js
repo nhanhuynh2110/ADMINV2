@@ -19,12 +19,14 @@ const Model = (formModels, data) => {
 
   // // update value field
   const setValue = (fieldName, value) => {
-    console.log('value11111111111', value)
     if (newModel[fieldName].value === value) return
     newModel[fieldName].value = value
 
     delete newModel.valid
-    newModel.valid = _.valuesIn(newModel).every(el => el.valid === true)
+    newModel.valid = _.valuesIn(newModel).every(el => {
+      if (el.name === 'setValue' || el.name === 'validate' || el.name === 'validateModel') return true
+      return el.valid === true
+    })
     setModel({...newModel})
   }
 
@@ -100,7 +102,6 @@ const Model = (formModels, data) => {
   }
 
   useEffect(() => {
-    console.log(333333333333)
     init()
     model.validateModel()
   }, [data])

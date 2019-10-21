@@ -6,15 +6,9 @@ export default (props) => {
   return <React.Fragment>
     <section className='content'>
       {props.children}
-      {/* <div className='row'>
+      <div className='row'>
         <div className={className || 'col-md-12'}>
           <div className='box box-success'>
-            <div className='box-header with-border'>
-              <h3 className='box-title'>{title || 'Create'}</h3>
-            </div>
-            <div className='box-body'>
-              {props.children}
-            </div>
             <div className='box-footer'>
               <div className='pull-left'>
                 <Link to={cancle} className='btn btn-danger btn-xs'>Cancle</Link>
@@ -32,7 +26,7 @@ export default (props) => {
             </div>
           </div>
         </div>
-      </div> */}
+      </div>
     </section>
   </React.Fragment>
 }

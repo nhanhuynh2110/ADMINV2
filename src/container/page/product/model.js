@@ -37,7 +37,10 @@ export default {
   },
   categoryId: {
     name: 'categoryId',
-    label: 'Category'
+    label: 'Category',
+    validator: [
+      { compare: 'require' }
+    ]
   },
   description: {
     name: 'description',

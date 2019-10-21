@@ -1,3 +1,5 @@
+/* global _ */
+
 import React, {useEffect, useState, forwardRef} from 'react'
 import async from 'async'
 
@@ -14,35 +16,6 @@ const domain = conf.server.domain
 
 const LINK = STORELINK.PRODUCTLINK
 
-const sizeData = [
-  {
-    colors: [
-      {
-        color: 'red',
-        images: ['', '']
-      },
-      {
-        color: 'blue',
-        images: ['', '']
-      }
-    ],
-    name: 'size X',
-  },
-  {
-    colors: [
-      {
-        color: 'black',
-        images: ['', '']
-      },
-      {
-        color: 'orange',
-        images: ['', '']
-      }
-    ],
-    name: 'size XL'
-  }
-]
-
 const FormHandle = (props) => {
   const {isAdd, data, categories, api} = props
   const [model] = useModel(modelForm, isAdd ? null : data)
@@ -51,7 +24,7 @@ const FormHandle = (props) => {
     categoryId, description, content, altImage, metaTitle,
     metaDescription, isActive, isNewProduct, isHot, inStock, size} = model
 
-  const [selectSize, setSelectSize] = React.useState(size.value && size.value.length > 0 ? size[0] : null)
+  const [selectSize, setSelectSize] = React.useState(size.value && size.value.length > 0 ? size.value[0] : null)
   const [selectColor, setSelectColor] = React.useState(selectSize && selectSize.colors ? selectSize.colors[0] : null)
 
   const onChange = ({name, value}) => {
@@ -60,67 +33,102 @@ const FormHandle = (props) => {
 
   const onChangeSize = ({name, value}) => {
     let sizeValue = _.clone(size.value) || []
-    sizeValue.push({ name: value , colors: []})
+    sizeValue.push({ name: value, colors: [] })
+    console.log('sizeValue', sizeValue)
     model.validate(name, sizeValue).then(() => model.setValue(name, sizeValue))
     if (!selectSize) {
       setSelectSize(sizeValue[0])
     }
   }
 
-  const onChangeColor = ({ value, name , selectSize }) => {
+  const onChangeColor = ({ value, name, selectSize }) => {
     const sizeValue = _.clone(size.value)
     var index = _.findIndex(sizeValue, selectSize)
 
     let sizes = sizeValue[index]
     let colors = sizes.colors
-    colors.push({ color: value, images: []})
+    colors.push({ color: value, images: [] })
     sizes.colors = colors
 
     sizeValue[index] = sizes
 
-    model.validate(name, sizeValue).then(() => model.setValue(name, sizeValue))
     if (!selectColor || selectColor.length <= 0) setSelectColor(sizeValue[index].colors[0])
-
+    model.validate(name, sizeValue).then(() => model.setValue(name, sizeValue))
   }
 
   const onSelectSize = (e) => {
     const sizeName = e.currentTarget.getAttribute('data-size')
     const sizeValue = _.clone(size.value)
-    const selected = sizeValue.find(el => el.name ===sizeName)
+    const selected = sizeValue.find(el => el.name === sizeName)
     setSelectSize(selected)
+
+    if (selected.colors) setSelectColor(selected.colors[0])
   }
 
-  const onChangeImages = (data) => {
+  const onSelectColor = (e) => {
+    const color = e.currentTarget.getAttribute('data-color')
+    const selectColor = selectSize.colors.find(el => el.color === color)
+    setSelectColor(selectColor)
+  }
+
+  const onChangeImages = ({paths}) => {
     const sizeValue = _.clone(size.value)
+    const selectSizeCurrent = _.clone(selectSize)
     const selectCl = _.clone(selectColor)
+    const imgs = selectCl.images
     selectCl.images.push()
-    console.log('selectColor', selectColor)
+    const imagesArr = paths.map(el => {
+      return {
+        mainImage: el,
+        sliderImage: '',
+        sliderDetailImage: '',
+        listImage: ''
+      }
+    })
+    selectCl.images = [...imgs, ...imagesArr]
+    const index = selectSizeCurrent.colors.findIndex(el => el.color === selectCl.color)
+    selectSizeCurrent.colors[index] = selectCl
+
+    const selectSizeCurrentIndex = sizeValue.findIndex(el => el.name === selectSizeCurrent.name)
+    sizeValue[selectSizeCurrentIndex] = selectSizeCurrent
+
+    setSelectSize(selectSizeCurrent)
+    setSelectColor(selectCl)
+
+    model.validate(size.name, sizeValue).then(() => model.setValue(size.name, sizeValue))
   }
 
   const onSubmit = (e) => {
     e.preventDefault()
     const formData = model.data
+    if (!formData.size) formData.size = []
     if (isAdd) {
       props.api.product.insert(formData, (err, resp) => {
-        if (err) return alert('save fail')
+        if (err) return alert('save fail1')
         window.location.href = LINK.GRID
       })
     } else {
       let dt = formData
       dt.id = props.data._id
       props.api.product.update(dt, (err, resp) => {
-        if (err) return alert('update fail')
+        if (err) return alert('update fail2')
         window.location.href = LINK.GRID
       })
     }
   }
+
+  React.useEffect(() => {
+    if (size.value) {
+      setSelectSize(size.value && size.value.length > 0 ? size.value[0] : null)
+      setSelectColor(size.value && size.value[0] && size.value[0].colors ? size.value[0].colors[0] : null)
+    }
+  }, [size])
 
   let activeChecked = isActive.value
   let newProductChecked = isNewProduct.value
   let hotChecked = isHot.value
   let inStockChecked = inStock.value
   var linkImg = (image && image.value) ? domain + '/' + image.value : 'http://placehold.it/250x150'
-
   return <Form
     Layout={Product}
     title='Product Form'
@@ -137,12 +145,12 @@ const FormHandle = (props) => {
           <div className='box-body'>
             <div className='row'>
               <div className='col-md-3'>
-              <Field.FileImage id='pro-modal-upload' name={image.name} field={image} value={linkImg} title='Upload Image' api={api} onChange={onChange} />
+                <Field.FileImage id='pro-modal-upload' name={image.name} field={image} value={linkImg} title='Upload Image' api={api} onChange={onChange} />
               </div>
               <div className='col-md-9'>
                 <Field.Input field={title} defaultValue={title.value} name={title.name} id='pro-title-id' placeholder={title.placeholder} className='form-control' onChange={onChange} />
                 <Field.Input field={code} defaultValue={code.value} name={code.name} id='pro-code-id' placeholder={code.placeholder} className='form-control' onChange={onChange} />
-                
+
                 <div className='row'>
                   <div className='col-md-6'>
                     <Field.Input field={price} defaultValue={price.value} name={price.name} id='pro-price-id' placeholder={price.placeholder} className='form-control' onChange={onChange} />
@@ -153,13 +161,10 @@ const FormHandle = (props) => {
                   <div className='col-md-12 groups-size'>
                     <div className='form-group'>
                       <label>Size</label>
-                      {size.value && size.value.map(el => {
+                      {size.value && selectSize && size.value.map(el => {
                         const className = el.name === selectSize.name ? 'btn bg-default margin btn-size-active' : 'btn bg-default margin'
                         return <button key={el.name} data-size={el.name} onClick={onSelectSize} type='button' className={className}>{el.name} <span className='badge bg-green badge-size-remove'><i className='fa fa-remove' /></span></button>
                       })}
-                      {/* <button type='button' className='btn bg-default margin'>.btn.bg-orange <span className='badge bg-green badge-size-remove'><i className='fa fa-remove' /></span></button>
-                      <button type='button' className='btn bg-default margin'>.btn.bg-orange <span className='badge bg-green badge-size-remove'><i className='fa fa-remove' /></span></button> */}
-                      {/* <button type='button' className='btn bg-orange margin'><i className='fa fa-plus' /></button> */}
                       <ModalSize name={size.name} onSubmit={onChangeSize} />
                     </div>
 
@@ -167,51 +172,45 @@ const FormHandle = (props) => {
                       <label>Color follow size</label>
                       {selectSize && selectSize.colors.length > 0 && selectSize.colors.map(el => {
                         const className = el.color === selectColor.color ? 'color-by-size color-by-size-active' : 'color-by-size'
-                        return <a key={el.color} className={className} style={{ backgroundColor: el.color}} />
-                      })} 
+                        return <a key={el.color} data-color={el.color} className={className} onClick={onSelectColor} style={{ backgroundColor: el.color }} />
+                      })}
                       {/* <a className='color-by-size color-by-size-active' />
                       <a className='color-by-size' /> */}
                       {selectSize && <ModalColor onSubmit={onChangeColor} name={size.name} selectSize={selectSize} />}
                     </div>
                   </div>
-                  
+
                 </div>
-                
+
               </div>
             </div>
-            
+
           </div>
         </div>
       </div>
     </div>
-
 
     <div className='row'>
       <div className='col-md-12'>
         <div className='box box-primary'>
           <div className='box-header with-border'>
             <h3 className='box-title'>Gallery Image</h3>
+            {/* <button className='btn btn-success pull-right'>Upload Images</button> */}
+            {selectColor && <Field.FileManager
+              multiple
+              onChange={onChangeImages}
+              api={props.api}
+              triggerId={'size-color-image'}
+              trigger={<button type='button' data-target={`#size-color-image`} data-toggle='modal' className='btn btn-success pull-right'>Gallery Image &nbsp; <i className='fa fa-plus' /></button>}
+            />}
           </div>
           <div className='box-body'>
             <div className='row'>
-              <div className='col-md-3 size-image-item'>
-                <img src='http://localhost:3100/file-manager/blog-img3.jpg' />
-              </div>
-              <div className='col-md-3 size-image-item'>
-                <img src='http://localhost:3100/file-manager/blog-img3.jpg' />
-              </div>
-              <div className='col-md-3 size-image-item'>
-                <img src='http://localhost:3100/file-manager/blog-img3.jpg' />
-              </div>
-              <div className='col-md-3 size-image-item'>
-                <img src='http://localhost:3100/file-manager/blog-img3.jpg' />
-              </div>
-              <div className='col-md-3 size-image-item'>
-                <img src='http://localhost:3100/file-manager/blog-img3.jpg' />
-              </div>
-              <div className='col-md-3 size-image-item'>
-                <img src='http://localhost:3100/file-manager/blog-img3.jpg' />
-              </div>
+              {selectColor && selectColor.images && selectColor.images.length > 0 && selectColor.images.map(el => {
+                return (
+                  <div key={el.mainImage} className='col-xs-6 col-xm-3 col-md-3 col-lg-2 size-image-item' style={{ backgroundImage: `url('${domain}/${el.mainImage}')` }} />
+                )
+              })}
             </div>
           </div>
         </div>
@@ -224,13 +223,12 @@ const FormHandle = (props) => {
             triggerId={'size-color-image'}
             trigger={<a data-target={`#size-color-image`} data-toggle='modal' className='add-galleries-icon'><i className='fa fa-plus' /></a>}
           />} */}
-          
 
           {/* {value && value.map(el => {
             return <a key={el}><img src={`${domain}/${el}`} alt='...' className='margin' /><i data-img={el} onClick={deleteImage} className='fa fa-remove' /></a>
           })} */}
         </div>
-      
+
       </div>
     </div>
 
@@ -248,7 +246,7 @@ const FormHandle = (props) => {
           <div className='box-body'>
             <div className='row'>
               <div className='col-md-12'>
-              <Field.Select field={categoryId} name={categoryId.name} selectedValue={categoryId.value} options={categories} id='pro-categoryId-id' className='form-control' onChange={onChange} />
+                <Field.Select field={categoryId} name={categoryId.name} selectedValue={categoryId.value} options={categories} id='pro-categoryId-id' className='form-control' onChange={onChange} />
                 <Field.Input field={altImage} defaultValue={altImage.value} name={altImage.name} id='pro-altImage-id' placeholder={altImage.placeholder} className='form-control' onChange={onChange} />
                 <Field.Input field={metaTitle} defaultValue={metaTitle.value} name={metaTitle.name} id='pro-metaTitle-id' placeholder={metaTitle.placeholder} className='form-control' onChange={onChange} />
                 <Field.Area field={metaDescription} rows='4' name={metaDescription.name} defaultValue={metaDescription.value} id='pro-description-id' className='form-control' onChange={onChange} />
@@ -272,10 +270,9 @@ const FormHandle = (props) => {
             </div>
           </div>
         </div>
-        
-        
+
       </div>
-      
+
     </div>
   </Form>
 }
@@ -315,6 +312,7 @@ const FormWrapper = forwardRef((props, ref) => {
       })
     }
   }, [params])
+
   return formData && <FormHandle isAdd={formData.isAdd} categories={formData.categories} data={formData.data} api={api} />
 })
 
