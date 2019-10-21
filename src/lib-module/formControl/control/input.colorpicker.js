@@ -12,7 +12,7 @@ export default (props) => {
 
   const onChange = (colorValue) => {
     if (typeof props.onChange !== 'function') return
-    props.onChange({ ref, value: colorValue, name: ref.current.name })
+    props.onChange({ ref, value: colorValue, name: props.name })
   }
 
   const onChangeDelay = (colorValue) => {

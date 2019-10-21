@@ -77,5 +77,9 @@ export default {
   inStock: {
     name: 'inStock',
     text: 'In Stock'
+  },
+  size: {
+    name: 'size',
+    label: 'Sizes'
   }
 }

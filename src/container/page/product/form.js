@@ -1,18 +1,47 @@
 import React, {useEffect, useState, forwardRef} from 'react'
 import async from 'async'
 
-import { Basic } from 'form-layout'
+import { Product } from 'form-layout'
 import Form, { Field, Model as useModel } from 'lib-module/formControl'
 import STORELINK from '../../../helper/link'
 import { withContainer } from '../../../context'
 import modelForm from './model'
 import conf from '../../../../config'
-
-import Size from './size'
+import ModalSize from './sizeModal'
+import ModalColor from './colorModal'
 
 const domain = conf.server.domain
 
 const LINK = STORELINK.PRODUCTLINK
+
+const sizeData = [
+  {
+    colors: [
+      {
+        color: 'red',
+        images: ['', '']
+      },
+      {
+        color: 'blue',
+        images: ['', '']
+      }
+    ],
+    name: 'size X',
+  },
+  {
+    colors: [
+      {
+        color: 'black',
+        images: ['', '']
+      },
+      {
+        color: 'orange',
+        images: ['', '']
+      }
+    ],
+    name: 'size XL'
+  }
+]
 
 const FormHandle = (props) => {
   const {isAdd, data, categories, api} = props
@@ -20,10 +49,52 @@ const FormHandle = (props) => {
 
   const {image, gallery, title, code, price, priceSale,
     categoryId, description, content, altImage, metaTitle,
-    metaDescription, isActive, isNewProduct, isHot, inStock} = model
+    metaDescription, isActive, isNewProduct, isHot, inStock, size} = model
+
+  const [selectSize, setSelectSize] = React.useState(size.value && size.value.length > 0 ? size[0] : null)
+  const [selectColor, setSelectColor] = React.useState(selectSize && selectSize.colors ? selectSize.colors[0] : null)
 
   const onChange = ({name, value}) => {
     model.validate(name, value).then(() => model.setValue(name, value))
+  }
+
+  const onChangeSize = ({name, value}) => {
+    let sizeValue = _.clone(size.value) || []
+    sizeValue.push({ name: value , colors: []})
+    model.validate(name, sizeValue).then(() => model.setValue(name, sizeValue))
+    if (!selectSize) {
+      setSelectSize(sizeValue[0])
+    }
+  }
+
+  const onChangeColor = ({ value, name , selectSize }) => {
+    const sizeValue = _.clone(size.value)
+    var index = _.findIndex(sizeValue, selectSize)
+
+    let sizes = sizeValue[index]
+    let colors = sizes.colors
+    colors.push({ color: value, images: []})
+    sizes.colors = colors
+
+    sizeValue[index] = sizes
+
+    model.validate(name, sizeValue).then(() => model.setValue(name, sizeValue))
+    if (!selectColor || selectColor.length <= 0) setSelectColor(sizeValue[index].colors[0])
+
+  }
+
+  const onSelectSize = (e) => {
+    const sizeName = e.currentTarget.getAttribute('data-size')
+    const sizeValue = _.clone(size.value)
+    const selected = sizeValue.find(el => el.name ===sizeName)
+    setSelectSize(selected)
+  }
+
+  const onChangeImages = (data) => {
+    const sizeValue = _.clone(size.value)
+    const selectCl = _.clone(selectColor)
+    selectCl.images.push()
+    console.log('selectColor', selectColor)
   }
 
   const onSubmit = (e) => {
@@ -49,60 +120,162 @@ const FormHandle = (props) => {
   let hotChecked = isHot.value
   let inStockChecked = inStock.value
   var linkImg = (image && image.value) ? domain + '/' + image.value : 'http://placehold.it/250x150'
+
   return <Form
-    Layout={Basic}
+    Layout={Product}
     title='Product Form'
     cancle={LINK.GRID}
     onSubmit={onSubmit}
     formValid={model.valid}
   >
     <div className='row'>
-      <div className='col-md-4'>
-        <Field.FileImage id='pro-modal-upload' name={image.name} field={image} value={linkImg} title='Upload Image' api={api} onChange={onChange} />
-      </div>
-    </div>
-    <div className='row'>
       <div className='col-md-12'>
-        <Field.FileGalleries id='pro-modal-galleries' value={gallery.value} name={gallery.name} field={gallery} title='Upload Image' api={api} onChange={onChange} />
+        <div className='box box-primary'>
+          <div className='box-header with-border'>
+            <h3 className='box-title'>Info</h3>
+          </div>
+          <div className='box-body'>
+            <div className='row'>
+              <div className='col-md-3'>
+              <Field.FileImage id='pro-modal-upload' name={image.name} field={image} value={linkImg} title='Upload Image' api={api} onChange={onChange} />
+              </div>
+              <div className='col-md-9'>
+                <Field.Input field={title} defaultValue={title.value} name={title.name} id='pro-title-id' placeholder={title.placeholder} className='form-control' onChange={onChange} />
+                <Field.Input field={code} defaultValue={code.value} name={code.name} id='pro-code-id' placeholder={code.placeholder} className='form-control' onChange={onChange} />
+                
+                <div className='row'>
+                  <div className='col-md-6'>
+                    <Field.Input field={price} defaultValue={price.value} name={price.name} id='pro-price-id' placeholder={price.placeholder} className='form-control' onChange={onChange} />
+                  </div>
+                  <div className='col-md-6'>
+                    <Field.Input field={priceSale} defaultValue={priceSale.value} name={priceSale.name} id='pro-priceSale-id' placeholder={priceSale.placeholder} className='form-control' onChange={onChange} />
+                  </div>
+                  <div className='col-md-12 groups-size'>
+                    <div className='form-group'>
+                      <label>Size</label>
+                      {size.value && size.value.map(el => {
+                        const className = el.name === selectSize.name ? 'btn bg-default margin btn-size-active' : 'btn bg-default margin'
+                        return <button key={el.name} data-size={el.name} onClick={onSelectSize} type='button' className={className}>{el.name} <span className='badge bg-green badge-size-remove'><i className='fa fa-remove' /></span></button>
+                      })}
+                      {/* <button type='button' className='btn bg-default margin'>.btn.bg-orange <span className='badge bg-green badge-size-remove'><i className='fa fa-remove' /></span></button>
+                      <button type='button' className='btn bg-default margin'>.btn.bg-orange <span className='badge bg-green badge-size-remove'><i className='fa fa-remove' /></span></button> */}
+                      {/* <button type='button' className='btn bg-orange margin'><i className='fa fa-plus' /></button> */}
+                      <ModalSize name={size.name} onSubmit={onChangeSize} />
+                    </div>
+
+                    <div className='form-group'>
+                      <label>Color follow size</label>
+                      {selectSize && selectSize.colors.length > 0 && selectSize.colors.map(el => {
+                        const className = el.color === selectColor.color ? 'color-by-size color-by-size-active' : 'color-by-size'
+                        return <a key={el.color} className={className} style={{ backgroundColor: el.color}} />
+                      })} 
+                      {/* <a className='color-by-size color-by-size-active' />
+                      <a className='color-by-size' /> */}
+                      {selectSize && <ModalColor onSubmit={onChangeColor} name={size.name} selectSize={selectSize} />}
+                    </div>
+                  </div>
+                  
+                </div>
+                
+              </div>
+            </div>
+            
+          </div>
+        </div>
       </div>
     </div>
 
+
     <div className='row'>
       <div className='col-md-12'>
+        <div className='box box-primary'>
+          <div className='box-header with-border'>
+            <h3 className='box-title'>Gallery Image</h3>
+          </div>
+          <div className='box-body'>
+            <div className='row'>
+              <div className='col-md-3 size-image-item'>
+                <img src='http://localhost:3100/file-manager/blog-img3.jpg' />
+              </div>
+              <div className='col-md-3 size-image-item'>
+                <img src='http://localhost:3100/file-manager/blog-img3.jpg' />
+              </div>
+              <div className='col-md-3 size-image-item'>
+                <img src='http://localhost:3100/file-manager/blog-img3.jpg' />
+              </div>
+              <div className='col-md-3 size-image-item'>
+                <img src='http://localhost:3100/file-manager/blog-img3.jpg' />
+              </div>
+              <div className='col-md-3 size-image-item'>
+                <img src='http://localhost:3100/file-manager/blog-img3.jpg' />
+              </div>
+              <div className='col-md-3 size-image-item'>
+                <img src='http://localhost:3100/file-manager/blog-img3.jpg' />
+              </div>
+            </div>
+          </div>
+        </div>
         {/* <Field.FileGalleries id='pro-modal-galleries' value={gallery.value} name={gallery.name} field={gallery} title='Upload Image' api={api} onChange={onChange} /> */}
+        <div className='timeline-body'>
+          {/* {selectColor && <Field.FileManager
+            multiple
+            api={props.api}
+            onChange={onChangeImages}
+            triggerId={'size-color-image'}
+            trigger={<a data-target={`#size-color-image`} data-toggle='modal' className='add-galleries-icon'><i className='fa fa-plus' /></a>}
+          />} */}
+          
+
+          {/* {value && value.map(el => {
+            return <a key={el}><img src={`${domain}/${el}`} alt='...' className='margin' /><i data-img={el} onClick={deleteImage} className='fa fa-remove' /></a>
+          })} */}
+        </div>
+      
+      </div>
+    </div>
+
+    {/* <div className='row'>
+      <div className='col-md-12'>
         <Size />
       </div>
-    </div>
+    </div> */}
     <div className='row'>
-      <div className='col-md-6'>
-
-        <Field.Input field={title} defaultValue={title.value} name={title.name} id='pro-title-id' placeholder={title.placeholder} className='form-control' onChange={onChange} />
-        <Field.Input field={code} defaultValue={code.value} name={code.name} id='pro-code-id' placeholder={code.placeholder} className='form-control' onChange={onChange} />
-        <Field.Select field={categoryId} name={categoryId.name} selectedValue={categoryId.value} options={categories} id='pro-categoryId-id' className='form-control' onChange={onChange} />
-        <Field.Input field={price} defaultValue={price.value} name={price.name} id='pro-price-id' placeholder={price.placeholder} className='form-control' onChange={onChange} />
-        <Field.Input field={priceSale} defaultValue={priceSale.value} name={priceSale.name} id='pro-priceSale-id' placeholder={priceSale.placeholder} className='form-control' onChange={onChange} />
-      </div>
-      <div className='col-md-6'>
-        <Field.Input field={altImage} defaultValue={altImage.value} name={altImage.name} id='pro-altImage-id' placeholder={altImage.placeholder} className='form-control' onChange={onChange} />
-        <Field.Input field={metaTitle} defaultValue={metaTitle.value} name={metaTitle.name} id='pro-metaTitle-id' placeholder={metaTitle.placeholder} className='form-control' onChange={onChange} />
-        <Field.Area field={metaDescription} rows='4' name={metaDescription.name} defaultValue={metaDescription.value} id='pro-description-id' className='form-control' onChange={onChange} />
-      </div>
       <div className='col-md-12'>
-        <Field.Area field={description} rows='6' name={description.name} defaultValue={description.value} id='pro-description-id' className='form-control' onChange={onChange} />
-        <Field.Tiny field={content} id='product-content' name={content.name} defaultValue={content.value} onChange={onChange} />
+        <div className='box box-primary'>
+          <div className='box-header with-border'>
+            <h3 className='box-title'>Content</h3>
+          </div>
+          <div className='box-body'>
+            <div className='row'>
+              <div className='col-md-12'>
+              <Field.Select field={categoryId} name={categoryId.name} selectedValue={categoryId.value} options={categories} id='pro-categoryId-id' className='form-control' onChange={onChange} />
+                <Field.Input field={altImage} defaultValue={altImage.value} name={altImage.name} id='pro-altImage-id' placeholder={altImage.placeholder} className='form-control' onChange={onChange} />
+                <Field.Input field={metaTitle} defaultValue={metaTitle.value} name={metaTitle.name} id='pro-metaTitle-id' placeholder={metaTitle.placeholder} className='form-control' onChange={onChange} />
+                <Field.Area field={metaDescription} rows='4' name={metaDescription.name} defaultValue={metaDescription.value} id='pro-description-id' className='form-control' onChange={onChange} />
+              </div>
+              <div className='col-md-12'>
+                <Field.Area field={description} rows='6' name={description.name} defaultValue={description.value} id='pro-description-id' className='form-control' onChange={onChange} />
+                <Field.Tiny field={content} id='product-content' name={content.name} defaultValue={content.value} onChange={onChange} />
+              </div>
+              <div className='col-md-2'>
+                <Field.CheckBox field={isActive} id='pro-active-id' defaultChecked={activeChecked} value={isActive.value} name={isActive.name} text={isActive.text} onChange={onChange} />
+              </div>
+              <div className='col-md-2'>
+                <Field.CheckBox field={isNewProduct} id='pro-isNewProduct-id' defaultChecked={newProductChecked} value={isNewProduct.value} name={isNewProduct.name} text={isNewProduct.text} onChange={onChange} />
+              </div>
+              <div className='col-md-2'>
+                <Field.CheckBox field={isHot} id='pro-isHot-id' defaultChecked={hotChecked} value={isHot.value} name={isHot.name} text={isHot.text} onChange={onChange} />
+              </div>
+              <div className='col-md-2'>
+                <Field.CheckBox field={inStock} id='pro-isHot-id' defaultChecked={inStockChecked} value={inStock.value} name={inStock.name} text={inStock.text} onChange={onChange} />
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        
       </div>
-      <div className='col-md-2'>
-        <Field.CheckBox field={isActive} id='pro-active-id' defaultChecked={activeChecked} value={isActive.value} name={isActive.name} text={isActive.text} onChange={onChange} />
-      </div>
-      <div className='col-md-2'>
-        <Field.CheckBox field={isNewProduct} id='pro-isNewProduct-id' defaultChecked={newProductChecked} value={isNewProduct.value} name={isNewProduct.name} text={isNewProduct.text} onChange={onChange} />
-      </div>
-      <div className='col-md-2'>
-        <Field.CheckBox field={isHot} id='pro-isHot-id' defaultChecked={hotChecked} value={isHot.value} name={isHot.name} text={isHot.text} onChange={onChange} />
-      </div>
-      <div className='col-md-2'>
-        <Field.CheckBox field={inStock} id='pro-isHot-id' defaultChecked={inStockChecked} value={inStock.value} name={inStock.name} text={inStock.text} onChange={onChange} />
-      </div>
+      
     </div>
   </Form>
 }

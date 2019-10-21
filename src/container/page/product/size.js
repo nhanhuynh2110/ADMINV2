@@ -65,7 +65,7 @@ export default (props) => {
       </div>
     </div>
 
-    <div className='modal' id='modal-default'>
+    <div className='modal product-size-modal' id='modal-default'>
       <Form
         onHandle={onSubmit}
         Layout={FormSize}

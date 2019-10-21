@@ -19,6 +19,7 @@ const Model = (formModels, data) => {
 
   // // update value field
   const setValue = (fieldName, value) => {
+    console.log('value11111111111', value)
     if (newModel[fieldName].value === value) return
     newModel[fieldName].value = value
 

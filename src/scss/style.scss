@@ -4,6 +4,7 @@
 // @import './css/'
 
 @import './fileManager';
+@import './size';
 .wrapper {
   min-height: 100%;
 }
@@ -36,3 +37,5 @@
 .position-absolute { position: absolute; }
 .position-static { position: static; }
 .position-fixed { position: fixed; }
+
+.border-none { border: none; }
