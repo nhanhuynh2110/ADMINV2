@@ -24,8 +24,11 @@ const FormHandle = (props) => {
     categoryId, description, content, altImage, metaTitle,
     metaDescription, isActive, isNewProduct, isHot, inStock, size} = model
 
-  const [selectSize, setSelectSize] = React.useState(size.value && size.value.length > 0 ? size.value[0] : null)
-  const [selectColor, setSelectColor] = React.useState(selectSize && selectSize.colors ? selectSize.colors[0] : null)
+    const [selectCurrent, setSelectCurrent] = React.useState({
+      selectSize: null,
+      selectColor: null,
+      id: null
+    })
 
   const onChange = ({name, value}) => {
     model.validate(name, value).then(() => model.setValue(name, value))
@@ -34,16 +37,61 @@ const FormHandle = (props) => {
   const onChangeSize = ({name, value}) => {
     let sizeValue = _.clone(size.value) || []
     sizeValue.push({ name: value, colors: [] })
-    console.log('sizeValue', sizeValue)
     model.validate(name, sizeValue).then(() => model.setValue(name, sizeValue))
-    if (!selectSize) {
-      setSelectSize(sizeValue[0])
+    if (!selectCurrent.selectSize) {
+      setSelectCurrent({
+        selectSize: sizeValue[0],
+        selectColor: sizeValue[0].colors && sizeValue[0].colors.length > 0 ? sizeValue[0].colors[0] : null
+      })
     }
+  }
+
+  const deleteSize = (sizeName) => {
+    let sizeValueOld = _.clone(size.value)
+    let selectCurrentOld = _.clone(selectCurrent)
+    let selectSizeCurrent = _.clone(selectCurrent.selectSize)
+    
+    let sizeValue = sizeValueOld.filter(el => el.name !== sizeName)
+    if (sizeName === selectSizeCurrent.name) {
+      
+      if (sizeValue.length > 0) {
+        
+        const newSelectedSize = sizeValue && sizeValue.length > 0 ? sizeValue[0] : null
+        const newSelectColor = newSelectedSize && newSelectedSize.colors && newSelectedSize.colors.length > 0 ? newSelectedSize.colors[0] : null
+
+        selectCurrentOld.selectSize = newSelectedSize
+        selectCurrentOld.selectColor = newSelectColor
+        setSelectCurrent(selectCurrentOld)
+        model.validate(size.name, sizeValue).then(() => model.setValue(size.name, sizeValue))
+      }
+    } else {
+      model.validate(size.name, sizeValue).then(() => model.setValue(size.name, sizeValue))
+    }
+  }
+
+  const deleteColor = (colorName) => {
+    let sizeValue = _.clone(size.value)
+    let selectCurrentOld = _.clone(selectCurrent)
+    let selectSizeCurrent = _.clone(selectCurrent.selectSize)
+
+    const newColors = selectSizeCurrent.colors.filter(el => el.color !== colorName)
+    selectSizeCurrent.colors = newColors
+    selectCurrentOld.selectSize = selectSizeCurrent
+    if (colorName === selectCurrent.selectColor.color) {
+      selectCurrentOld.selectColor = newColors && newColors.length > 0 ? newColors[0] : null
+    } else {
+      selectCurrentOld.selectColor = selectCurrent.selectColor
+    }
+    setSelectCurrent(selectCurrentOld)
+    const index = sizeValue.findIndex(el => el.name === selectSizeCurrent.name)
+    sizeValue[index] = selectSizeCurrent
+    model.validate(size.name, sizeValue).then(() => model.setValue(size.name, sizeValue))
+
   }
 
   const onChangeColor = ({ value, name, selectSize }) => {
     const sizeValue = _.clone(size.value)
-    var index = _.findIndex(sizeValue, selectSize)
+    var index = _.findIndex(sizeValue, selectCurrent.selectSize)
 
     let sizes = sizeValue[index]
     let colors = sizes.colors
@@ -52,29 +100,38 @@ const FormHandle = (props) => {
 
     sizeValue[index] = sizes
 
-    if (!selectColor || selectColor.length <= 0) setSelectColor(sizeValue[index].colors[0])
-    model.validate(name, sizeValue).then(() => model.setValue(name, sizeValue))
+    if (!selectCurrent.selectColor || selectCurrent.selectColor.length <= 0) {
+      setSelectCurrent({
+        selectSize: selectCurrent.selectSize,
+        selectColor: sizeValue[index].colors[0]
+      })
+    }
+    model.validate(size.name, sizeValue).then(() => model.setValue(size.name, sizeValue))
   }
 
-  const onSelectSize = (e) => {
-    const sizeName = e.currentTarget.getAttribute('data-size')
+  const onSelectSize = (sizeName) => {
     const sizeValue = _.clone(size.value)
     const selected = sizeValue.find(el => el.name === sizeName)
-    setSelectSize(selected)
-
-    if (selected.colors) setSelectColor(selected.colors[0])
+    setSelectCurrent({
+      selectSize: selected,
+      selectColor: selected.colors ? selected.colors[0] : null
+    })
   }
 
   const onSelectColor = (e) => {
     const color = e.currentTarget.getAttribute('data-color')
-    const selectColor = selectSize.colors.find(el => el.color === color)
-    setSelectColor(selectColor)
+    const newSelectColor = selectCurrent.selectSize.colors.find(el => el.color === color)
+    setSelectCurrent({
+      selectSize: selectCurrent.selectSize,
+      selectColor: newSelectColor
+    })
+    // setSelectColor(selectColor)
   }
 
   const onChangeImages = ({paths}) => {
     const sizeValue = _.clone(size.value)
-    const selectSizeCurrent = _.clone(selectSize)
-    const selectCl = _.clone(selectColor)
+    const selectSizeCurrent = _.clone(selectCurrent.selectSize)
+    const selectCl = _.clone(selectCurrent.selectColor)
     const imgs = selectCl.images
     selectCl.images.push()
     const imagesArr = paths.map(el => {
@@ -91,9 +148,12 @@ const FormHandle = (props) => {
 
     const selectSizeCurrentIndex = sizeValue.findIndex(el => el.name === selectSizeCurrent.name)
     sizeValue[selectSizeCurrentIndex] = selectSizeCurrent
-
-    setSelectSize(selectSizeCurrent)
-    setSelectColor(selectCl)
+    setSelectCurrent({
+      selectSize: selectSizeCurrent,
+      selectColor: selectCl
+    })
+    // setSelectSize(selectSizeCurrent)
+    // setSelectColor(selectCl)
 
     model.validate(size.name, sizeValue).then(() => model.setValue(size.name, sizeValue))
   }
@@ -119,8 +179,10 @@ const FormHandle = (props) => {
 
   React.useEffect(() => {
     if (size.value) {
-      setSelectSize(size.value && size.value.length > 0 ? size.value[0] : null)
-      setSelectColor(size.value && size.value[0] && size.value[0].colors ? size.value[0].colors[0] : null)
+      setSelectCurrent({
+        selectSize: size.value && size.value.length > 0 ? size.value[0] : null,
+        selectColor: size.value && size.value[0] && size.value[0].colors ? size.value[0].colors[0] : null
+      })
     }
   }, [size])
 
@@ -129,6 +191,8 @@ const FormHandle = (props) => {
   let hotChecked = isHot.value
   let inStockChecked = inStock.value
   var linkImg = (image && image.value) ? domain + '/' + image.value : 'http://placehold.it/250x150'
+
+  
   return <Form
     Layout={Product}
     title='Product Form'
@@ -161,22 +225,28 @@ const FormHandle = (props) => {
                   <div className='col-md-12 groups-size'>
                     <div className='form-group'>
                       <label>Size</label>
-                      {size.value && selectSize && size.value.map(el => {
-                        const className = el.name === selectSize.name ? 'btn bg-default margin btn-size-active' : 'btn bg-default margin'
-                        return <button key={el.name} data-size={el.name} onClick={onSelectSize} type='button' className={className}>{el.name} <span className='badge bg-green badge-size-remove'><i className='fa fa-remove' /></span></button>
+                      {size.value &&  selectCurrent.selectSize && size.value.map((el, k) => {
+                        const className = el.name === selectCurrent.selectSize.name ? 'btn bg-default margin btn-size-active' : 'btn bg-default margin'
+                        return <span key={el.name} className='position-relative display-inline-block'>
+                          <button data-size={el.name} onClick={() => onSelectSize(el.name)} type='button' className={className}>
+                            {el.name}
+                          </button>
+                          <span data-key={k} onClick={() => deleteSize(el.name)} className='badge bg-green badge-size-remove'><i className='fa fa-remove' /></span>
+                        </span>
                       })}
                       <ModalSize name={size.name} onSubmit={onChangeSize} />
                     </div>
 
                     <div className='form-group'>
                       <label>Color follow size</label>
-                      {selectSize && selectSize.colors.length > 0 && selectSize.colors.map(el => {
-                        const className = el.color === selectColor.color ? 'color-by-size color-by-size-active' : 'color-by-size'
-                        return <a key={el.color} data-color={el.color} className={className} onClick={onSelectColor} style={{ backgroundColor: el.color }} />
+                      {selectCurrent.selectSize && selectCurrent.selectSize.colors && selectCurrent.selectSize.colors.length > 0 && selectCurrent.selectSize.colors.map((el, k) => {
+                        const className = el.color === selectCurrent.selectColor.color ? 'color-by-size color-by-size-active' : 'color-by-size'
+                        return <span key={k} className='position-relative display-inline-block'>
+                            <a data-color={el.color} className={className} onClick={onSelectColor} style={{ backgroundColor: el.color }} />
+                            <span onClick={() => deleteColor(el.color)} className='badge bg-green badge-color-remove'><i className='fa fa-remove' /></span>
+                          </span>
                       })}
-                      {/* <a className='color-by-size color-by-size-active' />
-                      <a className='color-by-size' /> */}
-                      {selectSize && <ModalColor onSubmit={onChangeColor} name={size.name} selectSize={selectSize} />}
+                      {selectCurrent.selectSize && <ModalColor onSubmit={onChangeColor} name={size.name} selectSize={selectCurrent.selectSize} />}
                     </div>
                   </div>
 
@@ -196,7 +266,7 @@ const FormHandle = (props) => {
           <div className='box-header with-border'>
             <h3 className='box-title'>Gallery Image</h3>
             {/* <button className='btn btn-success pull-right'>Upload Images</button> */}
-            {selectColor && <Field.FileManager
+            {selectCurrent.selectColor && <Field.FileManager
               multiple
               onChange={onChangeImages}
               api={props.api}
@@ -206,9 +276,9 @@ const FormHandle = (props) => {
           </div>
           <div className='box-body'>
             <div className='row'>
-              {selectColor && selectColor.images && selectColor.images.length > 0 && selectColor.images.map(el => {
+              {selectCurrent.selectColor && selectCurrent.selectColor.images && selectCurrent.selectColor.images.length > 0 && selectCurrent.selectColor.images.map((el, k) => {
                 return (
-                  <div key={el.mainImage} className='col-xs-6 col-xm-3 col-md-3 col-lg-2 size-image-item' style={{ backgroundImage: `url('${domain}/${el.mainImage}')` }} />
+                  <div key={k} className='col-xs-6 col-xm-3 col-md-3 col-lg-2 size-image-item' style={{ backgroundImage: `url('${domain}/${el.mainImage}')` }} />
                 )
               })}
             </div>
