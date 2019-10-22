@@ -11,10 +11,16 @@ import modelForm from './model'
 import conf from '../../../../config'
 import ModalSize from './sizeModal'
 import ModalColor from './colorModal'
+import SidebarImage from './sidebarImages'
 
 const domain = conf.server.domain
 
 const LINK = STORELINK.PRODUCTLINK
+
+const fileManagerTarget = {
+  mainImage: 'mainImage',
+  galleryImages: 'galleryImages'
+}
 
 const FormHandle = (props) => {
   const {isAdd, data, categories, api} = props
@@ -24,11 +30,59 @@ const FormHandle = (props) => {
     categoryId, description, content, altImage, metaTitle,
     metaDescription, isActive, isNewProduct, isHot, inStock, size} = model
 
-    const [selectCurrent, setSelectCurrent] = React.useState({
-      selectSize: null,
-      selectColor: null,
-      id: null
+  const [selectCurrent, setSelectCurrent] = React.useState({
+    selectSize: null,
+    selectColor: null,
+    id: null
+  })
+
+  const [currentFileManager, setCurrentFileManager] = React.useState({
+    name: null,
+    multiple: false
+  })
+
+  const [isImgsSideBar, setImgsSideBar] = React.useState(false)
+  const [groupImage, setGroupImage] = React.useState(null)
+
+  const showFileManager = (target, multiple = false) => {
+    setCurrentFileManager({ name: target, multiple })
+    document.getElementById('click-file-manager').click()
+  }
+
+  const fileManagerChange = (files) => {
+    const targetName = currentFileManager.name
+    const fileData = currentFileManager.multiple ? files.paths : files.path
+    if (targetName === fileManagerTarget.mainImage) onChange({ name: image.name, value: fileData })
+    else if (targetName === fileManagerTarget.galleryImages) onChangeGallery(fileData)
+  }
+
+  const onChangeGallery = (paths) => {
+    const sizeValue = _.clone(size.value)
+    const selectSizeCurrent = _.clone(selectCurrent.selectSize)
+    const selectCl = _.clone(selectCurrent.selectColor)
+    const imgs = selectCl.images
+    selectCl.images.push()
+    const imagesArr = paths.map(el => {
+      return {
+        mainImage: el,
+        sliderImage: '',
+        sliderDetailImage: '',
+        listImage: ''
+      }
     })
+    selectCl.images = [...imgs, ...imagesArr]
+    const index = selectSizeCurrent.colors.findIndex(el => el.color === selectCl.color)
+    selectSizeCurrent.colors[index] = selectCl
+
+    const selectSizeCurrentIndex = sizeValue.findIndex(el => el.name === selectSizeCurrent.name)
+    sizeValue[selectSizeCurrentIndex] = selectSizeCurrent
+    setSelectCurrent({
+      selectSize: selectSizeCurrent,
+      selectColor: selectCl
+    })
+
+    model.validate(size.name, sizeValue).then(() => model.setValue(size.name, sizeValue))
+  }
 
   const onChange = ({name, value}) => {
     model.validate(name, value).then(() => model.setValue(name, value))
@@ -50,12 +104,9 @@ const FormHandle = (props) => {
     let sizeValueOld = _.clone(size.value)
     let selectCurrentOld = _.clone(selectCurrent)
     let selectSizeCurrent = _.clone(selectCurrent.selectSize)
-    
     let sizeValue = sizeValueOld.filter(el => el.name !== sizeName)
     if (sizeName === selectSizeCurrent.name) {
-      
       if (sizeValue.length > 0) {
-        
         const newSelectedSize = sizeValue && sizeValue.length > 0 ? sizeValue[0] : null
         const newSelectColor = newSelectedSize && newSelectedSize.colors && newSelectedSize.colors.length > 0 ? newSelectedSize.colors[0] : null
 
@@ -86,7 +137,6 @@ const FormHandle = (props) => {
     const index = sizeValue.findIndex(el => el.name === selectSizeCurrent.name)
     sizeValue[index] = selectSizeCurrent
     model.validate(size.name, sizeValue).then(() => model.setValue(size.name, sizeValue))
-
   }
 
   const onChangeColor = ({ value, name, selectSize }) => {
@@ -128,36 +178,6 @@ const FormHandle = (props) => {
     // setSelectColor(selectColor)
   }
 
-  const onChangeImages = ({paths}) => {
-    const sizeValue = _.clone(size.value)
-    const selectSizeCurrent = _.clone(selectCurrent.selectSize)
-    const selectCl = _.clone(selectCurrent.selectColor)
-    const imgs = selectCl.images
-    selectCl.images.push()
-    const imagesArr = paths.map(el => {
-      return {
-        mainImage: el,
-        sliderImage: '',
-        sliderDetailImage: '',
-        listImage: ''
-      }
-    })
-    selectCl.images = [...imgs, ...imagesArr]
-    const index = selectSizeCurrent.colors.findIndex(el => el.color === selectCl.color)
-    selectSizeCurrent.colors[index] = selectCl
-
-    const selectSizeCurrentIndex = sizeValue.findIndex(el => el.name === selectSizeCurrent.name)
-    sizeValue[selectSizeCurrentIndex] = selectSizeCurrent
-    setSelectCurrent({
-      selectSize: selectSizeCurrent,
-      selectColor: selectCl
-    })
-    // setSelectSize(selectSizeCurrent)
-    // setSelectColor(selectCl)
-
-    model.validate(size.name, sizeValue).then(() => model.setValue(size.name, sizeValue))
-  }
-
   const onSubmit = (e) => {
     e.preventDefault()
     const formData = model.data
@@ -191,160 +211,164 @@ const FormHandle = (props) => {
   let hotChecked = isHot.value
   let inStockChecked = inStock.value
   var linkImg = (image && image.value) ? domain + '/' + image.value : 'http://placehold.it/250x150'
-
-  
-  return <Form
-    Layout={Product}
-    title='Product Form'
-    cancle={LINK.GRID}
-    onSubmit={onSubmit}
-    formValid={model.valid}
-  >
-    <div className='row'>
-      <div className='col-md-12'>
-        <div className='box box-primary'>
-          <div className='box-header with-border'>
-            <h3 className='box-title'>Info</h3>
-          </div>
-          <div className='box-body'>
-            <div className='row'>
-              <div className='col-md-3'>
-                <Field.FileImage id='pro-modal-upload' name={image.name} field={image} value={linkImg} title='Upload Image' api={api} onChange={onChange} />
-              </div>
-              <div className='col-md-9'>
-                <Field.Input field={title} defaultValue={title.value} name={title.name} id='pro-title-id' placeholder={title.placeholder} className='form-control' onChange={onChange} />
-                <Field.Input field={code} defaultValue={code.value} name={code.name} id='pro-code-id' placeholder={code.placeholder} className='form-control' onChange={onChange} />
-
-                <div className='row'>
-                  <div className='col-md-6'>
-                    <Field.Input field={price} defaultValue={price.value} name={price.name} id='pro-price-id' placeholder={price.placeholder} className='form-control' onChange={onChange} />
+  return <React.Fragment>
+    <Form
+      Layout={Product}
+      title='Product Form'
+      cancle={LINK.GRID}
+      onSubmit={onSubmit}
+      formValid={model.valid}
+    >
+      <div className='row'>
+        <div className='col-md-12'>
+          <div className='box box-primary'>
+            <div className='box-header with-border'>
+              <h3 className='box-title'>Info</h3>
+            </div>
+            <div className='box-body'>
+              <div className='row'>
+                <div className='col-md-3'>
+                  <img className='w-100 file-manager-image' src={linkImg} />
+                  <div className='file-manager-upload-image' onClick={() => showFileManager(fileManagerTarget.mainImage)}>
+                    <i className='fa fa-camera' />
                   </div>
-                  <div className='col-md-6'>
-                    <Field.Input field={priceSale} defaultValue={priceSale.value} name={priceSale.name} id='pro-priceSale-id' placeholder={priceSale.placeholder} className='form-control' onChange={onChange} />
-                  </div>
-                  <div className='col-md-12 groups-size'>
-                    <div className='form-group'>
-                      <label>Size</label>
-                      {size.value &&  selectCurrent.selectSize && size.value.map((el, k) => {
-                        const className = el.name === selectCurrent.selectSize.name ? 'btn bg-default margin btn-size-active' : 'btn bg-default margin'
-                        return <span key={el.name} className='position-relative display-inline-block'>
-                          <button data-size={el.name} onClick={() => onSelectSize(el.name)} type='button' className={className}>
-                            {el.name}
-                          </button>
-                          <span data-key={k} onClick={() => deleteSize(el.name)} className='badge bg-green badge-size-remove'><i className='fa fa-remove' /></span>
-                        </span>
-                      })}
-                      <ModalSize name={size.name} onSubmit={onChangeSize} />
+                </div>
+                <div className='col-md-9'>
+                  <Field.Input field={title} defaultValue={title.value} name={title.name} id='pro-title-id' placeholder={title.placeholder} className='form-control' onChange={onChange} />
+                  <Field.Input field={code} defaultValue={code.value} name={code.name} id='pro-code-id' placeholder={code.placeholder} className='form-control' onChange={onChange} />
+
+                  <div className='row'>
+                    <div className='col-md-6'>
+                      <Field.Input field={price} defaultValue={price.value} name={price.name} id='pro-price-id' placeholder={price.placeholder} className='form-control' onChange={onChange} />
                     </div>
+                    <div className='col-md-6'>
+                      <Field.Input field={priceSale} defaultValue={priceSale.value} name={priceSale.name} id='pro-priceSale-id' placeholder={priceSale.placeholder} className='form-control' onChange={onChange} />
+                    </div>
+                    <div className='col-md-12 groups-size'>
+                      <div className='form-group'>
+                        <label>Size</label>
+                        {size.value && selectCurrent.selectSize && size.value.map((el, k) => {
+                          const className = el.name === selectCurrent.selectSize.name ? 'btn bg-default margin btn-size-active' : 'btn bg-default margin'
+                          return <span key={el.name} className='position-relative display-inline-block'>
+                            <button data-size={el.name} onClick={() => onSelectSize(el.name)} type='button' className={className}>
+                              {el.name}
+                            </button>
+                            <span data-key={k} onClick={() => deleteSize(el.name)} className='badge bg-green badge-size-remove'><i className='fa fa-remove' /></span>
+                          </span>
+                        })}
+                        <ModalSize name={size.name} onSubmit={onChangeSize} />
+                      </div>
 
-                    <div className='form-group'>
-                      <label>Color follow size</label>
-                      {selectCurrent.selectSize && selectCurrent.selectSize.colors && selectCurrent.selectSize.colors.length > 0 && selectCurrent.selectSize.colors.map((el, k) => {
-                        const className = el.color === selectCurrent.selectColor.color ? 'color-by-size color-by-size-active' : 'color-by-size'
-                        return <span key={k} className='position-relative display-inline-block'>
+                      <div className='form-group'>
+                        <label>Color follow size</label>
+                        {selectCurrent.selectSize && selectCurrent.selectSize.colors && selectCurrent.selectSize.colors.length > 0 && selectCurrent.selectSize.colors.map((el, k) => {
+                          const className = el.color === selectCurrent.selectColor.color ? 'color-by-size color-by-size-active' : 'color-by-size'
+                          return <span key={k} className='position-relative display-inline-block'>
                             <a data-color={el.color} className={className} onClick={onSelectColor} style={{ backgroundColor: el.color }} />
                             <span onClick={() => deleteColor(el.color)} className='badge bg-green badge-color-remove'><i className='fa fa-remove' /></span>
                           </span>
-                      })}
-                      {selectCurrent.selectSize && <ModalColor onSubmit={onChangeColor} name={size.name} selectSize={selectCurrent.selectSize} />}
+                        })}
+                        {selectCurrent.selectSize && <ModalColor onSubmit={onChangeColor} name={size.name} selectSize={selectCurrent.selectSize} />}
+                      </div>
                     </div>
+
                   </div>
 
                 </div>
-
               </div>
-            </div>
 
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div className='row'>
-      <div className='col-md-12'>
-        <div className='box box-primary'>
-          <div className='box-header with-border'>
-            <h3 className='box-title'>Gallery Image</h3>
-            {/* <button className='btn btn-success pull-right'>Upload Images</button> */}
-            {selectCurrent.selectColor && <Field.FileManager
-              multiple
-              onChange={onChangeImages}
-              api={props.api}
-              triggerId={'size-color-image'}
-              trigger={<button type='button' data-target={`#size-color-image`} data-toggle='modal' className='btn btn-success pull-right'>Gallery Image &nbsp; <i className='fa fa-plus' /></button>}
-            />}
-          </div>
-          <div className='box-body'>
-            <div className='row'>
-              {selectCurrent.selectColor && selectCurrent.selectColor.images && selectCurrent.selectColor.images.length > 0 && selectCurrent.selectColor.images.map((el, k) => {
-                return (
-                  <div key={k} className='col-xs-6 col-xm-3 col-md-3 col-lg-2 size-image-item' style={{ backgroundImage: `url('${domain}/${el.mainImage}')` }} />
-                )
-              })}
             </div>
           </div>
         </div>
-        {/* <Field.FileGalleries id='pro-modal-galleries' value={gallery.value} name={gallery.name} field={gallery} title='Upload Image' api={api} onChange={onChange} /> */}
-        <div className='timeline-body'>
-          {/* {selectColor && <Field.FileManager
-            multiple
-            api={props.api}
-            onChange={onChangeImages}
-            triggerId={'size-color-image'}
-            trigger={<a data-target={`#size-color-image`} data-toggle='modal' className='add-galleries-icon'><i className='fa fa-plus' /></a>}
-          />} */}
-
-          {/* {value && value.map(el => {
-            return <a key={el}><img src={`${domain}/${el}`} alt='...' className='margin' /><i data-img={el} onClick={deleteImage} className='fa fa-remove' /></a>
-          })} */}
-        </div>
-
       </div>
-    </div>
 
-    {/* <div className='row'>
-      <div className='col-md-12'>
-        <Size />
-      </div>
-    </div> */}
-    <div className='row'>
-      <div className='col-md-12'>
-        <div className='box box-primary'>
-          <div className='box-header with-border'>
-            <h3 className='box-title'>Content</h3>
-          </div>
-          <div className='box-body'>
-            <div className='row'>
-              <div className='col-md-12'>
-                <Field.Select field={categoryId} name={categoryId.name} selectedValue={categoryId.value} options={categories} id='pro-categoryId-id' className='form-control' onChange={onChange} />
-                <Field.Input field={altImage} defaultValue={altImage.value} name={altImage.name} id='pro-altImage-id' placeholder={altImage.placeholder} className='form-control' onChange={onChange} />
-                <Field.Input field={metaTitle} defaultValue={metaTitle.value} name={metaTitle.name} id='pro-metaTitle-id' placeholder={metaTitle.placeholder} className='form-control' onChange={onChange} />
-                <Field.Area field={metaDescription} rows='4' name={metaDescription.name} defaultValue={metaDescription.value} id='pro-description-id' className='form-control' onChange={onChange} />
-              </div>
-              <div className='col-md-12'>
-                <Field.Area field={description} rows='6' name={description.name} defaultValue={description.value} id='pro-description-id' className='form-control' onChange={onChange} />
-                <Field.Tiny field={content} id='product-content' name={content.name} defaultValue={content.value} onChange={onChange} />
-              </div>
-              <div className='col-md-2'>
-                <Field.CheckBox field={isActive} id='pro-active-id' defaultChecked={activeChecked} value={isActive.value} name={isActive.name} text={isActive.text} onChange={onChange} />
-              </div>
-              <div className='col-md-2'>
-                <Field.CheckBox field={isNewProduct} id='pro-isNewProduct-id' defaultChecked={newProductChecked} value={isNewProduct.value} name={isNewProduct.name} text={isNewProduct.text} onChange={onChange} />
-              </div>
-              <div className='col-md-2'>
-                <Field.CheckBox field={isHot} id='pro-isHot-id' defaultChecked={hotChecked} value={isHot.value} name={isHot.name} text={isHot.text} onChange={onChange} />
-              </div>
-              <div className='col-md-2'>
-                <Field.CheckBox field={inStock} id='pro-isHot-id' defaultChecked={inStockChecked} value={inStock.value} name={inStock.name} text={inStock.text} onChange={onChange} />
+      <div className='row'>
+        <div className='col-md-12'>
+          <div className='box box-primary'>
+            <div className='box-header with-border'>
+              <h3 className='box-title'>Gallery Image</h3>
+              {selectCurrent.selectColor && <button
+                onClick={() => showFileManager(fileManagerTarget.galleryImages, true)}
+                type='button'
+                className='btn btn-success pull-right'>
+                  Gallery Image &nbsp; <i className='fa fa-plus' />
+              </button>}
+            </div>
+            <div className='box-body'>
+              <div className='row'>
+                {selectCurrent.selectColor && selectCurrent.selectColor.images && selectCurrent.selectColor.images.length > 0 && selectCurrent.selectColor.images.map((el, k) => {
+                  return (
+                    <div onClick={() => {
+                      setGroupImage(el)
+                      setImgsSideBar(true)
+                    }} key={k} className='col-xs-6 col-xm-3 col-md-3 col-lg-2 size-image-item' style={{ backgroundImage: `url('${domain}/${el.mainImage}')` }} />
+                  )
+                })}
               </div>
             </div>
           </div>
         </div>
-
       </div>
 
-    </div>
-  </Form>
+      <div className='row'>
+        <div className='col-md-12'>
+          <div className='box box-primary'>
+            <div className='box-header with-border'>
+              <h3 className='box-title'>Content</h3>
+            </div>
+            <div className='box-body'>
+              <div className='row'>
+                <div className='col-md-12'>
+                  <Field.Select field={categoryId} name={categoryId.name} selectedValue={categoryId.value} options={categories} id='pro-categoryId-id' className='form-control' onChange={onChange} />
+                  <Field.Input field={altImage} defaultValue={altImage.value} name={altImage.name} id='pro-altImage-id' placeholder={altImage.placeholder} className='form-control' onChange={onChange} />
+                  <Field.Input field={metaTitle} defaultValue={metaTitle.value} name={metaTitle.name} id='pro-metaTitle-id' placeholder={metaTitle.placeholder} className='form-control' onChange={onChange} />
+                  <Field.Area field={metaDescription} rows='4' name={metaDescription.name} defaultValue={metaDescription.value} id='pro-description-id' className='form-control' onChange={onChange} />
+                </div>
+                <div className='col-md-12'>
+                  <Field.Area field={description} rows='6' name={description.name} defaultValue={description.value} id='pro-description-id' className='form-control' onChange={onChange} />
+                  <Field.Tiny field={content} id='product-content' name={content.name} defaultValue={content.value} onChange={onChange} />
+                </div>
+                <div className='col-md-2'>
+                  <Field.CheckBox field={isActive} id='pro-active-id' defaultChecked={activeChecked} value={isActive.value} name={isActive.name} text={isActive.text} onChange={onChange} />
+                </div>
+                <div className='col-md-2'>
+                  <Field.CheckBox field={isNewProduct} id='pro-isNewProduct-id' defaultChecked={newProductChecked} value={isNewProduct.value} name={isNewProduct.name} text={isNewProduct.text} onChange={onChange} />
+                </div>
+                <div className='col-md-2'>
+                  <Field.CheckBox field={isHot} id='pro-isHot-id' defaultChecked={hotChecked} value={isHot.value} name={isHot.name} text={isHot.text} onChange={onChange} />
+                </div>
+                <div className='col-md-2'>
+                  <Field.CheckBox field={inStock} id='pro-isHot-id' defaultChecked={inStockChecked} value={inStock.value} name={inStock.name} text={inStock.text} onChange={onChange} />
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+      {isImgsSideBar && groupImage && <SidebarImage
+        groupImage={groupImage}
+        api={props.api}
+        closeSideBar={() => {
+          setImgsSideBar(false)
+          setGroupImage(null)
+        }}
+        showFileManager={() => {}} />}
+      <Field.FileManager
+        api={props.api}
+        multiple={currentFileManager.multiple}
+        onChange={fileManagerChange}
+        triggerId={'position-image'}
+        trigger={<button type='button'
+          id='click-file-manager'
+          data-name={currentFileManager.name}
+          data-target={`#position-image`}
+          data-toggle='modal'
+          className='btn btn-success pull-right hidden'>Gallery Image &nbsp; <i className='fa fa-plus' /></button>}
+      />
+    </Form>
+  </React.Fragment>
 }
 
 const FormWrapper = forwardRef((props, ref) => {

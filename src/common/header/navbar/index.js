@@ -19,7 +19,7 @@ class Navbar extends React.PureComponent {
             <NavbarTask />
             <NavbarUser />
             <li>
-              <a data-toggle='control-sidebar'><i className='fa fa-gears' /></a>
+              <a href='#' data-controlsidebar-slide='false' data-widget='control-sidebar'><i className='fa fa-gears' /></a>
             </li>
           </ul>
         </div>
