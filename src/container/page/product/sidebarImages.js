@@ -14,6 +14,10 @@ export default (props) => {
           <div className='box box-primary'>
             <div className='box-header with-border'>
               <h3 className='box-title'>Image</h3>
+              <div className='box-tools pull-right'>
+
+                <button type='button' class='btn btn-box-tool' data-widget='remove'><i class='fa fa-times' /></button>
+              </div>
             </div>
             <div className='box-body'>
               <div className='row'>
