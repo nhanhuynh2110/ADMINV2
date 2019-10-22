@@ -19,7 +19,8 @@ const LINK = STORELINK.PRODUCTLINK
 
 const fileManagerTarget = {
   mainImage: 'mainImage',
-  galleryImages: 'galleryImages'
+  galleryImages: 'galleryImages',
+  sidebarImage: 'sidebarImage'
 }
 
 const FormHandle = (props) => {
@@ -38,14 +39,15 @@ const FormHandle = (props) => {
 
   const [currentFileManager, setCurrentFileManager] = React.useState({
     name: null,
-    multiple: false
+    multiple: false,
+    options: null
   })
 
   const [isImgsSideBar, setImgsSideBar] = React.useState(false)
   const [groupImage, setGroupImage] = React.useState(null)
 
-  const showFileManager = (target, multiple = false) => {
-    setCurrentFileManager({ name: target, multiple })
+  const showFileManager = (target, multiple = false, options = null) => {
+    setCurrentFileManager({ name: target, multiple, options })
     document.getElementById('click-file-manager').click()
   }
 
@@ -54,6 +56,48 @@ const FormHandle = (props) => {
     const fileData = currentFileManager.multiple ? files.paths : files.path
     if (targetName === fileManagerTarget.mainImage) onChange({ name: image.name, value: fileData })
     else if (targetName === fileManagerTarget.galleryImages) onChangeGallery(fileData)
+    else if (targetName === fileManagerTarget.sidebarImage) onChangePositionImage(fileData)
+  }
+
+  const onChangePositionImage = (path) => {
+    const position = currentFileManager.options.position
+    const sizeValue = _.clone(size.value)
+    const selectedSizeValue = _.clone(selectCurrent.selectSize)
+    const selectColorValue = _.clone(selectCurrent.selectColor)
+
+    selectColorValue.images.map(el => {
+      if (el.mainImage === groupImage.mainImage) {
+        el[position] = path
+        return el
+      } else {
+        return el
+      }
+    })
+
+    selectedSizeValue.colors.map(el => {
+      if (el.color === selectColorValue.color) {
+        el = selectColorValue
+        return el
+      } else {
+        return el
+      }
+    })
+
+    sizeValue.map(el => {
+      if (el.name === selectedSizeValue.name) {
+        el = selectedSizeValue
+        return el
+      } else {
+        return el
+      }
+    })
+
+    setSelectCurrent({
+      selectSize: selectedSizeValue,
+      selectColor: selectColorValue,
+    })
+
+    model.validate(size.name, sizeValue).then(() => model.setValue(size.name, sizeValue))
   }
 
   const onChangeGallery = (paths) => {
@@ -211,6 +255,7 @@ const FormHandle = (props) => {
   let hotChecked = isHot.value
   let inStockChecked = inStock.value
   var linkImg = (image && image.value) ? domain + '/' + image.value : 'http://placehold.it/250x150'
+
   return <React.Fragment>
     <Form
       Layout={Product}
@@ -224,18 +269,30 @@ const FormHandle = (props) => {
           <div className='box box-primary'>
             <div className='box-header with-border'>
               <h3 className='box-title'>Info</h3>
+              <div className='box-tools pull-right'>
+                <button type='button' className='btn btn-box-tool' data-widget='collapse'><i className='fa fa-minus'></i></button>
+              </div>
             </div>
             <div className='box-body'>
               <div className='row'>
                 <div className='col-md-3'>
-                  <img className='w-100 file-manager-image' src={linkImg} />
-                  <div className='file-manager-upload-image' onClick={() => showFileManager(fileManagerTarget.mainImage)}>
+                  <img className='w-100 camera-image' src={linkImg} />
+                  <div className='camera-image-upload-image' onClick={() => showFileManager(fileManagerTarget.mainImage)}>
                     <i className='fa fa-camera' />
                   </div>
                 </div>
-                <div className='col-md-9'>
+                <div className='col-md-7'>
                   <Field.Input field={title} defaultValue={title.value} name={title.name} id='pro-title-id' placeholder={title.placeholder} className='form-control' onChange={onChange} />
-                  <Field.Input field={code} defaultValue={code.value} name={code.name} id='pro-code-id' placeholder={code.placeholder} className='form-control' onChange={onChange} />
+                  
+                  <div className='row'>
+                    <div className='col-md-6'>
+                      <Field.Select field={categoryId} name={categoryId.name} selectedValue={categoryId.value} options={categories} id='pro-categoryId-id' className='form-control' onChange={onChange} />
+                    </div>
+                    <div className='col-md-6'>
+                      <Field.Input field={code} defaultValue={code.value} name={code.name} id='pro-code-id' placeholder={code.placeholder} className='form-control' onChange={onChange} />
+                    </div>
+                  </div>
+                  
 
                   <div className='row'>
                     <div className='col-md-6'>
@@ -275,24 +332,61 @@ const FormHandle = (props) => {
                   </div>
 
                 </div>
+              
+                <div className='col-md-2'>
+                  <div className='row'>
+                    <div className='col-md-12'>
+                      <Field.CheckBox field={isActive} id='pro-active-id' defaultChecked={activeChecked} value={isActive.value} name={isActive.name} text={isActive.text} onChange={onChange} />
+                    </div>
+                  </div>
+
+                  <div className='row'>
+                    <div className='col-md-12'>
+                    <Field.CheckBox field={isNewProduct} id='pro-isNewProduct-id' defaultChecked={newProductChecked} value={isNewProduct.value} name={isNewProduct.name} text={isNewProduct.text} onChange={onChange} />
+                    </div>
+                  </div>
+
+                  <div className='row'>
+                    <div className='col-md-12'>
+                    <Field.CheckBox field={isHot} id='pro-isHot-id' defaultChecked={hotChecked} value={isHot.value} name={isHot.name} text={isHot.text} onChange={onChange} />
+                    </div>
+                  </div>
+
+                  <div className='row'>
+                    <div className='col-md-12'>
+                    <Field.CheckBox field={inStock} id='pro-isHot-id' defaultChecked={inStockChecked} value={inStock.value} name={inStock.name} text={inStock.text} onChange={onChange} />
+                    </div>
+                  </div>
+                </div>
               </div>
 
             </div>
           </div>
         </div>
       </div>
+      {/* <div className='row'>
+        <div className='col-md-12'>
+          <Field.FileGalleries id='category-modal-upload-gallery' name={gallery.name} field={gallery} value={gallery.value} title='Upload Image' api={api} onChange={onChange} />
+        </div>
+      </div> */}
 
       <div className='row'>
         <div className='col-md-12'>
-          <div className='box box-primary'>
+          <div className='box box-primary collapsed-box'>
             <div className='box-header with-border'>
-              <h3 className='box-title'>Gallery Image</h3>
-              {selectCurrent.selectColor && <button
-                onClick={() => showFileManager(fileManagerTarget.galleryImages, true)}
-                type='button'
-                className='btn btn-success pull-right'>
-                  Gallery Image &nbsp; <i className='fa fa-plus' />
-              </button>}
+              <h3 className='box-title'>
+                {selectCurrent.selectColor && <button
+                  onClick={() => showFileManager(fileManagerTarget.galleryImages, true)}
+                  type='button'
+                  className='btn btn-success'>
+                    Gallery Image
+                </button>}
+              </h3>
+              
+              <div className='box-tools pull-right'>
+                
+                <button type='button' className='btn btn-box-tool' data-widget='collapse'><i className='fa fa-plus'></i></button>
+              </div>
             </div>
             <div className='box-body'>
               <div className='row'>
@@ -312,33 +406,23 @@ const FormHandle = (props) => {
 
       <div className='row'>
         <div className='col-md-12'>
-          <div className='box box-primary'>
+          <div className='box box-primary collapsed-box'>
             <div className='box-header with-border'>
-              <h3 className='box-title'>Content</h3>
+              <h3 className='box-title'>Category & Meta</h3>
+              <div className='box-tools pull-right'>
+                <button type='button' className='btn btn-box-tool' data-widget='collapse'><i className='fa fa-plus'></i></button>
+              </div>
             </div>
             <div className='box-body'>
               <div className='row'>
-                <div className='col-md-12'>
-                  <Field.Select field={categoryId} name={categoryId.name} selectedValue={categoryId.value} options={categories} id='pro-categoryId-id' className='form-control' onChange={onChange} />
+                <div className='col-md-6'>
                   <Field.Input field={altImage} defaultValue={altImage.value} name={altImage.name} id='pro-altImage-id' placeholder={altImage.placeholder} className='form-control' onChange={onChange} />
                   <Field.Input field={metaTitle} defaultValue={metaTitle.value} name={metaTitle.name} id='pro-metaTitle-id' placeholder={metaTitle.placeholder} className='form-control' onChange={onChange} />
-                  <Field.Area field={metaDescription} rows='4' name={metaDescription.name} defaultValue={metaDescription.value} id='pro-description-id' className='form-control' onChange={onChange} />
+                  
                 </div>
-                <div className='col-md-12'>
-                  <Field.Area field={description} rows='6' name={description.name} defaultValue={description.value} id='pro-description-id' className='form-control' onChange={onChange} />
-                  <Field.Tiny field={content} id='product-content' name={content.name} defaultValue={content.value} onChange={onChange} />
-                </div>
-                <div className='col-md-2'>
-                  <Field.CheckBox field={isActive} id='pro-active-id' defaultChecked={activeChecked} value={isActive.value} name={isActive.name} text={isActive.text} onChange={onChange} />
-                </div>
-                <div className='col-md-2'>
-                  <Field.CheckBox field={isNewProduct} id='pro-isNewProduct-id' defaultChecked={newProductChecked} value={isNewProduct.value} name={isNewProduct.name} text={isNewProduct.text} onChange={onChange} />
-                </div>
-                <div className='col-md-2'>
-                  <Field.CheckBox field={isHot} id='pro-isHot-id' defaultChecked={hotChecked} value={isHot.value} name={isHot.name} text={isHot.text} onChange={onChange} />
-                </div>
-                <div className='col-md-2'>
-                  <Field.CheckBox field={inStock} id='pro-isHot-id' defaultChecked={inStockChecked} value={inStock.value} name={inStock.name} text={inStock.text} onChange={onChange} />
+                <div className='col-md-6'>
+                  
+                  <Field.Area field={metaDescription} rows='8' name={metaDescription.name} defaultValue={metaDescription.value} id='pro-description-id' className='form-control' onChange={onChange} />
                 </div>
               </div>
             </div>
@@ -347,6 +431,28 @@ const FormHandle = (props) => {
         </div>
 
       </div>
+      
+      <div className='row'>
+        <div className='col-md-12'>
+          <div className='box box-primary collapsed-box'>
+            <div className='box-header with-border'>
+              <h3 className='box-title'>Content</h3>
+              <div className='box-tools pull-right'>
+                <button type='button' className='btn btn-box-tool' data-widget='collapse'><i className='fa fa-plus'></i></button>
+              </div>
+            </div>
+            <div className='box-body'>
+              <div className='row'>
+                <div className='col-md-12'>
+                  <Field.Area field={description} rows='6' name={description.name} defaultValue={description.value} id='pro-description-id' className='form-control' onChange={onChange} />
+                  <Field.Tiny field={content} id='product-content' name={content.name} defaultValue={content.value} onChange={onChange} />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
       {isImgsSideBar && groupImage && <SidebarImage
         groupImage={groupImage}
         api={props.api}
@@ -354,7 +460,9 @@ const FormHandle = (props) => {
           setImgsSideBar(false)
           setGroupImage(null)
         }}
-        showFileManager={() => {}} />}
+        showFileManager={(options) => {
+          showFileManager(fileManagerTarget.sidebarImage, false, options)
+        }} />}
       <Field.FileManager
         api={props.api}
         multiple={currentFileManager.multiple}

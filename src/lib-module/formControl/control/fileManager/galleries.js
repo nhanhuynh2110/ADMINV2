@@ -31,9 +31,9 @@ export default (props) => {
         trigger={<a data-target={`#${props.id}`} data-toggle='modal' className='add-galleries-icon'><i className='fa fa-plus' /></a>}
       />
 
-      {/* {value && value.map(el => {
+      {value && value.map(el => {
         return <a key={el}><img src={`${domain}/${el}`} alt='...' className='margin' /><i data-img={el} onClick={deleteImage} className='fa fa-remove' /></a>
-      })} */}
+      })}
     </div>
   </Field>
 

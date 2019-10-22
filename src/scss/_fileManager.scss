@@ -120,14 +120,14 @@
   }
 }
 
-.file-manager-image {
-  &:hover ~.file-manager-upload-image {
+.camera-image {
+  &:hover ~.camera-image-upload-image {
     display: flex;
     transition: opacity .13s ease-out;
   }
 }
 
-.file-manager-upload-image {
+.camera-image-upload-image {
   &:hover {
     display: flex;
     transition: opacity .13s ease-out;

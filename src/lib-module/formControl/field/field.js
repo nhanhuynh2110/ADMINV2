@@ -5,7 +5,7 @@ export default (props) => {
   const { label, error, className } = field
   return (
     <div className={className || 'form-group'} >
-      {label && <label htmlFor={htmlForId}>{label}</label>}
+      {label && <label htmlFor={htmlForId}>{label} &nbsp;</label>}
       {children}
 
       {error && <span className='err-msg'>{error}</span>}

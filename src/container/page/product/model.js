@@ -67,19 +67,23 @@ export default {
   },
   isActive: {
     name: 'isActive',
-    text: 'Active'
+    text: 'Active',
+    label: ' '
   },
   isNewProduct: {
     name: 'isNewProduct',
-    text: 'Is New'
+    text: 'Is New',
+    label: ' '
   },
   isHot: {
     name: 'isHot',
-    text: 'Is Hot'
+    text: 'Is Hot',
+    label: ' '
   },
   inStock: {
     name: 'inStock',
-    text: 'In Stock'
+    text: 'In Stock',
+    label: ' '
   },
   size: {
     name: 'size',
