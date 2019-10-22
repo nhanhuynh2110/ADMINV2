@@ -7,6 +7,7 @@ import Area from './textArea'
 import Image, { Galleries, FileManager } from './fileManager'
 import EditorTiny from './tinyEditor'
 import InputColorPicker from './input.colorpicker'
+import Button from './button'
 
 export {
   Input,
@@ -19,5 +20,6 @@ export {
   Image,
   FileManager,
   Galleries,
-  EditorTiny
+  EditorTiny,
+  Button
 }
