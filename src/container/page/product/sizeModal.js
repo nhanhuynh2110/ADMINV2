@@ -2,8 +2,7 @@ import React from 'react'
 
 export default (props) => {
   const ref = React.useRef(null)
-
-  let timeout = null
+  const {defaultValue, isEdit, selectSize} = props
 
   const onSubmit = () => {
     if (typeof props.onSubmit !== 'function') return
@@ -13,11 +12,17 @@ export default (props) => {
   }
 
   React.useEffect(() => {
+    if (isEdit) {
+      ref.current.value = selectSize.name
+      ref.current.focus()
+    } else {
+      ref.current.value = ''
+      ref.current.focus()
+    }
     ref.current.focus()
-  })
+  }, [defaultValue, isEdit])
 
-  return <>
-    <button type='button' data-target='#modal-size-form' data-toggle='modal' className='btn bg-orange margin'><i className='fa fa-plus' /></button>
+  return <React.Fragment>
     <div className='modal' id='modal-size-form'>
       <div className='modal-dialog'>
         <div className='modal-content'>
@@ -26,7 +31,7 @@ export default (props) => {
             <h4 className='modal-title'>Add Size</h4>
           </div>
           <div className='modal-body'>
-            <input ref={ref} name={props.name} className='w-100 border-none form-control input-lg' type='text' placeholder='Please Enter Size Name' />
+            <input ref={ref} defaultValue={defaultValue} name={props.name} className='w-100 border-none form-control input-lg' type='text' placeholder='Please Enter Size Name' />
           </div>
           <div className='modal-footer'>
             <button type='button' id='btn-size-close' className='btn btn-default pull-left' data-dismiss='modal'>Close</button>
@@ -35,5 +40,5 @@ export default (props) => {
         </div>
       </div>
     </div>
-  </>
+  </React.Fragment>
 }

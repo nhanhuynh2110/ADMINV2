@@ -36,9 +36,10 @@ const FormHandle = (props) => {
 
   const [selectCurrent, setSelectCurrent] = React.useState({
     selectSize: null,
-    selectColor: null,
-    id: null
+    selectColor: null
   })
+
+  const [isEditSize, setEditSize] = React.useState(false)
 
   const [currentFileManager, setCurrentFileManager] = React.useState({
     name: null,
@@ -138,36 +139,40 @@ const FormHandle = (props) => {
     model.validate(name, value).then(() => model.setValue(name, value))
   }
 
-  const onChangeSize = ({name, value}) => {
+  const openModalSize = () => {
+    document.getElementById('btn-size-active').click()
+  }
+
+  const createEditSize = ({name, value}) => {
     let sizeValue = _.clone(size.value) || []
-    sizeValue.push({ name: value, colors: [] })
-    model.validate(name, sizeValue).then(() => model.setValue(name, sizeValue))
-    if (!selectCurrent.selectSize) {
-      setSelectCurrent({
-        selectSize: sizeValue[0],
-        selectColor: sizeValue[0].colors && sizeValue[0].colors.length > 0 ? sizeValue[0].colors[0] : null
+
+    if (isEditSize) {
+      sizeValue.map(el => {
+        if (el.name === selectCurrent.selectSize.name) el.name = value
+        return el
       })
+    } else {
+      sizeValue.push({ name: value, colors: [] })
     }
+
+    if (!selectCurrent.selectSize) {
+      setSelectCurrent({ selectSize: sizeValue[0], selectColor: sizeValue[0].colors && sizeValue[0].colors.length > 0 ? sizeValue[0].colors[0] : null })
+    }
+
+    model.validate(name, sizeValue).then(() => model.setValue(name, sizeValue))
   }
 
   const deleteSize = (sizeName) => {
-    let sizeValueOld = _.clone(size.value)
-    let selectCurrentOld = _.clone(selectCurrent)
-    let selectSizeCurrent = _.clone(selectCurrent.selectSize)
-    let sizeValue = sizeValueOld.filter(el => el.name !== sizeName)
-    if (sizeName === selectSizeCurrent.name) {
+    let sizeValue = _.clone(size.value)
+    sizeValue = sizeValue.filter(el => el.name !== sizeName)
+    if (sizeName === selectCurrent.selectSize.name) {
       if (sizeValue.length > 0) {
-        const newSelectedSize = sizeValue && sizeValue.length > 0 ? sizeValue[0] : null
-        const newSelectColor = newSelectedSize && newSelectedSize.colors && newSelectedSize.colors.length > 0 ? newSelectedSize.colors[0] : null
-
-        selectCurrentOld.selectSize = newSelectedSize
-        selectCurrentOld.selectColor = newSelectColor
-        setSelectCurrent(selectCurrentOld)
-        model.validate(size.name, sizeValue).then(() => model.setValue(size.name, sizeValue))
-      }
-    } else {
-      model.validate(size.name, sizeValue).then(() => model.setValue(size.name, sizeValue))
+        const newSelectedSize = sizeValue[0]
+        const newSelectColor = newSelectedSize.colors && newSelectedSize.colors.length > 0 ? newSelectedSize.colors[0] : null
+        setSelectCurrent({selectSize: newSelectedSize, selectColor: newSelectColor})
+      } else setSelectCurrent({selectSize: null, selectColor: null})
     }
+    model.validate(size.name, sizeValue).then(() => model.setValue(size.name, sizeValue))
   }
 
   const deleteColor = (colorName) => {
@@ -308,12 +313,17 @@ const FormHandle = (props) => {
                   <div className='form-group'>
                     <label>Size</label>
                     {size.value && selectCurrent.selectSize && size.value.map((el, k) => {
-                      return <span key={el.name} className='position-relative display-inline-block'>
-                        <Button onClick={() => onSelectSize(el.name)} text={el.name} type='default' className={el.name === selectCurrent.selectSize.name ? 'margin btn-size-active' : 'margin'} />
-                        <span data-key={k} onClick={() => deleteSize(el.name)} className='badge bg-green badge-size-remove'><i className='fa fa-remove' /></span>
-                      </span>
+                      return <React.Fragment key={el.name + '-' + k} >
+                        <span className='position-relative display-inline-block size-item'>
+                          <Button onClick={() => onSelectSize(el.name)} text={el.name} type='default' className={el.name === selectCurrent.selectSize.name ? 'margin btn-size-active' : 'margin'} />
+                          <span className='groups-button-size'>
+                            <button type='button' className='size-edit btn btn-default btn-xs' onClick={() => { setEditSize(true); openModalSize() }}><i className='fa fa-edit' /> Edit</button> &nbsp;
+                            <button type='button' className='size-edit btn btn-default btn-xs' onClick={() => deleteSize(el.name)}><i className='fa fa-remove' /> Remove</button>
+                          </span>
+                        </span>
+                      </React.Fragment>
                     })}
-                    <ModalSize name={size.name} onSubmit={onChangeSize} />
+                    <button type='button' onClick={() => { setEditSize(false); openModalSize() }} data-toggle='modal' className='btn bg-orange margin'><i className='fa fa-plus' /></button>
                   </div>
                   <div className='form-group'>
                     <label>Color follow size</label>
@@ -350,7 +360,7 @@ const FormHandle = (props) => {
       <Row.MD12 useRow>
         <Box.Wrapper className='box-primary' collapsed='close'>
           <Box.Header collapsed='close'>
-            <Button onClick={() => showFileManager(fileManagerTarget.gallery, true)} type='success' text='gallery' />
+            <Button icon='fa-camera' iconPosition='before' onClick={() => showFileManager(fileManagerTarget.gallery, true)} type='success' text='Gallery' />
           </Box.Header>
           <Box.Body>
             <div className='timeline-body'>
@@ -365,8 +375,8 @@ const FormHandle = (props) => {
       <Row.MD12 useRow>
         <Box.Wrapper className='box-primary' collapsed='close'>
           <Box.Header collapsed='close'>
-            {selectCurrent.selectColor ? <Button onClick={() => showFileManager(fileManagerTarget.galleryImages, true)}
-              type='success' text='Gallery Image' />
+            {selectCurrent.selectColor
+              ? <Button icon='fa-camera' iconPosition='before' onClick={() => showFileManager(fileManagerTarget.galleryImages, true)} type='success' text='Gallery Image' />
               : <h3 className='box-title'>Gallery Image</h3>}
           </Box.Header>
           <Box.Body>
@@ -404,6 +414,9 @@ const FormHandle = (props) => {
           </Row.MD12>
         </Box>
       </Row.MD12>
+
+      <button type='button' id='btn-size-active' data-target='#modal-size-form' data-toggle='modal' className='hidden' />
+      <ModalSize defaultValue={isEditSize ? selectCurrent.selectSize.name || '' } name={size.name} isEdit={isEditSize} onSubmit={createEditSize} selectSize={selectCurrent.selectSize} />
 
       {isImgsSideBar && groupImage && <SidebarImage
         groupImage={groupImage}
