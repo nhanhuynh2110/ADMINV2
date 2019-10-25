@@ -24,6 +24,7 @@ export default class Category extends Base {
   getParents (payload, cb) {
     payload['api'] = '/api/admin/category/parent'
     this.adapter.get('/base-api', payload, (error, resp) => {
+      console.log('resp', resp)
       if (error) return handleError(error, false, cb)
       if (resp.status !== 200) return cb(resp.message)
       if (typeof cb === 'function') {

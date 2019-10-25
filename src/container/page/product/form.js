@@ -416,7 +416,7 @@ const FormHandle = (props) => {
       </Row.MD12>
 
       <button type='button' id='btn-size-active' data-target='#modal-size-form' data-toggle='modal' className='hidden' />
-      <ModalSize defaultValue={isEditSize ? selectCurrent.selectSize.name || '' } name={size.name} isEdit={isEditSize} onSubmit={createEditSize} selectSize={selectCurrent.selectSize} />
+      <ModalSize defaultValue={isEditSize && selectCurrent.selectSize ? selectCurrent.selectSize.name : ''} name={size.name} isEdit={isEditSize} onSubmit={createEditSize} selectSize={selectCurrent.selectSize} />
 
       {isImgsSideBar && groupImage && <SidebarImage
         groupImage={groupImage}

@@ -18,12 +18,8 @@ class RequestAdapter {
     this.options = options
   }
 
-  get (cb) {
-    request(this.options, (error, response, body) => {
-      if (error) return cb(error)
-      if (response.statusCode !== 200) return cb(response)
-      return cb(null, body)
-    })
+  async get (url, options, cb) {
+    fetch(url, options).then(response => response.json()).then(data => cb(null, data)).catch(cb)
   }
 
   post (cb) {

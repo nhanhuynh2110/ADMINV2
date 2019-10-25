@@ -23,14 +23,13 @@ module.exports = function (app) {
   // base api method get restfull api
   app.get('/base-api', (req, res) => {
     if (!req.query.api) return res.status(500).json({ status: 500, message: 'api missing error' })
-
-    var Adapter = new ApiAdapter({ url: req.query.api, headers: { token: req.user.token } })
+    var Adapter = new ApiAdapter({ method: 'GET', headers: { token: req.user.token } })
+    const url = req.query.api
     delete req.query.api
     Adapter.setParams(req.query)
-    Adapter.get((error, resp) => {
+    Adapter.get(url, (error, resp) => {
       if (error) return res.status(500).json({ message: 'request api error' })
-      var result = JSON.parse(resp)
-      var data = result.data
+      var data = resp
       return res.status(200).json({ status: 200, message: 'success', data })
     })
   })
