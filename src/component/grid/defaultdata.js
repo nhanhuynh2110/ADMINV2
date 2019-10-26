@@ -3,7 +3,7 @@ import _ from 'lodash'
 
 export default () => {
   let entries = [
-    // { text: 1, value: 1 },
+    { text: 1, value: 1 },
     { text: 10, value: 10 },
     { text: 20, value: 20 },
     { text: 30, value: 30 },
@@ -45,7 +45,7 @@ export default () => {
       strKey: '',
       pageSize: entries[0].value,
       pageNumber: 1,
-      colSort: 'create_date',
+      colSort: 'createDate',
       typeSort: '',
       isDelete: 0
     }

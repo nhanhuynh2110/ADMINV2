@@ -29,7 +29,9 @@ module.exports = function (app) {
     Adapter.setParams(req.query)
     Adapter.get(url, (error, resp) => {
       if (error) return res.status(500).json({ message: 'request api error' })
-      var data = resp
+      console.log('resp', resp)
+      var {data, message, status} = resp
+      if (status !== 200) return res.status(200).json({ status, message, data })
       return res.status(200).json({ status: 200, message: 'success', data })
     })
   })

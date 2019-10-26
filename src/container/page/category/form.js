@@ -123,9 +123,9 @@ const FormWrapper = forwardRef((props, ref) => {
         setFormData({ parents, data })
       })
     }
-  }, [params])
+  }, [match])
 
-  console.log('formData.data', formData)
+  console.log('formData.parents', formData)
 
   return formData && <FormHandle isAdd={!formData.data} parents={formData.parents} data={formData.data} api={api} />
 })
