@@ -35,6 +35,57 @@ class Order extends React.PureComponent {
   }
 }
 
+let dfpayload = {
+  level: 'parent'
+}
+
+let TABOPTIONS = [
+  {
+    name: 'parent',
+    text: 'Parent',
+    id: 'parent',
+    on: (state) => {
+      let newState = _.clone(state)
+      newState.payload.isDelete = false
+      newState.payload.level = 'parent'
+      return newState
+    }
+  },
+  {
+    name: 'children',
+    text: 'Children',
+    id: 'children',
+    on: (state) => {
+      let newState = _.clone(state)
+      newState.payload.isDelete = false
+      newState.payload.level = 'children'
+      return newState
+    }
+  },
+  {
+    name: 'all',
+    text: 'All',
+    id: 'all',
+    on: (state) => {
+      let newState = _.clone(state)
+      newState.payload.isDelete = false
+      newState.payload.level = ''
+      return newState
+    }
+  },
+  {
+    name: 'trash',
+    text: 'Trash',
+    id: 'trash',
+    on: (state) => {
+      let newState = _.clone(state)
+      newState.payload.isDelete = true
+      newState.payload.level = ''
+      return newState
+    }
+  }
+]
+
 const OrderContainer = withContainer(React.memo(Order), (c, props) => ({
   api: c.api,
   ...props
@@ -47,26 +98,37 @@ let ACTIONLINK = {
 }
 
 let TABLEVIEW = (self) => {
-  return {
-    index: { text: 'STT', sorted: false, col: null, render: (row) => {} },
-    order: {
-      text: 'Order',
-      sorted: true,
-      col: 'order',
-      render: (row, getData) => {
-        return <OrderContainer data={row} getData={getData} />
-      }
-    },
-    title: { text: 'Title', sorted: true, col: 'title', render: (row) => row['title'] },
-    createDate: { text: 'Create date', sorted: true, col: 'createDate', render: (row) => { return row['createDate'] ? formatDate(row['createDate']) : '' } },
-    updateDate: { text: 'Last Update Date', sorted: true, col: 'updateDate', render: (row) => row['updateDate'] ? formatDate(row['updateDate']) : '' },
-    activeDate: { text: 'Last active date', sorted: true, col: 'activeDate', render: (row) => row['activeDate'] ? formatDate(row['activeDate']) : '' },
-    action: { text: 'Action', sorted: false, col: null, className: 'tool-action', render: (row) => { return self.renderAction(row, '') } }
+  let content = {}
+  if (self.state.tabCurrent === 'parent') {
+    content = {
+      index: { text: 'STT', sorted: false, col: null, render: (row) => {} },
+      order: { text: 'Order', sorted: true, col: 'order', render: (row, getData) => <OrderContainer data={row} getData={getData} /> },
+      parent: { text: 'Parent', sorted: true, col: 'parentId', render: (row) => !row['parentId'] ? 'Parent' : 'Childen' },
+      title: { text: 'Title', sorted: true, col: 'title', render: (row) => row['title'] },
+      createDate: { text: 'Create date', sorted: true, col: 'createDate', render: (row) => { return row['createDate'] ? formatDate(row['createDate']) : '' } },
+      updateDate: { text: 'Last Update Date', sorted: true, col: 'updateDate', render: (row) => row['updateDate'] ? formatDate(row['updateDate']) : '' },
+      activeDate: { text: 'Last active date', sorted: true, col: 'activeDate', render: (row) => row['activeDate'] ? formatDate(row['activeDate']) : '' },
+      action: { text: 'Action', sorted: false, col: null, className: 'tool-action', render: (row) => { return self.renderAction(row, '') } }
+    }
+  } else {
+    content = {
+      index: { text: 'STT', sorted: false, col: null, render: (row) => {} },
+      parent: { text: 'Parent', sorted: true, col: 'parentId', render: (row) => !row['parentId'] ? 'Parent' : 'Childen' },
+      title: { text: 'Title', sorted: true, col: 'title', render: (row) => row['title'] },
+      createDate: { text: 'Create date', sorted: true, col: 'createDate', render: (row) => { return row['createDate'] ? formatDate(row['createDate']) : '' } },
+      updateDate: { text: 'Last Update Date', sorted: true, col: 'updateDate', render: (row) => row['updateDate'] ? formatDate(row['updateDate']) : '' },
+      activeDate: { text: 'Last active date', sorted: true, col: 'activeDate', render: (row) => row['activeDate'] ? formatDate(row['activeDate']) : '' },
+      action: { text: 'Action', sorted: false, col: null, className: 'tool-action', render: (row) => { return self.renderAction(row, '') } }
+    }
   }
+
+  return content
 }
 
 export default {
   ACTIONLINK,
   PAGE_HEADER,
-  TABLEVIEW
+  TABLEVIEW,
+  TABOPTIONS,
+  DEFAULTPAYLOAD: dfpayload
 }
