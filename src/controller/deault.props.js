@@ -9,6 +9,7 @@ export default {
     post: null,
     gallery: null,
     product: null,
+    productMaster: null,
     permission: null,
     advertise: null,
     slide: null

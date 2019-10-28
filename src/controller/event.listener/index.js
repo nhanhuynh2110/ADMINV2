@@ -5,6 +5,7 @@ import postListener from './post'
 import accountListener from './account'
 import galleryListener from './gallery'
 import productListener from './product'
+import productMasterListener from './productMaster'
 import advertiseListener from './advertise'
 import slideListener from './slide'
 import permissionListener from './permission'
@@ -19,6 +20,7 @@ export default (getCtr) => {
       galleryListener(getCtr)
       roleListener(getCtr)
       productListener(getCtr)
+      productMasterListener(getCtr)
       advertiseListener(getCtr)
       slideListener(getCtr)
       permissionListener(getCtr)

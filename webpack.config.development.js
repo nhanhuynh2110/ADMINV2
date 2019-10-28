@@ -24,6 +24,7 @@ module.exports = {
       jQuery: 'jquery',
       _: 'lodash',
       'lib-module': path.join(__dirname, './src/lib-module'),
+      'form': path.join(__dirname, './src/lib-module/form'),
       'form-layout': path.join(__dirname, './src/component/form/layout')
     }
   },

@@ -16,9 +16,11 @@ let dfdata = dfdataModule()
 class GridView extends React.PureComponent {
   constructor (props) {
     super(props)
-    this.tabOptions = METADATA[this.props.meta].TABOPTIONS || dfdata.tabOptions
+    const TABOPTIONS = _.get(METADATA[this.props.meta], 'TABOPTIONS')
+    const DEFAULTPAYLOAD = _.get(METADATA[this.props.meta], 'DEFAULTPAYLOAD')
+    this.tabOptions = TABOPTIONS || dfdata.tabOptions
     this.state = {
-      payload: _.merge(dfdata.dfpayload, METADATA[this.props.meta].DEFAULTPAYLOAD || {}),
+      payload: _.merge(dfdata.dfpayload, DEFAULTPAYLOAD || {}),
       tabCurrent: this.tabOptions[0].name
     }
     this.handleEntries = this.handleEntries.bind(this)
@@ -129,6 +131,7 @@ class GridView extends React.PureComponent {
 
   render () {
     let { meta, data } = this.props
+    console.log('METADATA', METADATA)
     let currentData = METADATA[meta]
     let { PAGE_HEADER, TABLEVIEW, TABOPTIONS } = currentData
     let fnc = {
