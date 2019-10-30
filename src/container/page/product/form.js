@@ -32,7 +32,7 @@ const FormHandle = (props) => {
 
   const {image, gallery, title, code, price, priceSale,
     categoryId, description, content, altImage, metaTitle,
-    metaDescription, isActive, isNewProduct, isHot, inStock, size} = model
+    metaDescription, isActive, isNewProduct, isHot, inStock, size, info, info1, info2} = model
 
   const [selectCurrent, setSelectCurrent] = React.useState({
     selectSize: null,
@@ -308,6 +308,15 @@ const FormHandle = (props) => {
               <Row.MD6>
                 <Field.Input field={priceSale} defaultValue={priceSale.value} name={priceSale.name} id='pro-priceSale-id' placeholder={priceSale.placeholder} className='form-control' onChange={onChange} />
               </Row.MD6>
+              <Row.MD4>
+                <Field.Input field={info} defaultValue={info.value} name={info.name} id='pro-info-id' placeholder={info.placeholder} className='form-control' onChange={onChange} />
+              </Row.MD4>
+              <Row.MD4>
+                <Field.Input field={info1} defaultValue={info1.value} name={info1.name} id='pro-info1-id' placeholder={info1.placeholder} className='form-control' onChange={onChange} />  
+              </Row.MD4>
+              <Row.MD4>
+                <Field.Input field={info2} defaultValue={info2.value} name={info2.name} id='pro-info2-id' placeholder={info2.placeholder} className='form-control' onChange={onChange} />
+              </Row.MD4>
               <Row.MD12>
                 <div className='groups-size'>
                   <div className='form-group'>

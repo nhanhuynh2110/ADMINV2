@@ -50,6 +50,18 @@ export default {
     name: 'content',
     label: 'Content'
   },
+  info: {
+    name: 'info',
+    label: 'Điện áp'
+  },
+  info1: {
+    name: 'info1',
+    label: 'Dung lượng'
+  },
+  info2: {
+    name: 'info2',
+    label: 'Kích thước (Dài x Rộng x Cao)'
+  },
   altImage: {
     name: 'altImage',
     label: 'Alt Image',
