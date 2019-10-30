@@ -14,12 +14,15 @@ export default (props) => {
     <div className='form-group'>
       <div className='col-md-12'>
         <div className='position-relative w-100'>
-          <img className='w-100 file-manager-image' src={value} />
+          <img className='w-100 camera-image' src={value} />
           <FileManager
             api={props.api}
             onChange={onChange}
             triggerId={props.id}
-            trigger={<div className='file-manager-upload-image' data-target={`#${props.id}`} data-toggle='modal'><i className='fa fa-camera' /></div>}
+            trigger={<div className='camera-image-upload-image' data-target={`#${props.id}`} data-toggle='modal'>
+                <i className='fa fa-camera' />
+              </div>}
+            // <div className='file-manager-upload-image' data-target={`#${props.id}`} data-toggle='modal'><i className='fa fa-camera' /></div>}
           />
         </div>
       </div>

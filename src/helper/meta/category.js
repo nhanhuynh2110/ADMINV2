@@ -100,6 +100,7 @@ let ACTIONLINK = {
 let TABLEVIEW = (self) => {
   let content = {}
   if (self.state.tabCurrent === 'parent') {
+    
     content = {
       index: { text: 'STT', sorted: false, col: null, render: (row) => {} },
       order: { text: 'Order', sorted: true, col: 'order', render: (row, getData) => <OrderContainer data={row} getData={getData} /> },

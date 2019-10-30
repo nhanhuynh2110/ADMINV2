@@ -61,8 +61,9 @@ class GridView extends React.PureComponent {
     let {meta} = this.props
     let action = METADATA[meta].ACTIONLINK
 
-    if (this.state.tabCurrent === 'all') return <Action data={data} linkedit={action.EDIT} handleAction={this.handleAction} />
-    else if (this.state.tabCurrent === 'trash') return <ActionTrash data={data} handleActionTrash={this.handleActionTrash} />
+    // if (this.state.tabCurrent === 'all') return <Action data={data} linkedit={action.EDIT} handleAction={this.handleAction} />
+    if (this.state.tabCurrent === 'trash') return <ActionTrash data={data} handleActionTrash={this.handleActionTrash} />
+    else return <Action data={data} linkedit={action.EDIT} handleAction={this.handleAction} />
   }
 
   handleAction (type, data) {
