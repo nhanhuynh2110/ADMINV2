@@ -12,7 +12,7 @@ import useReactRouter from 'use-react-router'
 
 const domain = conf.server.domain
 
-const LINK = STORELINK.CATEGORYLINK
+const LINK = STORELINK.CATEGORYPOSTLINK
 
 const FormHandle = (props) => {
   const {isAdd, data, parents, api} = props
@@ -31,12 +31,12 @@ const FormHandle = (props) => {
       let dt = formData
       dt.id = props.data._id
       dt.parentId = dt.parentId ? dt.parentId : null
-      api.category.update(dt, (err, resp) => {
+      api.categoryPost.update(dt, (err, resp) => {
         if (err) return alert('update fail')
         history.push(LINK.GRID)
       })
     } else {
-      api.category.insert(formData, (err, resp) => {
+      api.categoryPost.insert(formData, (err, resp) => {
         if (err) return alert('save fail')
         history.push(LINK.GRID)
       })
@@ -94,7 +94,7 @@ const FormWrapper = forwardRef((props, ref) => {
 
   useEffect(() => {
     const parents = (cb) => {
-      api.category.getParents({}, (err, resp) => {
+      api.categoryPost.getParents({}, (err, resp) => {
         if (err) return cb(err)
         let data = resp.map(el => ({ text: el.title, value: el._id }))
         return cb(null, data)
@@ -102,7 +102,7 @@ const FormWrapper = forwardRef((props, ref) => {
     }
 
     const data = (cb) => {
-      api.category.get({id: params.id}, (err, resp) => {
+      api.categoryPost.get({id: params.id}, (err, resp) => {
         if (err) return cb(err)
         return cb(null, resp)
       })

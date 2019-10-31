@@ -37,7 +37,7 @@ export default class CategoryPost extends Base {
     this.adapter.get('/base-api', payload, (error, resp) => {
       if (error) return handleError(error, false, cb)
       if (resp.status !== 200) return cb(resp.message)
-      this.emit('get-categoryPosts', resp.data)
+      this.emit('get-categories-post', resp.data)
       if (typeof cb === 'function') {
         return cb(null, resp.data)
       }
@@ -62,7 +62,6 @@ export default class CategoryPost extends Base {
     this.adapter.post('/base-api', null, payload, (error, resp) => {
       if (error) return handleError(error, false, cb)
       if (resp.status !== 200) return cb(resp.message)
-      this.emit('insert-category-post', resp.data)
       if (typeof cb === 'function') {
         return cb(null, resp.data)
       }

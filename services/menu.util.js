@@ -18,11 +18,11 @@ let init = (permissions) => {
       key: 'slide',
       title: 'Slide',
       childItem: [
-        { text: 'New', link: '/slide/add', permission: hasPermission(permissions.slide.role, 'SLIDEADD') },
-        { text: 'List', link: '/slide', permission: hasPermission(permissions.slide.role, 'SLIDEVIEW') }
+        { text: 'New', link: '/slide/add', permission: true },
+        { text: 'List', link: '/slide', permission: true }
       ],
       icon: 'fa fa-book',
-      permission: hasPermission(permissions.category.role, 'SLIDEVIEW')
+      permission: true
     },
     {
       key: 'category',
@@ -38,11 +38,11 @@ let init = (permissions) => {
       key: 'category-post',
       title: 'Category Post',
       childItem: [
-        { text: 'New', link: '/category-post/add', permission: hasPermission(permissions.categoryPost.role, 'CATEGORYPOSTADD') },
-        { text: 'List', link: '/category-post', permission: hasPermission(permissions.categoryPost.role, 'CATEGORYPOSTVIEW') }
+        { text: 'New', link: '/category-post/add', permission: true },
+        { text: 'List', link: '/category-post', permission: true }
       ],
       icon: 'fa fa-book',
-      permission: hasPermission(permissions.category.role, 'CATEGORYPOSTVIEW')
+      permission: true
     },
     {
       key: 'product',

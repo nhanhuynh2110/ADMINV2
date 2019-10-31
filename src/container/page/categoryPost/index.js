@@ -3,7 +3,7 @@ import { Route } from 'react-router-dom'
 import Grid from '../../../component/grid'
 import FormWrapper from './form'
 import LINK from '../../../helper/link'
-const KEY = 'category-post'
+const KEY = 'categoryPost'
 
 export default class CategoryPost extends React.PureComponent {
   constructor (props) {
