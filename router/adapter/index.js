@@ -15,9 +15,8 @@ class ApiAdapterForward extends Adapter {
     this.options['form'] = body
   }
 
-  get (cb) {
-    this.options = setUrl(this.options, this.params)
-    super.get((error, body) => {
+  get (url, cb) {
+    super.get(structureUrl(url, this.params), this.options, (error, body) => {
       if (error) return cb(error)
       return cb(null, body)
     })
@@ -55,6 +54,8 @@ class ApiAdapterForward extends Adapter {
     })
   }
 }
+
+const structureUrl = (uri, params) => params ? `${config.server.domain}${uri}?` + formatURL(params) : `${config.server.domain}${uri}`
 
 function setUrl (options, params) {
   var url = `${config.server.domain}${options['url']}`

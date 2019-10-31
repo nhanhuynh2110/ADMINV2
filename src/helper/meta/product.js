@@ -14,8 +14,8 @@ let TABLEVIEW = (self) => {
     title: { text: 'Title', sorted: true, col: 'title', render: (row) => row['title'] },
     isHot: { text: 'Hot', sorted: true, col: 'isHot', render: (row) => row['isHot'].toString() },
     isNewProduct: { text: 'New', sorted: true, col: 'isNewProduct', render: (row) => row['isNewProduct'].toString() },
-    createDate: { text: 'Create date', sorted: true, col: 'create_date', render: (row) => { return row['createDate'] ? formatDate(row['createDate']) : '' } },
-    updateDate: { text: 'Last Update Date', sorted: true, col: 'updatedate', render: (row) => row['updateDate'] ? formatDate(row['updateDate']) : '' },
+    createDate: { text: 'Create date', sorted: true, col: 'createDate', render: (row) => { return row['createDate'] ? formatDate(row['createDate']) : '' } },
+    updateDate: { text: 'Last Update Date', sorted: true, col: 'updateDate', render: (row) => row['updateDate'] ? formatDate(row['updateDate']) : '' },
     activeDate: { text: 'Last active date', sorted: true, col: 'activeDate', render: (row) => row['activeDate'] ? formatDate(row['activeDate']) : '' },
     action: { text: 'Action', sorted: false, col: null, className: 'tool-action', render: (row) => { return self.renderAction(row, '') } }
   }

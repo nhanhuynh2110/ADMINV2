@@ -6,9 +6,9 @@ export default {
     label: 'Password old',
     className: 'form-group has-feedback',
     validator: [
-      { compare: 'require'},
-      { compare: 'minlen', compareTo: 8},
-      { compare: 'maxlen', compareTo: 16},
+      { compare: 'require' },
+      { compare: 'minlen', compareTo: 8 },
+      { compare: 'maxlen', compareTo: 16 }
     ]
   },
   newPassword: {
@@ -16,9 +16,9 @@ export default {
     label: 'New password',
     className: 'form-group has-feedback',
     validator: [
-      { compare: 'require'},
-      { compare: 'minlen', compareTo: 8},
-      { compare: 'maxlen', compareTo: 16}
+      { compare: 'require' },
+      { compare: 'minlen', compareTo: 8 },
+      { compare: 'maxlen', compareTo: 16 }
     ]
   },
   confirmPassword: {
@@ -26,7 +26,7 @@ export default {
     label: 'Corfirm password',
     className: 'form-group has-feedback',
     validator: [
-      { compare: 'require'},
+      { compare: 'require' },
       { compare: (value, model) => {
         if (value === model.newPassword.value) return true
         throw new ValidationError('confirm is not match!!')

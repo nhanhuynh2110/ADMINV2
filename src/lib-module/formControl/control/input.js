@@ -1,4 +1,4 @@
-import React, {useRef} from 'react'
+import React, {useEffect, useRef} from 'react'
 import Field from '../field/field'
 
 export default (props) => {
@@ -10,6 +10,7 @@ export default (props) => {
   let timeout = null
 
   const onChange = () => {
+    if (typeof props.onChange !== 'function') return
     props.onChange({ ref, value: ref.current.value, name: ref.current.name })
   }
 
@@ -17,6 +18,10 @@ export default (props) => {
     clearTimeout(timeout)
     timeout = setTimeout(() => onChange(), 500)
   }
+
+  useEffect(() => {
+    ref.current.value = props.defaultValue
+  }, [props.defaultValue])
 
   return (
     <React.Fragment>

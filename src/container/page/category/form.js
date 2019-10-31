@@ -1,142 +1,100 @@
-import React from 'react'
-import _ from 'lodash'
+/* global _ */
+
+import React, {useEffect, useState, forwardRef} from 'react'
+import { Basic } from 'form-layout'
 import async from 'async'
-
-import Model from './model'
-import Field from '../../../component/form/field'
-import { withFormBehaviors } from '../../../component/form/form'
-import FormLayoutDefault from '../../../component/form/layout/default'
-import { withContainer } from '../../../context'
-import config from '../../../../config'
+import Form, { Field, Model as useModel } from 'lib-module/formControl'
 import STORELINK from '../../../helper/link'
-import Select from '../../../component/control/select'
+import { withContainer } from '../../../context'
+import modelForm from './model'
+import conf from '../../../../config'
+import useReactRouter from 'use-react-router'
 
-let domain = config.server.domain
+const domain = conf.server.domain
+
 const LINK = STORELINK.CATEGORYLINK
 
-class Form extends React.PureComponent {
-  constructor (props) {
-    super(props)
-    this.uploadFile = this.uploadFile.bind(this)
-    this.handleSubmit = this.handleSubmit.bind(this)
+const FormHandle = (props) => {
+  const {isAdd, data, parents, api} = props
+  const { history } = useReactRouter()
+  const [model] = useModel(modelForm, data)
+
+  const {img, title, parentId, description, isActive, isHome, altImage, metaTitle, metaDescription} = model
+
+  const onChange = ({name, value}) => {
+    model.validate(name, value).then(() => model.setValue(name, value))
   }
 
-  uploadFile (e) {
-    var files = e.target.files
-    var name = e.target.getAttribute('data-name')
-    var folder = e.target.getAttribute('data-folder')
-
-    this.props.api.file.upload(false, files, name, folder, (err, resp) => {
-      if (err) this.props.onInputChange(null, { name, value: null })
-      else this.props.onInputChange(null, {name, value: resp.img})
-    })
-  }
-
-  handleSubmit () {
-    this.props.handleSubmitSingle((data) => {
-      if (!this.props.data) {
-        this.props.api.category.insert(data, (err, resp) => {
-          if (err) return alert('save fail')
-          return this.props.history.push(LINK.GRID)
-        })
-      } else {
-        let dt = data
-        dt.id = this.props.data._id
-        this.props.api.category.update(dt, (err, resp) => {
-          if (err) return alert('update fail')
-          return this.props.history.push(LINK.GRID)
-        })
-      }
-      this.props.handleSubmitFinish()
-    })
-  }
-
-  render () {
-    let { img, title, description, parentId, isActive, isHome, altImage, metaTitle, metaDescription } = this.props.model
-    let {parents, onInputChange} = this.props
-    var linkImg = (img.value) ? domain + img.value : 'http://placehold.it/250x150'
-    return (
-      <FormLayoutDefault
-        title='Create Category'
-        linkCancleBtn='/category'
-        isFormValid={this.props.isFormValid}
-        hasChanged={this.props.hasChanged}
-        handleSubmit={this.handleSubmit}
-        isSubmit
-      >
-        <form role='form'>
-          <div className='box-body'>
-
-            <div className='box-body box-profile' style={{ width: '250px' }}>
-              <img style={{ width: '100%' }} src={linkImg} />
-              <h3 className='profile-username text-center'>Image category</h3>
-              <Field field={img}>
-                <div className='upload-image'>
-                  <button className='btn btn-block btn-success'>Image</button>
-                  <input data-name='img' data-folder='categories' id='upload-input' className='btn btn-block btn-success' type='file' name='uploads[]' onChange={this.uploadFile} />
-                </div>
-              </Field>
-            </div>
-
-            <Field field={title}>
-              <input type='text' className='form-control' placeholder={title.placeholder} onChange={onInputChange} defaultValue={title.value} />
-            </Field>
-
-            <Field field={parentId}>
-              <Select name='parentId' isSelected={parentId.value} options={parents} classSelect='select2' onChange={onInputChange} />
-            </Field>
-
-            <Field field={description}>
-              <div>
-                <textarea style={{width: '100%', height: '200px'}} name='description' value={description.value} onChange={onInputChange} />
-              </div>
-            </Field>
-
-            <Field field={isActive}>
-              <span className='checkbox-react' onClick={() => onInputChange(null, { name: 'isActive', value: !isActive.value })}>
-                {isActive.value && <i className='fa fa-check' />}
-              </span>
-            </Field>
-            <Field field={isHome}>
-              <span className='checkbox-react' onClick={() => onInputChange(null, { name: 'isHome', value: !isHome.value })}>
-                {isHome.value && <i className='fa fa-check' />}
-              </span>
-            </Field>
-
-            <label>SEO META</label>
-            <Field field={altImage}>
-              <input type='text' className='form-control' placeholder={altImage.placeholder} onChange={onInputChange} defaultValue={(altImage) ? altImage.value : ''} />
-            </Field>
-
-            <Field field={metaTitle}>
-              <input type='text' className='form-control' placeholder={metaTitle.placeholder} onChange={onInputChange} defaultValue={(metaTitle) ? metaTitle.value : ''} />
-            </Field>
-
-            <Field field={metaDescription}>
-              <input type='text' className='form-control' placeholder={metaDescription} onChange={onInputChange} defaultValue={(metaDescription) ? metaDescription.value : ''} />
-            </Field>
-          </div>
-        </form>
-      </FormLayoutDefault>
-    )
-  }
-}
-const FormBox = withFormBehaviors(Form, Model)
-class FormWrapper extends React.PureComponent {
-  constructor (props) {
-    super(props)
-    this.state = {
-      data: null,
-      parents: []
+  const onSubmit = () => {
+    const formData = model.data
+    if (!isAdd) {
+      let dt = formData
+      dt.id = props.data._id
+      dt.parentId = dt.parentId ? dt.parentId : null
+      api.category.update(dt, (err, resp) => {
+        if (err) return alert('update fail')
+        history.push(LINK.GRID)
+      })
+    } else {
+      api.category.insert(formData, (err, resp) => {
+        if (err) return alert('save fail')
+        history.push(LINK.GRID)
+      })
     }
   }
 
-  componentDidMount () {
-    let {match} = this.props
-    if (!match) return
-    let {params} = match
+  let activeChecked = isActive.value
+  let homeChecked = isHome.value
+  var linkImg = (img && img.value) ? domain + '/' + img.value : 'http://placehold.it/250x150'
+
+  return <Form
+    Layout={Basic}
+    title='Category Form'
+    cancle={LINK.GRID}
+    onSubmit={onSubmit}
+    formValid={model.valid}
+  >
+    <div className='row'>
+      <div className='col-md-4'>
+        <Field.FileImage id='category-modal-upload' name={img.name} field={img} value={linkImg} title='Upload Image' api={api} onChange={onChange} />
+      </div>
+    </div>
+    {/* <div className='row'>
+      <div className='col-md-12'>
+        <Field.FileGalleries id='category-modal-upload-gallery' name={img.name} field={img} value={linkImg} title='Upload Image' api={api} onChange={onChange} />
+      </div>
+    </div> */}
+    <div className='row'>
+      <div className='col-md-6'>
+        <Field.Input field={title} defaultValue={title.value} name={title.name} id='category-title-id' placeholder='please enter' className='form-control' onChange={onChange} />
+        <Field.Select field={parentId} name={parentId.name} selectedValue={parentId.value} options={parents} id='category-parents-id' className='form-control' onChange={onChange} />
+        <Field.Area field={description} rows='6' name={description.name} defaultValue={description.value} id='category-description-id' className='form-control' onChange={onChange} />
+      </div>
+      <div className='col-md-6'>
+        <Field.Input field={altImage} defaultValue={altImage.value} name={altImage.name} id='category-altImage-id' placeholder={altImage.placeholder} className='form-control' onChange={onChange} />
+        <Field.Input field={metaTitle} defaultValue={metaTitle.value} name={metaTitle.name} id='category-metaTitle-id' placeholder={metaTitle.placeholder} className='form-control' onChange={onChange} />
+        <Field.Input field={metaDescription} defaultValue={metaDescription.value} name={metaDescription.name} id='category-metaDescription-id' placeholder={metaDescription.placeholder} className='form-control' onChange={onChange} />
+      </div>
+    </div>
+
+    <div className='row'>
+      <div className='col-md-12'>
+        <Field.CheckBox field={isActive} id='category-active-id' defaultChecked={activeChecked} value={isActive.value} name={isActive.name} text='Active' onChange={onChange} />
+        <Field.CheckBox field={isHome} id='category-home-id' defaultChecked={homeChecked} value={isHome.value} name={isHome.name} text='Home' onChange={onChange} />
+      </div>
+    </div>
+  </Form>
+}
+
+const FormWrapper = forwardRef((props, ref) => {
+  const {match, api} = props
+  let {params} = match
+
+  let [formData, setFormData] = useState()
+
+  useEffect(() => {
     const parents = (cb) => {
-      this.props.api.category.getParents({}, (err, resp) => {
+      api.category.getParents({}, (err, resp) => {
         if (err) return cb(err)
         let data = resp.map(el => ({ text: el.title, value: el._id }))
         return cb(null, data)
@@ -144,16 +102,16 @@ class FormWrapper extends React.PureComponent {
     }
 
     const data = (cb) => {
-      this.props.api.category.get({id: params.id}, (err, resp) => {
+      api.category.get({id: params.id}, (err, resp) => {
         if (err) return cb(err)
         return cb(null, resp)
       })
     }
 
     if (params.id === 'add') {
-      parents((err, data) => {
+      parents((err, prs) => {
         if (err) return
-        this.setState({ parents: data })
+        setFormData({ parents: prs })
       })
     } else {
       async.parallel({ data, parents }, (err, resp) => {
@@ -162,14 +120,13 @@ class FormWrapper extends React.PureComponent {
         _.remove(parents, {
           value: data._id
         })
-        this.setState({ data, parents })
+        setFormData({ parents, data })
       })
     }
-  }
-  render () {
-    return <FormBox data={this.state.data} parents={this.state.parents} api={this.props.api} {...this.props} />
-  }
-}
+  }, [match])
+
+  return formData && <FormHandle isAdd={!formData.data} parents={formData.parents} data={formData.data} api={api} />
+})
 
 export default withContainer(React.memo(FormWrapper), (c, props) => ({
   api: c.api

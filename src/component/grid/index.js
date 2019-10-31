@@ -16,9 +16,11 @@ let dfdata = dfdataModule()
 class GridView extends React.PureComponent {
   constructor (props) {
     super(props)
-    this.tabOptions = this.props.tabOptions || dfdata.tabOptions
+    const TABOPTIONS = _.get(METADATA[this.props.meta], 'TABOPTIONS')
+    const DEFAULTPAYLOAD = _.get(METADATA[this.props.meta], 'DEFAULTPAYLOAD')
+    this.tabOptions = TABOPTIONS || dfdata.tabOptions
     this.state = {
-      payload: _.merge(dfdata.dfpayload, this.props.dfpayload || {}),
+      payload: _.merge(dfdata.dfpayload, DEFAULTPAYLOAD || {}),
       tabCurrent: this.tabOptions[0].name
     }
     this.handleEntries = this.handleEntries.bind(this)
@@ -59,8 +61,9 @@ class GridView extends React.PureComponent {
     let {meta} = this.props
     let action = METADATA[meta].ACTIONLINK
 
-    if (this.state.tabCurrent === 'all') return <Action data={data} linkedit={action.EDIT} handleAction={this.handleAction} />
-    else if (this.state.tabCurrent === 'trash') return <ActionTrash data={data} handleActionTrash={this.handleActionTrash} />
+    // if (this.state.tabCurrent === 'all') return <Action data={data} linkedit={action.EDIT} handleAction={this.handleAction} />
+    if (this.state.tabCurrent === 'trash') return <ActionTrash data={data} handleActionTrash={this.handleActionTrash} />
+    else return <Action data={data} linkedit={action.EDIT} handleAction={this.handleAction} />
   }
 
   handleAction (type, data) {
@@ -80,10 +83,13 @@ class GridView extends React.PureComponent {
   }
 
   handleTabs (id) {
+    let { meta } = this.props
+    const tabs = METADATA[meta].TABOPTIONS || dfdata.tabOptions
+    console.log('id', id)
     let state = _.clone(this.state)
     state.payload.pageNumber = 1
     state.tabCurrent = id
-    state = dfdata.tabOptions.find(item => item.id === id).on(state)
+    state = tabs.find(item => item.id === id).on(state)
     this.setState(state, () => { this.getData() })
   }
 
@@ -126,8 +132,9 @@ class GridView extends React.PureComponent {
 
   render () {
     let { meta, data } = this.props
+    console.log('METADATA', METADATA)
     let currentData = METADATA[meta]
-    let { PAGE_HEADER, TABLEVIEW } = currentData
+    let { PAGE_HEADER, TABLEVIEW, TABOPTIONS } = currentData
     let fnc = {
       handleEntries: this.handleEntries,
       handleSearchBox: this.handleSearchBox
@@ -142,7 +149,7 @@ class GridView extends React.PureComponent {
     let { typeSort, colSort } = payload
     return (
       <PageLayout header={PAGE_HEADER}>
-        <Tabs active={tabCurrent} options={this.tabOptions} handleTabs={this.handleTabs} />
+        <Tabs active={tabCurrent} options={TABOPTIONS || this.tabOptions} handleTabs={this.handleTabs} />
         <GridViewLayout
           search={this.props.search || false}
           entries

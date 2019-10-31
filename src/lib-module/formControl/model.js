@@ -1,4 +1,6 @@
-import {useState} from 'react'
+/* global _ */
+
+import {useEffect, useState} from 'react'
 import utils from './utils'
 import validatorsjs from './validators'
 
@@ -10,8 +12,7 @@ const Model = (formModels, data) => {
     newModel[field].valid = !message
     newModel[field].error = message
 
-    newModel[field].valid = !message ? true : false
-
+    newModel[field].valid = !message
     delete newModel.valid
     newModel.valid = _.valuesIn(newModel).every(el => el.valid === true)
   }
@@ -20,19 +21,25 @@ const Model = (formModels, data) => {
   const setValue = (fieldName, value) => {
     if (newModel[fieldName].value === value) return
     newModel[fieldName].value = value
+
+    delete newModel.valid
+    newModel.valid = _.valuesIn(newModel).every(el => {
+      if (el.name === 'setValue' || el.name === 'validate' || el.name === 'validateModel') return true
+      return el.valid === true
+    })
     setModel({...newModel})
   }
 
   const createValidators = (validators, value) => {
     return validators.map(v => {
       if (typeof v.compare === 'function') return v.compare.bind(null, value, model)
-      return validatorsjs[v.compare].bind(null, value, v.compareTo )
+      return validatorsjs[v.compare].bind(null, value, v.compareTo)
     })
   }
 
   const validate = (fieldName, value) => {
     if (!newModel[fieldName].validator) return Promise.resolve(true)
-    const validators = createValidators(newModel[fieldName].validator, value )
+    const validators = createValidators(newModel[fieldName].validator, value)
     return utils
       .runSequentially(validators)
       .then(() => {
@@ -47,9 +54,9 @@ const Model = (formModels, data) => {
 
   const validateModel = () => {
     const tasks = []
-    
+
     Object.keys(model).forEach(n => {
-      if (n === 'valid' || n === 'setValue' || n ==='validate' || n === 'validateModel') return
+      if (n === 'valid' || n === 'setValue' || n === 'validate' || n === 'validateModel') return
       tasks.push(() => validate(n, model[n].value).then(flag => {
         if (!data) {
           model[n].error = ''
@@ -73,7 +80,7 @@ const Model = (formModels, data) => {
     get: () => {
       const dt = {}
       Object.keys(model).forEach(m => {
-        if (m === 'valid' || m === 'setValue' || m ==='validate' || m === 'validateModel') return
+        if (m === 'valid' || m === 'setValue' || m === 'validate' || m === 'validateModel') return
         dt[m] = model[m].value ? model[m].value : ''
       })
       return dt
@@ -88,9 +95,16 @@ const Model = (formModels, data) => {
       if (!hasValidate) model[name].valid = true
       if (data) {
         model[name].value = data[name] ? data[name] : null
+      } else {
+        model[name].value = null
       }
     })
   }
+
+  useEffect(() => {
+    init()
+    model.validateModel()
+  }, [data])
 
   return [model, init]
 }

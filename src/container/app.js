@@ -5,8 +5,8 @@ import { withContainer } from '../context'
 import LINKSTORE from '../helper/link'
 import hasPermission from '../helper/permissions.cli.util'
 import Test from './page/test'
-import { Profile, Account, Category, CategoryPost, Post, Gallery, Home, Product, ChangePassword, Permission, Advertise, Slide } from './page'
-const { ACCOUNTLINK, CATEGORYLINK, CATEGORYPOSTLINK, POSTLINK, GALLERYLINK, PRODUCTLINK, PERMISSIONLINK, ADVERTISELINK, SLIDELINK } = LINKSTORE
+import { Profile, Account, Category, Post, Gallery, Home, Product, ProductMaster, ChangePassword, Permission, Advertise, Slide } from './page'
+const { ACCOUNTLINK, CATEGORYLINK, POSTLINK, GALLERYLINK, PRODUCTLINK, PRODUCTMASTERLINK, PERMISSIONLINK, ADVERTISELINK, SLIDELINK } = LINKSTORE
 
 class App extends React.PureComponent {
   constructor (props) {
@@ -23,6 +23,7 @@ class App extends React.PureComponent {
       { key: 'main-slide', path: SLIDELINK.GRID, component: Slide },
       { key: 'main-gallery', path: GALLERYLINK, component: Gallery },
       { key: 'main-product', path: PRODUCTLINK.GRID, component: Product },
+      { key: 'main-product-master', path: PRODUCTMASTERLINK.GRID, component: ProductMaster },
       { key: 'main-permisison', path: PERMISSIONLINK.GRID, component: Permission },
       { key: 'test', path: '/test', component: Test },
       { key: 'main-logout', path: '/logout', render: () => <Redirect to='/login' /> },

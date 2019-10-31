@@ -7,12 +7,9 @@ export default class File {
   upload (multiple, files, name, folder = '', callback) {
     if (!files || files.length <= 0) return callback(new Error('No file'))
     var formData = new FormData()
-    for (var i = 0; i < files.length; i++) {
-      var file = files[i]
-      // add the files to formData object for the data payload
-      formData.append(name, file, file.name)
-    }
-    fetch(domain + '/upload?folder=' + folder, { // Your POST endpoint
+    for (var i = 0; i < files.length; i++) { formData.append(name, files[i], files[i].name) }
+
+    fetch(domain + '/upload?folder=' + folder, {
       method: 'POST',
       headers: {
         // Content-Type may need to be completely **omitted**
@@ -20,11 +17,31 @@ export default class File {
         // 'Content-Type': 'multipart/form-data'
       },
       body: formData // This is your file object
-    }).then(response => {
-      return response.json()
-    }).then(resp => {
-      if (resp.status && resp.status === 200) return callback(null, multiple ? resp.data : resp.data[0])
-    }).catch(error => console.log(error))
+    })
+      .then(response => response.json())
+      .then(resp => {
+        if (resp.status && resp.status === 200) return callback(null, multiple ? resp.data : resp.data[0])
+      }).catch(error => console.log(error))
+  }
+
+  uploadFileManager (multiple, files, name, folder = '', callback) {
+    if (!files || files.length <= 0) return callback(new Error('No file'))
+    var formData = new FormData()
+    for (var i = 0; i < files.length; i++) { formData.append(name, files[i], files[i].name) }
+
+    fetch(domain + '/upload-file-manager?folder=' + folder, {
+      method: 'POST',
+      headers: {
+        // Content-Type may need to be completely **omitted**
+        // or you may need something
+        // 'Content-Type': 'multipart/form-data'
+      },
+      body: formData // This is your file object
+    })
+      .then(response => response.json())
+      .then(resp => {
+        if (resp.status && resp.status === 200) return callback(null, multiple ? resp.data : resp.data[0])
+      }).catch(error => console.log(error))
   }
 
   upload1 (multiple, files, name, folder = '', callback) {

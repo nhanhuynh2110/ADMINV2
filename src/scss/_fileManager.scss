@@ -1,0 +1,167 @@
+.file-manager {
+  padding-right: 0 !important;
+  z-index: 1041;
+  .file-manager-modal {
+    .modal-header {
+      padding: 15px 0;
+      .groups-buttons {
+        a {
+          padding: 5px;
+          // background-color: #d4d4d4;
+          border-color: #8c8c8c;
+          margin-right: 5px;
+          cursor: pointer;
+
+        }
+      }
+    }
+
+    .file-manager-model-content {
+      padding: 0 20px;
+      min-height: 100vh;
+      .file-manager-container {
+        border-top: 1px solid #8c8c8c;
+        background-color: #ececec;
+
+        ol.breadcrumb {
+          li a {
+            color: #333;
+          }
+        }
+
+        .file-manager-content {
+          display: flex;
+          flex-wrap: wrap;
+          // min-height: 300px;
+          background-color: #fff;
+          padding: 15px;
+
+          .file-manager-item {
+            width: 80px;
+            height: 60px;
+            overflow-y: hidden;
+            position: relative;
+            cursor: pointer;
+            text-align: center;
+            margin-right: 10px;
+            &.context-menu-active {
+              position: absolute;
+              top: 0;
+              right: 0;
+              left: 0;
+              bottom: 0;
+              opacity: 0.5;
+              background-color: #3c8dbc;
+              content: "";
+            }
+            &.file-manager-item-active:after, &:hover:after {
+              position: absolute;
+              top: 0;
+              right: 0;
+              left: 0;
+              bottom: 0;
+              opacity: 0.5;
+              background-color: #3c8dbc;
+              content: "";
+            }
+            .file-manager-item-file {
+              width: 80%;
+            }
+          }
+
+          .file-manager-item-name {
+            word-wrap: break-word;
+          }
+
+          .file-manager-item-input {
+            // border: none;
+            width: 100%;
+          }
+
+          .file-manager-folder {
+            width: 80px;
+            margin-right: 10px;
+            text-align: center;
+            display: inline-block;
+            .fa-arrow-left {
+              color: #000;
+              font-size: 60px;
+            }
+            .fa-folder {
+              color: #FFD44D;
+              font-size: 60px;
+            }
+          }
+
+        }
+      }
+
+      .file-manager-context-menu {
+        position: relative;
+        .dropdown-menu {
+          display: block;
+          a {
+            cursor: pointer;
+          }
+        }
+      }
+
+      .file-manager-crop-form {
+        position: absolute;
+        right: 0;
+        top: 0;
+        min-height: 100vh;
+        background-color: #fff;
+        border-left: 1px solid #f4f4f4;
+        z-index: 1;
+        padding: 20px 15px 15px;
+      }
+    }
+  }
+}
+
+.camera-image {
+  &:hover ~.camera-image-upload-image {
+    display: flex;
+    transition: opacity .13s ease-out;
+  }
+}
+
+.camera-image-upload-image {
+  &:hover {
+    display: flex;
+    transition: opacity .13s ease-out;
+  }
+  cursor: pointer;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient( transparent, rgba(0, 0, 0, .6) 50%, rgba(0, 0, 0, .6) 100% );
+  .fa-camera {
+    font-size: 30px;
+    color: #000;
+  }
+}
+
+.add-galleries-icon {
+  font-size: 40px;
+  color: #fff;
+  padding: 3px 12px;
+  vertical-align: middle;
+  background-color: #3c8dbc;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+}
+
+
+.input-check-disabled {
+  i.fa {
+    color: #c1c1c1
+  }
+}

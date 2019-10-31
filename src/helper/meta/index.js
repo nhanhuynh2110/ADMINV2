@@ -3,6 +3,7 @@ import category from './category'
 import post from './post'
 import account from './account'
 import product from './product'
+import productMaster from './productMaster'
 import advertise from './advertise'
 import slide from './slide'
 import permission from './permission'
@@ -15,5 +16,6 @@ export default {
   product,
   advertise,
   slide,
-  permission
+  permission,
+  productMaster
 }

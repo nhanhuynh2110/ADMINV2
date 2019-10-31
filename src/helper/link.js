@@ -27,6 +27,11 @@ export default {
     EDIT: '/post/:id'
   },
   GALLERYLINK: '/gallery',
+  PRODUCTMASTERLINK: {
+    GRID: '/product-master/',
+    ADD: '/product-master/add',
+    EDIT: '/product-master/:id'
+  },
   PRODUCTLINK: {
     GRID: '/product/',
     ADD: '/product/add',

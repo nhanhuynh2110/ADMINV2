@@ -1,11 +1,10 @@
-import React, {forwardRef} from 'react'
+import React from 'react'
 import _ from 'lodash'
 import { withContainer } from '../../../context'
 import modelForm from './changePassword.model'
 
 import Form, { Field, Model as useModel } from 'lib-module/formControl'
 import { Center } from 'form-layout'
-
 
 const ChangePasswordForm = React.forwardRef((props, ref) => {
   const [model] = useModel(modelForm)
@@ -17,7 +16,7 @@ const ChangePasswordForm = React.forwardRef((props, ref) => {
   const onSubmit = () => {
     props.api.account.changePassword(model.data, (err, res) => {
       if (err || !res) return alert(err)
-      location.href = '/login'
+      window.location.href = '/login'
     })
   }
 
@@ -62,5 +61,3 @@ const ChangePasswordForm = React.forwardRef((props, ref) => {
 export default withContainer(ChangePasswordForm, (c, props) => ({
   api: c.api
 }))
-
-
