@@ -11,7 +11,8 @@ module.exports = {
   mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
   entry: {
     style: './src/style.js',
-    main: './src/main.js',
+    // main: './src/main.js',
+    main: './srcv1/App.js',
     login: './src/login.js'
   },
   watch: true,
