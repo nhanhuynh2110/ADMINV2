@@ -1,32 +1,16 @@
 import React from 'react'
-import Grid from '../../component/grid'
+import {APICategory} from '../../api'
 import STORELINK from '../storeLink'
-import Tabs from '../../tabs'
-import API from '../../api'
+import model from '../../dataTable/category'
+import {Grid, Tabs} from '../../component'
 const LINK = STORELINK.CATEGORY
-
-export default (props) => {
-  const [data, setData] = React.useState()
-
-  React.useEffect(() => {
-    API.CategoryAPI.get({
-      strKey: '',
-      pageSize: 10,
-      pageNumber: 1,
-      colSort: 'createDate',
-      typeSort: '',
-      isDelete: 0})
-      .then(data => {
-        console.log(data)
-      })
-  }, [])
-
-  if (!data) return null
-  return <React.Fragment>
-    <Grid
-      title='Category1'
-      link={LINK.grid}
-      tabs={Tabs}
-    />
-  </React.Fragment>
+export default () => {
+  return <Grid
+    model={model}
+    initFilter={{...Grid.filter, level: ''}}
+    api={APICategory}
+    title='Category'
+    linkAdd={LINK.add}
+    tabs={Tabs.Category}
+  />
 }

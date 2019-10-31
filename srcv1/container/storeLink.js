@@ -1,6 +1,8 @@
 export default {
   HOME: '/',
   CATEGORY: {
-    grid: '/category'
+    grid: '/category',
+    add: '/category/add',
+    edit: '/category/:id'
   }
 }

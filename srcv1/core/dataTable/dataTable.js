@@ -7,8 +7,19 @@ const getLocale = () =>
 
 export default class DataTable {
   _locale = getLocale()
-  get rows() {
+
+  get _filteredRows() {
     return this._filter ? this._rows.filter(this._filter) : this._rows
+  }
+
+  get rows() {
+    // if (!this._sort) return this._filteredRows
+
+    // const [sortKey, direction] = this._sort
+    // const sorted = _.sortBy(this._filteredRows, r => r[sortKey])
+    // return direction === 'desc' ? sorted.reverse() : sorted
+
+    return this._rows
   }
 
   get length() {
@@ -43,8 +54,12 @@ export default class DataTable {
       return r
     })
   }
+
   setFilter(filter) {
     this._filter = filter
+  }
+  setSort(sort) {
+    this._sort = sort
   }
 }
 

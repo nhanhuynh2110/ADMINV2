@@ -1,7 +1,10 @@
 import UserAPI from './user'
 import CategoryAPI from './category'
 
-export default {
-  UserAPI: new UserAPI(),
-  CategoryAPI: new CategoryAPI()
+const APIUser = new UserAPI()
+const APICategory = new CategoryAPI()
+
+export {
+  APIUser,
+  APICategory
 }

@@ -1,23 +1,34 @@
 export default {
-  id: {
+  _id: {
     label: 'ID',
     hidden: true
   },
-  name: {
-    label: 'Name'
+  title: {
+    label: 'Title',
+    required: true
   },
-  dob: {
-    label: 'Date of Birth',
-    formatter: (v, locale) =>
-      v.toLocaleDateString(locale, {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric'
-      })
-  },
-  income: {
-    label: 'Income',
-    formatter: (v, locale) =>
-      v.toLocaleString(locale, { style: 'currency', currency: 'USD' })
+  parentId: {
+    label: 'Parent',
+    formatter: (v) => !v ? 'Parent' : 'Childen'
   }
-}
+  
+  // dob: {
+  //   label: 'Born in',
+  //   formatter: (v, locale) => {
+  //     var rtf1 = new Intl.RelativeTimeFormat(locale);
+  //     const today = new Date().getTime();
+  //     const relativeDays = Math.ceil(
+  //       (v.getTime() - today) / (1000 * 3600 * 24 * 365)
+  //     );
+  //     return rtf1.format(relativeDays, 'year');
+  //   }
+  // },
+  // income: {
+  //   label: 'Income',
+  //   formatter: (v, locale) =>
+  //     v.toLocaleString(locale, {
+  //       style: 'currency',
+  //       currency: 'USD'
+  //     })
+  // }
+};

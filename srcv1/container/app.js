@@ -7,9 +7,7 @@ import routerLink from './routerLink'
 const App = ({data}) => {
   return <Router>
     <MainBasic user={data.user} menu={data.menu}>
-      <Switch>
-        {routerLink().map(el => <Route {...el} />)}
-      </Switch>
+      <Switch>{routerLink().map(el => <Route {...el} />)}</Switch>
     </MainBasic>
   </Router>
 }
