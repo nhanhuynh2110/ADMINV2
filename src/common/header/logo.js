@@ -5,12 +5,10 @@ class Logo extends React.Component {
     return (
       <a href='index2.html' className='logo'>
         <span className='logo-mini'>
-          <b>AAAA</b>
-          LT
+          <b>CT</b>
         </span>
         <span className='logo-lg'>
-          <b>Admin</b>
-          LTE
+          <b>Control</b>
         </span>
       </a>
     )

@@ -6,7 +6,7 @@ export default class Login extends React.Component {
     return (
       <div className='login-box' >
         <div className='login-logo'>
-          <a><b>Admin</b>LTE</a>
+          <a><b>TA Company</b><br />Sunny Team</a>
         </div>
         <div className='login-box-body'>
           <p className='login-box-msg'>Sign in to start your session</p>

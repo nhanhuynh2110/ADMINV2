@@ -2,15 +2,16 @@ import _ from 'lodash'
 
 export default (getCtr) => {
   let self = getCtr()
-  self.api.post.on('get-posts', (data) => {
+  const api = self.api.post
+  api.on('get-posts', (data) => {
     self.data.setPost(data)
   })
 
-  self.api.post.on('update-post', data => {
+  api.on('update-post', data => {
     return updatePost(self, data)
   })
 
-  self.api.post.on('delete-post', data => {
+  api.on('delete-post', data => {
     self.data.setPost((obj) => {
       _.remove(obj.list, {
         code: data

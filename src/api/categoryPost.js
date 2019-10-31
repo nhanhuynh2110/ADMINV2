@@ -11,7 +11,7 @@ export default class CategoryPost extends Base {
   }
 
   getAll (payload, cb) {
-    payload['api'] = '/api/admin/categoryPosts/'
+    payload['api'] = '/api/admin/category-posts/'
     this.adapter.get('/base-api', payload, (error, resp) => {
       if (error) return handleError(error, false, cb)
       if (resp.status !== 200) return cb(resp.message)

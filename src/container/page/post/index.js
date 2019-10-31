@@ -2,15 +2,16 @@ import React from 'react'
 import { Route } from 'react-router-dom'
 import Grid from '../../../component/grid'
 import FormWrapper from './form'
-import STORELINK from '../../../helper/link'
+import LINK from '../../../helper/link'
 const KEY = 'post'
 export default class Post extends React.PureComponent {
   constructor (props) {
     super(props)
+    const STORELINK = LINK.POSTLINK
     this.state = {
       routes: [
-        { key: 'post-gridview', path: this.getBaseUrl(STORELINK.POSTLINK.GRID), exact: true, render: (props) => <Grid search sortHeader sortFooter meta={KEY} {...props} /> },
-        { key: 'post-form', path: this.getBaseUrl(STORELINK.POSTLINK.EDIT), render: (props) => <FormWrapper isEdit {...props} /> }
+        { key: 'post-gridview', permissions: true, path: STORELINK.GRID, exact: true, render: (props) => <Grid search sortHeader sortFooter meta={KEY} {...props} /> },
+        { key: 'post-form', permissions: true, path: STORELINK.EDIT, render: (props) => <FormWrapper isEdit {...props} /> }
       ]
     }
     this.getBaseUrl = this.getBaseUrl.bind(this)
