@@ -26,7 +26,9 @@ module.exports = {
       _: 'lodash',
       'lib-module': path.join(__dirname, './src/lib-module'),
       'form': path.join(__dirname, './src/lib-module/form'),
-      'form-layout': path.join(__dirname, './src/component/form/layout')
+      'form-layout': path.join(__dirname, './src/component/form/layout'),
+
+      'control': path.join(__dirname, './srcv1/module/control')
     }
   },
   module: {

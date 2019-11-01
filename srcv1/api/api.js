@@ -39,9 +39,9 @@ const formatLink = (url, query) => {
 }
 
 const hanldeResponse = (response) => {
-  if (!response.status) return { error: 'Request api invalid' }
-  if (response.status !== 200) return { error: response.message || 'request api invalid' }
-  return { data: response.data }
+  if (!response.status) return Promise.reject({ error: 'Request api invalid' })
+  if (response.status !== 200) return Promise.rejec({ error: response.message || 'request api invalid' })
+  return Promise.resolve({ data: response.data })
 }
 
 export default API

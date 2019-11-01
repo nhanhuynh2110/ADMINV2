@@ -3,6 +3,6 @@ export default {
   CATEGORY: {
     grid: '/category',
     add: '/category/add',
-    edit: '/category/:id'
+    edit: '/category/edit/:id'
   }
 }

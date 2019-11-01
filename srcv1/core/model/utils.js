@@ -81,11 +81,11 @@ function createValidator ({ test, compareTo, errorMessage }) {
 }
 
 function combineValidators (validators, value) {
-  const mappedValidators = validators.map(validator =>
+  const mappedValidators = validators && validators.map(validator =>
     createValidator.call(this, validator)
   )
   try {
-    mappedValidators.forEach(v => v.call(this, value))
+    if (mappedValidators) mappedValidators.forEach(v => v.call(this, value))
     return true
   } catch (e) {
     if (e instanceof ValidationError) return e

@@ -1,8 +1,18 @@
 import API from './api'
 
 export default class Category extends API {
-  get (payload) {
+  get (payload = {}) {
     payload['api'] = '/api/admin/category'
+    return super.get('/base-api', payload)
+  }
+
+  detail (payload = {}, id) {
+    payload['api'] = '/api/admin/category/' + id
+    return super.get('/base-api', payload)
+  }
+
+  parents (payload = {}) {
+    payload['api'] = '/api/admin/category/parent'
     return super.get('/base-api', payload)
   }
 

@@ -49,6 +49,10 @@ class Model extends EventHandler {
     this._fields[name].extractFromEvent(e)
   }
 
+  setValue(name, value) {
+    this._fields[name].setValue(value)
+  }
+
   setData (data) {
     if (!data || typeof data !== 'object') return
     let changed = false

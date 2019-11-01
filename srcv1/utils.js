@@ -5,6 +5,12 @@ let formatDate = (strDate) => {
   )
 }
 
+const runParrallel = (tasks, ...args) => Promise.all(tasks.map(task => task(...args)))
+
+const toDropdown = (data, [value, text]) => data.map((el, key) => ({ key: `${el[value]}-${key}`, value: el[value], text:el[text]}))
+
 export {
-  formatDate
+  formatDate,
+  runParrallel,
+  toDropdown
 }
