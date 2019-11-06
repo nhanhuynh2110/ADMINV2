@@ -1,173 +1,139 @@
-/* global _, tinymce */
-
-import React from 'react'
+import React, {forwardRef, useState, useEffect} from 'react'
+import useReactRouter from 'use-react-router'
 import async from 'async'
-
-import Model from './model'
-import Field from '../../../component/form/field'
-import _ from 'lodash'
-import STORELINK from '../../../helper/link'
-import { withFormBehaviors } from '../../../component/form/form'
-import FormLayoutDefault from '../../../component/form/layout/default'
 import { withContainer } from '../../../context'
-import Select from '../../../component/control/select'
-import TinyMCE from '../../../helper/tinyMCE'
+import Form, { Field, Model as useModel } from 'lib-module/formControl'
+import modelForm from './model'
+import Box, {Row} from '../../../component/control/box'
+import STORELINK from '../../../helper/link'
+import conf from '../../../../config'
 
-import config from '../../../../config'
+import {Product} from 'form-layout'
 
-let domain = config.server.domain
+const domain = conf.server.domain
+
 const LINK = STORELINK.POSTLINK
 
-class Form extends React.PureComponent {
-  constructor (props) {
-    super(props)
-    this.uploadFile = this.uploadFile.bind(this)
-    this.handleSubmit = this.handleSubmit.bind(this)
-    // this.state.TinyMCE = false
+const FormHandle = (props) => {
+  const {isAdd, data, categoryPosts, api} = props
+  const { history } = useReactRouter()
+  const [model] = useModel(modelForm, data)
+  const {image, title, introTitle, categoryPostId, description, content, isActive, altImage, metaTitle, metaDescription} = model
+  
+  const onChange = ({name, value}) => {
+    console.log('change img', name, value)
+    model.validate(name, value).then(() => model.setValue(name, value))
   }
 
-  uploadFile (e) {
-    var files = e.target.files
-    var name = e.target.getAttribute('data-name')
-    var folder = e.target.getAttribute('data-folder')
-
-    this.props.api.file.upload(false, files, name, folder, (err, resp) => {
-      if (err) this.props.onInputChange(null, { name, value: null })
-      else this.props.onInputChange(null, {name, value: resp.img})
-    })
-  }
-
-  handleSubmit () {
-    this.props.handleSubmitSingle((data) => {
-      if (!this.props.data) {
-        this.props.api.post.insert(data, (err, resp) => {
-          if (err) return alert('save fail')
-          this.props.history.push(LINK.GRID)
-        })
-      } else {
-        let dt = data
-        dt.id = this.props.data._id
-        this.props.api.post.update(dt, (err, resp) => {
-          if (err) alert('update fail')
-          this.props.history.push(LINK.GRID)
-        })
-      }
-      this.props.handleSubmitFinish()
-    })
-  }
-
-  componentDidMount () {
-    let {content} = this.props.model
-    TinyMCE.init('content', this.props.onInputChange, () => {
-      if (content.value) tinymce.activeEditor.setContent(content.value)
-    })
-  }
-
-  render () {
-    let { categories, onInputChange } = this.props
-    let { image, title, introTitle, isActive, description, categoryPostId, content } = this.props.model
-
-    var linkImg = (image.value) ? domain + image.value : 'http://placehold.it/250x150'
-    return (
-      <FormLayoutDefault
-        title='Create Post'
-        linkCancleBtn={LINK.GRID}
-        isFormValid={this.props.isFormValid}
-        hasChanged={this.props.hasChanged}
-        handleSubmit={this.handleSubmit}
-        isSubmit
-      >
-        <form role='form'>
-          <div className='box-body'>
-
-            <div className='box-body box-profile' style={{ width: '250px' }}>
-              <img style={{ width: '100%' }} src={linkImg} />
-              <h3 className='profile-username text-center'>Image</h3>
-              <Field field={image}>
-                <div className='upload-image'>
-                  <button className='btn btn-block btn-success'>Image</button>
-                  <input data-name='image' data-folder='post' id='upload-input' className='btn btn-block btn-success' type='file' name='uploads[]' onChange={this.uploadFile} />
-                </div>
-              </Field>
-            </div>
-
-            <Field field={title}>
-              <input type='text' className='form-control' placeholder={title.placeholder} onChange={onInputChange} defaultValue={title.value} />
-            </Field>
-
-            <Field field={introTitle}>
-              <input type='text' className='form-control' placeholder={introTitle.placeholder} onChange={onInputChange} defaultValue={introTitle.value} />
-            </Field>
-
-            <Field field={categoryPostId}>
-              <Select isSelected={categoryPostId.value} name='categoryPostId' options={categories} classSelect='select2' onChange={onInputChange} />
-            </Field>
-
-            <Field field={description}>
-              <div>
-                <textarea style={{width: '100%', height: '200px'}} name='description' value={description.value} onChange={onInputChange} />
-              </div>
-            </Field>
-
-            <Field field={content}>
-              <div>
-                <textarea className='editor' />
-              </div>
-            </Field>
-            <Field field={isActive}>
-              <span className='checkbox-react' onClick={() => onInputChange(null, { name: 'isActive', value: !isActive.value })}>
-                {isActive.value && <i className='fa fa-check' />}
-              </span>
-            </Field>
-          </div>
-        </form>
-      </FormLayoutDefault>
-    )
-  }
-}
-const FormBox = withFormBehaviors(Form, Model)
-class FormWrapper extends React.PureComponent {
-  constructor (props) {
-    super(props)
-    this.state = {
-      data: null,
-      categories: []
-    }
-  }
-
-  componentDidMount () {
-    let {match} = this.props
-    if (!match) return
-    let {params} = match
-
-    const data = (cb) => {
-      this.props.api.post.get({id: params.id}, (err, data) => {
-        if (err) return cb(err)
-        return cb(null, data)
+  const onSubmit = () => {
+    const formData = model.data
+    if (!isAdd) {
+      let dt = formData
+      dt.id = props.data._id
+      api.post.update(dt, (err, resp) => {
+        if (err) return alert('update fail')
+        history.push(LINK.GRID)
+      })
+    } else {
+      api.post.insert(formData, (err, resp) => {
+        if (err) return alert('save fail')
+        history.push(LINK.GRID)
       })
     }
+  }
 
-    const categories = (cb) => {
-      this.props.api.category.getAll({}, (err, data) => {
+  var linkImg = (image && image.value) ? domain + '/' + image.value : 'http://placehold.it/250x150'
+  let activeChecked = isActive.value
+  return <Form
+    Layout={Product}
+    title='Post Form'
+    cancle={LINK.GRID}
+    onSubmit={onSubmit}
+    formValid={model.valid}
+  >
+    <Row.MD12 useRow>
+      <Box className='box-primary' title='Info' collapsed='open' >
+        <Row.MD3>
+          <Field.FileImage id='post-modal-upload' name={image.name} field={image} value={linkImg} title='Upload Image' api={api} onChange={onChange} />
+        </Row.MD3>
+        <Row.MD7>
+          <Field.Input field={title} defaultValue={title.value} name={title.name} id='post-title-id' placeholder={title.placeholder} className='form-control' onChange={onChange} />
+          <Row>
+            <Row.MD6>
+              <Field.Input field={introTitle} defaultValue={introTitle.value} name={introTitle.name} id='post-introTitle-id' placeholder={introTitle.placeholder} className='form-control' onChange={onChange} />
+            </Row.MD6>
+            <Row.MD6>
+              <Field.Select field={categoryPostId} name={categoryPostId.name} selectedValue={categoryPostId.value} options={categoryPosts} id='post-categoryId-id' className='form-control' onChange={onChange} />
+            </Row.MD6>
+          </Row>
+        </Row.MD7>
+        <Row.MD2>
+          <Row.MD12 useRow>
+            <Field.CheckBox field={isActive} id='post-active-id' defaultChecked={activeChecked} value={isActive.value} name={isActive.name} text={isActive.text} onChange={onChange} />
+          </Row.MD12>
+        </Row.MD2>
+      </Box>
+    </Row.MD12>
+
+    <Row.MD12 useRow>
+      <Box className='box-primary' title='Meta' collapsed='close' >
+        <Row.MD6>
+          <Field.Input field={altImage} defaultValue={altImage.value} name={altImage.name} id='post-altImage-id' placeholder={altImage.placeholder} className='form-control' onChange={onChange} />
+          <Field.Input field={metaTitle} defaultValue={metaTitle.value} name={metaTitle.name} id='post-metaTitle-id' placeholder={metaTitle.placeholder} className='form-control' onChange={onChange} />
+        </Row.MD6>
+        <Row.MD6>
+          <Field.Area field={metaDescription} rows='5' name={metaDescription.name} defaultValue={metaDescription.value} id='pro-description-id' className='form-control' onChange={onChange} />
+        </Row.MD6>
+      </Box>
+    </Row.MD12>
+
+    <Row.MD12 useRow>
+      <Box className='box-primary' title='Content' collapsed='close'>
+        <Row.MD12>
+          <Field.Area field={description} rows='6' name={description.name} defaultValue={description.value} id='pro-description-id' className='form-control' onChange={onChange} />
+          <Field.Tiny field={content} id='product-content' name={content.name} defaultValue={content.value} onChange={onChange} />
+        </Row.MD12>
+      </Box>
+    </Row.MD12>
+  </Form>
+}
+
+const FormWrapper = forwardRef((props, ref) => {
+  const {match, api} = props
+  let {params} = match
+  let [formData, setFormData] = useState(null)
+
+  useEffect(() => {
+    const categoryPosts = (cb) => {
+      props.api.categoryPost.getAll({}, (err, data) => {
         if (err) return cb(err)
-        let options = data.map((el) => ({text: el.title, value: el._id}))
+        let options = data.map((el) => ({key: el._id, text: el.title, value: el._id}))
         return cb(null, options)
       })
     }
 
-    if (params.id === 'add') {
-      categories((err, data) => this.setState({ categories: data }))
-    } else {
-      async.parallel({data, categories}, (err, resp) => {
-        if (err) return
-        this.setState({ data: resp.data, categories: resp.categories })
+    const data = (cb) => {
+      props.api.post.get({id: params.id}, (err, dt) => {
+        if (err) return cb(err)
+        return cb(null, dt)
       })
     }
-  }
-  render () {
-    return <FormBox data={this.state.data} categories={this.state.categories} {...this.props} />
-  }
-}
+
+    if (params.id === 'add') {
+      categoryPosts((err, catPs) => {
+        if (err) return
+        setFormData({ categoryPosts: catPs, data: null, isAdd: true })
+      })
+    } else {
+      async.parallel({ data, categoryPosts }, (err, resp) => {
+        if (err) return
+        const { data, categoryPosts } = resp
+        setFormData({ categoryPosts, data, isAdd: false })
+      })
+    }
+  }, [match])
+  return formData && <FormHandle isAdd={!formData.data} categoryPosts={formData.categoryPosts} data={formData.data} api={api} />
+})
 
 export default withContainer(React.memo(FormWrapper), (c, props) => ({
   api: c.api

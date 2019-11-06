@@ -1,6 +1,6 @@
 export default {
-  image: {
-    name: 'image',
+  img: {
+    name: 'img',
     validator: [
       { compare: 'require' }
     ]
@@ -8,30 +8,26 @@ export default {
   title: {
     name: 'title',
     label: 'Title',
-    placeholder: 'please input title',
     validator: [
-      { compare: 'require' }
+      { compare: 'require' },
+      { compare: 'minlen', compareTo: 2 }
     ]
   },
-  introTitle: {
-    name: 'introTitle',
-    label: 'Intro Title',
-    placeholder: 'please input intro title',
-    validator: [
-      { compare: 'require' }
-    ]
-  },
-  categoryPostId: {
-    name: 'categoryPostId',
-    label: 'Category post'
+  parentId: {
+    name: 'parentId',
+    label: 'Parent'
   },
   description: {
     name: 'description',
     label: 'Description'
   },
-  content: {
-    name: 'content',
-    label: 'Content'
+  isActive: {
+    name: 'isActive',
+    text: 'Active'
+  },
+  isHome: {
+    name: 'isHome',
+    text: 'Show HomePage'
   },
   altImage: {
     name: 'altImage',
@@ -47,10 +43,5 @@ export default {
     name: 'metaDescription',
     label: 'Meta Description',
     placeholder: 'please input Meta Description'
-  },
-  isActive: {
-    name: 'isActive',
-    text: 'Active',
-    label: ' '
-  },
+  }
 }

@@ -5,7 +5,7 @@ import FormWrapper from './form'
 import LINK from '../../../helper/link'
 const KEY = 'product'
 
-export default class Category extends React.PureComponent {
+export default class Product extends React.PureComponent {
   constructor (props) {
     super(props)
     const STORELINK = LINK.PRODUCTLINK

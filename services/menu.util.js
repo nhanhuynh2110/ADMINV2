@@ -15,6 +15,16 @@ let init = (permissions) => {
       permission: hasPermission(permissions.account.role, 'ACCOUNTVIEW')
     },
     {
+      key: 'slide',
+      title: 'Slide',
+      childItem: [
+        { text: 'New', link: '/slide/add', permission: true },
+        { text: 'List', link: '/slide', permission: true }
+      ],
+      icon: 'fa fa-book',
+      permission: true
+    },
+    {
       key: 'category',
       title: 'Category',
       childItem: [
@@ -23,6 +33,16 @@ let init = (permissions) => {
       ],
       icon: 'fa fa-book',
       permission: hasPermission(permissions.category.role, 'CATEGORYVIEW')
+    },
+    {
+      key: 'category-post',
+      title: 'Category Post',
+      childItem: [
+        { text: 'New', link: '/category-post/add', permission: true },
+        { text: 'List', link: '/category-post', permission: true }
+      ],
+      icon: 'fa fa-book',
+      permission: true
     },
     {
       key: 'product',
