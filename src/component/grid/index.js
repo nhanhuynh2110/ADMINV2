@@ -85,7 +85,6 @@ class GridView extends React.PureComponent {
   handleTabs (id) {
     let { meta } = this.props
     const tabs = METADATA[meta].TABOPTIONS || dfdata.tabOptions
-    console.log('id', id)
     let state = _.clone(this.state)
     state.payload.pageNumber = 1
     state.tabCurrent = id
@@ -99,6 +98,7 @@ class GridView extends React.PureComponent {
 
   getData () {
     let { api, meta } = this.props
+    console.log('contact api', api)
     let { payload } = this.state
     api[meta].gets(payload)
   }
@@ -132,7 +132,7 @@ class GridView extends React.PureComponent {
 
   render () {
     let { meta, data } = this.props
-    console.log('METADATA', METADATA)
+    console.log('data contact', this.props)
     let currentData = METADATA[meta]
     let { PAGE_HEADER, TABLEVIEW, TABOPTIONS } = currentData
     let fnc = {

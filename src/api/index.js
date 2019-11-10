@@ -2,6 +2,7 @@ import Account from './account'
 import Banner from './banner'
 import Category from './category'
 import CategoryPost from './categoryPost'
+import Contact from './contact'
 import Post from './post'
 import Partner from './partner'
 import Video from './video'
@@ -21,6 +22,7 @@ export default () => {
     banner: new Banner(),
     category: new Category(),
     categoryPost: new CategoryPost(),
+    contact: new Contact(),
     post: new Post(),
     partner: new Partner(),
     video: new Video(),

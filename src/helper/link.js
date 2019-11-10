@@ -21,6 +21,11 @@ export default {
     ADD: '/category-post/add',
     EDIT: '/category-post/:id'
   },
+  CONTACTLINK: {
+    GRID: '/contact/',
+    ADD: '/contact/add',
+    EDIT: '/contact/:id'
+  },
   POSTLINK: {
     GRID: '/post/',
     ADD: '/post/add',

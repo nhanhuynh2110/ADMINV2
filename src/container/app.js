@@ -5,8 +5,8 @@ import { withContainer } from '../context'
 import LINKSTORE from '../helper/link'
 import hasPermission from '../helper/permissions.cli.util'
 import Test from './page/test'
-import { Profile, Account, Category, Post, Gallery, Home, Product, ProductMaster, ChangePassword, Permission, Advertise, Slide, CategoryPost } from './page'
-const { ACCOUNTLINK, CATEGORYLINK, POSTLINK, GALLERYLINK, PRODUCTLINK, PRODUCTMASTERLINK, PERMISSIONLINK, ADVERTISELINK, SLIDELINK, CATEGORYPOSTLINK } = LINKSTORE
+import { Profile, Account, Category, Post, Gallery, Home, Product, ProductMaster, ChangePassword, Permission, Advertise, Slide, CategoryPost, Contact } from './page'
+const { ACCOUNTLINK, CATEGORYLINK, POSTLINK, GALLERYLINK, PRODUCTLINK, PRODUCTMASTERLINK, PERMISSIONLINK, ADVERTISELINK, SLIDELINK, CATEGORYPOSTLINK, CONTACTLINK } = LINKSTORE
 
 class App extends React.PureComponent {
   constructor (props) {
@@ -18,6 +18,7 @@ class App extends React.PureComponent {
       { key: 'main-account', path: ACCOUNTLINK.GRID, component: Account, permission: ['ACCOUNTVIEW'] },
       { key: 'main-category', path: CATEGORYLINK.GRID, component: Category, permission: ['CATEGORYVIEW'] },
       { key: 'main-category-post', path: CATEGORYPOSTLINK.GRID, component: CategoryPost },
+      { key: 'main-contact', path: CONTACTLINK.GRID, component: Contact },
       { key: 'main-post', path: POSTLINK.GRID, component: Post },
       { key: 'main-ad', path: ADVERTISELINK.GRID, component: Advertise },
       { key: 'main-slide', path: SLIDELINK.GRID, component: Slide },

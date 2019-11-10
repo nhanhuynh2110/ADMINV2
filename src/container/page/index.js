@@ -5,6 +5,7 @@ import Account from './account'
 import ChangePassword from './account/changePassword'
 import Category from './category'
 import CategoryPost from './categoryPost'
+import Contact from './contact'
 import Post from './post'
 import Gallery from './gallery'
 import Product from './product'
@@ -19,6 +20,7 @@ export {
   Account,
   ChangePassword,
   Category,
+  Contact,
   Post,
   Gallery,
   Product,
