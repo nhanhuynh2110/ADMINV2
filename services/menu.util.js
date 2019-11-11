@@ -4,16 +4,16 @@ const hasPermission = (role = [], key) => role.find(el => el.key === key)
 
 let init = (permissions) => {
   let menu = [
-    {
-      key: 'account',
-      title: 'Account',
-      childItem: [
-        { text: 'New', link: '/account/add', permission: hasPermission(permissions.account.role, 'ACCOUNTADD') },
-        { text: 'List', link: '/account', permission: hasPermission(permissions.account.role, 'ACCOUNTVIEW') }
-      ],
-      icon: 'fa fa-book',
-      permission: hasPermission(permissions.account.role, 'ACCOUNTVIEW')
-    },
+    // {
+    //   key: 'account',
+    //   title: 'Account',
+    //   childItem: [
+    //     { text: 'New', link: '/account/add', permission: true },
+    //     { text: 'List', link: '/account', permission: true }
+    //   ],
+    //   icon: 'fa fa-book',
+    //   permission: true
+    // },
     {
       key: 'slide',
       title: 'Slide',
@@ -28,11 +28,11 @@ let init = (permissions) => {
       key: 'category',
       title: 'Category',
       childItem: [
-        { text: 'New', link: '/category/add', permission: hasPermission(permissions.category.role, 'CATEGORYADD') },
-        { text: 'List', link: '/category', permission: hasPermission(permissions.category.role, 'CATEGORYVIEW') }
+        { text: 'New', link: '/category/add', permission: true },
+        { text: 'List', link: '/category', permission: true }
       ],
       icon: 'fa fa-book',
-      permission: hasPermission(permissions.category.role, 'CATEGORYVIEW')
+      permission: true
     },
     {
       key: 'category-post',
@@ -48,41 +48,51 @@ let init = (permissions) => {
       key: 'product',
       title: 'Product',
       childItem: [
-        { text: 'New', link: '/product/add', permission: hasPermission(permissions.product.role, 'PRODUCTADD') },
-        { text: 'List', link: '/product', permission: hasPermission(permissions.product.role, 'PRODUCTVIEW') }
+        { text: 'New', link: '/product/add', permission: true },
+        { text: 'List', link: '/product', permission: true }
       ],
       icon: 'fa fa-book',
-      permission: hasPermission(permissions.product.role, 'PRODUCTVIEW')
+      permission: true
     },
     {
       key: 'advertise',
       title: 'Advertise',
       childItem: [
-        { text: 'New', link: '/advertise/add', permission: hasPermission(permissions.advertise.role, 'ADVERTISEADD') },
-        { text: 'List', link: '/advertise', permission: hasPermission(permissions.advertise.role, 'ADVERTISEVIEW') }
+        { text: 'New', link: '/advertise/add', permission: true },
+        { text: 'List', link: '/advertise', permission: true }
       ],
       icon: 'fa fa-book',
-      permission: hasPermission(permissions.advertise.role, 'ADVERTISEVIEW')
+      permission: true
     },
     {
       key: 'post',
       title: 'Post',
       childItem: [
-        { text: 'New', link: '/post/add', permission: hasPermission(permissions.post.role, 'POSTADD') },
-        { text: 'List', link: '/post', permission: hasPermission(permissions.post.role, 'POSTVIEW') }
+        { text: 'New', link: '/post/add', permission: true },
+        { text: 'List', link: '/post', permission: true }
       ],
       icon: 'fa fa-book',
-      permission: hasPermission(permissions.post.role, 'POSTVIEW')
+      permission: true
     },
     {
       key: 'gallery',
       title: 'Gallery',
       childItem: [
-        { text: 'Manage', link: '/gallery', permission: hasPermission(permissions.gallery.role, 'GALLERYEDIT') }
+        { text: 'Manage', link: '/gallery', permission: true }
       ],
       icon: 'fa fa-book',
-      permission: hasPermission(permissions.gallery.role, 'GALLERYEDIT')
-    }
+      permission: true
+    },
+    {
+      key: 'contact',
+      title: 'Contact',
+      childItem: [
+        { text: 'Contact Info', link: '/contact-info', permission: true },
+        { text: 'List', link: '/contact', permission: true }
+      ],
+      icon: 'fa fa-book',
+      permission: true
+    },
   ]
   let menuData = []
   menu.forEach((el) => {

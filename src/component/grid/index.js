@@ -98,7 +98,6 @@ class GridView extends React.PureComponent {
 
   getData () {
     let { api, meta } = this.props
-    console.log('contact api', api)
     let { payload } = this.state
     api[meta].gets(payload)
   }
@@ -132,7 +131,6 @@ class GridView extends React.PureComponent {
 
   render () {
     let { meta, data } = this.props
-    console.log('data contact', this.props)
     let currentData = METADATA[meta]
     let { PAGE_HEADER, TABLEVIEW, TABOPTIONS } = currentData
     let fnc = {

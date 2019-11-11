@@ -62,6 +62,7 @@ class Form extends React.PureComponent {
         title='Create Account'
         linkCancleBtn={LINK.GRID}
         isFormValid={this.props.isFormValid}
+        isSubmit
         hasChanged={this.props.hasChanged}
         handleSubmit={this.handleSubmit}
       >

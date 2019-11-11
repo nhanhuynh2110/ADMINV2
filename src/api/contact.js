@@ -13,7 +13,6 @@ export default class Contact extends Base {
   getAll (payload, cb) {
     payload['api'] = '/api/admin/contacts/'
     this.adapter.get('/base-api', payload, (error, resp) => {
-      console.log('grid getAll', resp)
       if (error) return handleError(error, false, cb)
       if (resp.status !== 200) return cb(resp.message)
       if (typeof cb === 'function') {
@@ -25,7 +24,6 @@ export default class Contact extends Base {
   gets (payload, cb) {
     payload['api'] = '/api/admin/contact'
     this.adapter.get('/base-api', payload, (error, resp) => {
-      console.log('grid gets', resp)
       if (error) return handleError(error, false, cb)
       if (resp.status !== 200) return cb(resp.message)
       this.emit('get-contacts', resp.data)

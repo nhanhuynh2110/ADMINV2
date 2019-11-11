@@ -21,10 +21,10 @@ var model = {
         ]
       },
       roleId: {
-        label: 'Role',
-        validators: [
-          { compare: 'required' }
-        ]
+        label: 'Role'
+        // validators: [
+        //   { compare: 'required' }
+        // ]
       },
       gender: {
         label: 'Gender',

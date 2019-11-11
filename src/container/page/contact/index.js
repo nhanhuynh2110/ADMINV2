@@ -9,11 +9,10 @@ export default class Contact extends React.PureComponent {
   constructor (props) {
     super(props)
     const CONTACTLINK = LINK.CONTACTLINK
-    console.log('props', props)
     this.state = {
       routes: [
-        { key: 'contact-gridview', permissions: true, path: CONTACTLINK.GRID, exact: true, render: (props) => <Grid search sortHeader sortFooter meta={KEY} {...props} /> },
-        { key: 'contact-form', permissions: true, path: CONTACTLINK.EDIT, render: (props) => <FormWrapper isEdit {...props} /> }
+        { key: 'contact-form', permissions: true, path: CONTACTLINK.EDIT, render: (props) => <FormWrapper {...props} /> },
+        { key: 'contact-gridview', permissions: true, path: CONTACTLINK.GRID, exact: true, render: (props) => <Grid search sortHeader sortFooter meta={KEY} {...props} /> }
       ]
     }
     this.getBaseUrl = this.getBaseUrl.bind(this)

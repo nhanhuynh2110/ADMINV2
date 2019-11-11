@@ -23,8 +23,8 @@ export default {
   },
   CONTACTLINK: {
     GRID: '/contact/',
-    ADD: '/contact/add',
-    EDIT: '/contact/:id'
+    EDIT: '/contact/:id',
+    CONTACTINFO: '/contact-info/'
   },
   POSTLINK: {
     GRID: '/post/',

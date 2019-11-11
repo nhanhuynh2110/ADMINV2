@@ -3,7 +3,7 @@ import { formatDate } from '../utility'
 
 const LINK = LINKSTORE.CONTACTLINK
 
-let PAGE_HEADER = { title: 'Contact', link: LINK.ADD }
+let PAGE_HEADER = { title: 'Contact', link: LINK.ADD, isAdd: false }
 let ACTIONLINK = {
   EDIT: LINK.GRID
 }
@@ -11,7 +11,7 @@ let ACTIONLINK = {
 let TABLEVIEW = (self) => {
   return {
     index: { text: 'STT', sorted: false, col: null, render: (row) => {} },
-    name: { text: 'Name', sorted: true, col: 'name', render: (row) => row['type'] },
+    name: { text: 'Name', sorted: true, col: 'name', render: (row) => row['name'] },
     subject: { text: 'subject', sorted: true, col: 'subject', render: (row) => row['subject'] },
     phone: { text: 'phone', sorted: true, col: 'phone', render: (row) => row['phone'] },
     createDate: { text: 'Create date', sorted: true, col: 'create_date', render: (row) => { return row['createDate'] ? formatDate(row['createDate']) : '' } },
