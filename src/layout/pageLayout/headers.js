@@ -3,11 +3,11 @@ import {Link} from 'react-router-dom'
 
 class Header extends React.PureComponent {
   render () {
-    let {title, link} = this.props.header
+    let {title, link, isAdd = true} = this.props.header
     return (
       <div className='box-header'>
         <h3 className='box-title'>{title}</h3>
-        <div className='box-tools pull-right'>
+        {isAdd && <div className='box-tools pull-right'>
           <div className='pull-right mb-10 hidden-sm hidden-xs'>
             <div className='btn-group'>
               <button type='button' className='btn btn-success btn-flat'>Action</button>
@@ -20,7 +20,7 @@ class Header extends React.PureComponent {
               </ul>
             </div>
           </div>
-        </div>
+        </div>}
       </div>
     )
   }

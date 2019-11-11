@@ -13,7 +13,7 @@ class UserNav extends React.PureComponent {
   }
 
   render () {
-    let currentUser = this.props
+    let {currentUser} = this.props
     return (
       <li className='dropdown user user-menu'>
         <a className='dropdown-toggle' data-toggle='dropdown'>

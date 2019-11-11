@@ -88,6 +88,14 @@ export default React.forwardRef((props, ref) => {
   })
 
   folderOptions.unshift({ key: 'chooseid', text: 'Choose folder', value: '' })
+  const typeOptions = [
+    {key: 'image/gif', value: 'image/gif', text: 'image/gif'},
+    {key: 'image/jpeg', value: 'image/jpeg', text: 'image/jpeg'},
+    {key: 'image/pjpeg', value: 'image/pjpeg', text: 'image/pjpeg'},
+    {key: 'image/x-png', value: 'image/x-png', text: 'image/x-png'},
+    {key: 'image/png', value: 'image/png', text: 'image/png'},
+    {key: 'image/svg+xml', value: 'image/svg+xml', text: 'image/svg+xml'}
+  ]
 
   return <Form
     Layout={FormLayout}
@@ -100,7 +108,9 @@ export default React.forwardRef((props, ref) => {
     </div>
     <Field.Input field={size} defaultValue={size.value} name='size' id='size-data' placeholder='please enter size' className='form-control' onChange={onChange} />
     <Field.Input field={fileName} defaultValue={fileName.value} name='fileName' id='file-size-data' placeholder='please enter file name' className='form-control' onChange={onChange} />
-    <Field.Input field={fileType} defaultValue={fileType.value} name='fileType' id='file-type-data' placeholder='please enter file type' className='form-control' onChange={onChange} />
+    {/* <Field.Input field={fileType} defaultValue={fileType.value} name='fileType' id='file-type-data' placeholder='please enter file type' className='form-control' onChange={onChange} /> */}
+    
+    <Field.Select field={fileType} name={fileType.name} options={typeOptions} id='file-type-data' className='form-control' onChange={onChange} />
     <Field.Select field={selectFolder} name='selectFolder' selectedValue='option1' options={folderOptions} id='select-folder' className='form-control' onChange={onChange} />
 
     <div className='form-group text-center'>

@@ -21,7 +21,6 @@ const FormHandle = (props) => {
   const {image, title, introTitle, categoryPostId, description, content, isActive, altImage, metaTitle, metaDescription} = model
   
   const onChange = ({name, value}) => {
-    console.log('change img', name, value)
     model.validate(name, value).then(() => model.setValue(name, value))
   }
 

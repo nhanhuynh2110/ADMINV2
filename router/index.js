@@ -83,6 +83,7 @@ module.exports = function (app) {
 
   app.get('/api/get-current-user', (req, res) => {
     let user = req.user
+    console.log(user)
     let menu = menuData(req.user.permissions)
     delete user.token
     let data = { user, menu }

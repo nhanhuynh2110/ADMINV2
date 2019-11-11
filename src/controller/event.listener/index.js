@@ -1,6 +1,7 @@
 import roleListener from './role'
 import categoryListener from './category'
 import categoryPOstListener from './categoryPost'
+import contactListener from './contact'
 import postListener from './post'
 import accountListener from './account'
 import galleryListener from './gallery'
@@ -15,6 +16,7 @@ export default (getCtr) => {
     setupAPIListeners: () => {
       categoryListener(getCtr)
       categoryPOstListener(getCtr)
+      contactListener(getCtr)
       postListener(getCtr)
       accountListener(getCtr)
       galleryListener(getCtr)
