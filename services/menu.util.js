@@ -4,16 +4,16 @@ const hasPermission = (role = [], key) => role.find(el => el.key === key)
 
 let init = (permissions) => {
   let menu = [
-    // {
-    //   key: 'account',
-    //   title: 'Account',
-    //   childItem: [
-    //     { text: 'New', link: '/account/add', permission: true },
-    //     { text: 'List', link: '/account', permission: true }
-    //   ],
-    //   icon: 'fa fa-book',
-    //   permission: true
-    // },
+    {
+      key: 'account',
+      title: 'Account',
+      childItem: [
+        { text: 'New', link: '/account/add', permission: true },
+        { text: 'List', link: '/account', permission: true }
+      ],
+      icon: 'fa fa-book',
+      permission: true
+    },
     {
       key: 'slide',
       title: 'Slide',
@@ -50,6 +50,16 @@ let init = (permissions) => {
       childItem: [
         { text: 'New', link: '/product/add', permission: true },
         { text: 'List', link: '/product', permission: true }
+      ],
+      icon: 'fa fa-book',
+      permission: true
+    },
+    {
+      key: 'producer',
+      title: 'Producer',
+      childItem: [
+        { text: 'New', link: '/producer/add', permission: true },
+        { text: 'List', link: '/producer', permission: true }
       ],
       icon: 'fa fa-book',
       permission: true

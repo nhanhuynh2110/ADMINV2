@@ -11,6 +11,7 @@ export default {
     gallery: null,
     product: null,
     productMaster: null,
+    producer: null,
     permission: null,
     advertise: null,
     slide: null

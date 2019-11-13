@@ -42,6 +42,11 @@ export default {
     ADD: '/product/add',
     EDIT: '/product/:id'
   },
+  PRODUCERLINK: {
+    GRID: '/producer/',
+    ADD: '/producer/add',
+    EDIT: '/producer/:id'
+  },
   ADVERTISELINK: {
     GRID: '/advertise/',
     ADD: '/advertise/add',

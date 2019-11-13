@@ -11,6 +11,7 @@ import Post from './post'
 import Gallery from './gallery'
 import Product from './product'
 import ProductMaster from './productMaster'
+import Producer from './producer'
 import Advertise from './advertise'
 import Slide from './slide'
 import Permission from './permission'
@@ -27,6 +28,7 @@ export {
   Gallery,
   Product,
   ProductMaster,
+  Producer,
   Advertise,
   Slide,
   Permission,
