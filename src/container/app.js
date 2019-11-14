@@ -4,7 +4,7 @@ import Layout from '../layout/default'
 import { withContainer } from '../context'
 import LINKSTORE from '../helper/link'
 import hasPermission from '../helper/permissions.cli.util'
-import Test from './page/test'
+import Test from './page/zphutest'
 import { Profile, Account, Category, Post, Gallery, Home, Product, ProductMaster, ChangePassword, Permission, Advertise, Slide, CategoryPost, Contact, ContactInfo, Producer } from './page'
 const { ACCOUNTLINK, CATEGORYLINK, POSTLINK, GALLERYLINK, PRODUCTLINK, PRODUCTMASTERLINK, PERMISSIONLINK, ADVERTISELINK, SLIDELINK, CATEGORYPOSTLINK, CONTACTLINK, PRODUCERLINK } = LINKSTORE
 
@@ -15,7 +15,7 @@ class App extends React.PureComponent {
       { key: 'main-cat', exact: true, path: '/', component: Home },
       { key: 'main-profile', path: ACCOUNTLINK.PROFILE, component: Profile },
       { key: 'main-change-password', path: ACCOUNTLINK.CHANGEPASSWORD, component: ChangePassword },
-      // { key: 'main-account', path: ACCOUNTLINK.GRID, component: Account, permission: ['ACCOUNTVIEW'] },
+      { key: 'main-account', path: ACCOUNTLINK.GRID, component: Account, permission: ['ACCOUNTVIEW'] },
       { key: 'main-category', path: CATEGORYLINK.GRID, component: Category, permission: ['CATEGORYVIEW'] },
       { key: 'main-category-post', path: CATEGORYPOSTLINK.GRID, component: CategoryPost },
       { key: 'main-contact', path: CONTACTLINK.GRID, component: Contact },
@@ -28,7 +28,7 @@ class App extends React.PureComponent {
       { key: 'main-product-master', path: PRODUCTMASTERLINK.GRID, component: ProductMaster },
       { key: 'main-producer', path: PRODUCERLINK.GRID, component: Producer },
       { key: 'main-permisison', path: PERMISSIONLINK.GRID, component: Permission },
-      { key: 'test', path: '/test', component: Test },
+      { key: 'main-zphu-test', path: '/zphutest', component: Test },
       { key: 'main-logout', path: '/logout', render: () => <Redirect to='/login' /> },
       { key: 'page-error', path: '/error', render: () => 'Page not found' }
     ]

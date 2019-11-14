@@ -5,6 +5,7 @@ import post from './post'
 import account from './account'
 import product from './product'
 import productMaster from './productMaster'
+import producer from './producer'
 import advertise from './advertise'
 import slide from './slide'
 import permission from './permission'
@@ -16,6 +17,7 @@ export default {
   post,
   account,
   product,
+  producer,
   advertise,
   slide,
   permission,

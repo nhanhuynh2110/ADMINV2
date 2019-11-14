@@ -61,5 +61,6 @@ export default {
     GRID: '/permission',
     ADD: '/permission/add',
     EDIT: '/permission/:id'
-  }
+  },
+  
 }

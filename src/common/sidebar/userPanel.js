@@ -8,7 +8,6 @@ let domain = config.server.domain
 class UserPanel extends React.PureComponent {
   render() {
     let { currentUser } = this.props
-    console.log('current User', currentUser,  domain +  currentUser.avatar )
     return (
       <div className='user-panel'>
         <div className='pull-left image'>
