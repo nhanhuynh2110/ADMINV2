@@ -16,6 +16,8 @@ import Advertise from './advertise'
 import Slide from './slide'
 import Permission from './permission'
 
+import PhuTest from './zphutest'
+
 export {
   Home,
   Profile,
@@ -32,5 +34,6 @@ export {
   Advertise,
   Slide,
   Permission,
-  CategoryPost
+  CategoryPost,
+  PhuTest
 }

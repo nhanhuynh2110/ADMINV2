@@ -11,8 +11,8 @@ export default class Producer extends React.PureComponent {
     const PRODUCERLINK = LINK.PRODUCERLINK
     this.state = {
       routes: [
-        { key: 'producer-gridview', permissions: ['PRODUCERVIEW'], path: PRODUCERLINK.GRID, exact: true, render: (props) => <Grid dfpayload={{ colSort: 'order', typeSort: 'asc' }} search sortHeader sortFooter meta={KEY} {...props} /> },
-        { key: 'producer-form', permissions: ['PRODUCEREIDT'], path: PRODUCERLINK.EDIT, render: (props) => <FormWrapper isEdit {...props} /> }
+        { key: 'producer-gridview', permissions: true, path: PRODUCERLINK.GRID, exact: true, render: (props) => <Grid dfpayload={{ colSort: 'order', typeSort: 'asc' }} search sortHeader sortFooter meta={KEY} {...props} /> },
+        { key: 'producer-form', permissions: true, path: PRODUCERLINK.EDIT, render: (props) => <FormWrapper isEdit {...props} /> }
       ]
     }
     this.getBaseUrl = this.getBaseUrl.bind(this)

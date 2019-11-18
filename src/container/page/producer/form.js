@@ -19,7 +19,7 @@ const FormHandle = (props) => {
   const { history } = useReactRouter()
   const [model] = useModel(modelForm, data)
 
-  const {img, title, parentId, description, isActive, isHome, altImage, metaTitle, metaDescription} = model
+  const {img, title, parentId, description, isActive, isHome} = model
 
   const onChange = ({name, value}) => {
     model.validate(name, value).then(() => model.setValue(name, value))
@@ -59,21 +59,11 @@ const FormHandle = (props) => {
         <Field.FileImage id='producer-modal-upload' name={img.name} field={img} value={linkImg} title='Upload Image' api={api} onChange={onChange} />
       </div>
     </div>
-    {/* <div className='row'>
-      <div className='col-md-12'>
-        <Field.FileGalleries id='producer-modal-upload-gallery' name={img.name} field={img} value={linkImg} title='Upload Image' api={api} onChange={onChange} />
-      </div>
-    </div> */}
     <div className='row'>
       <div className='col-md-6'>
         <Field.Input field={title} defaultValue={title.value} name={title.name} id='producer-title-id' placeholder='please enter' className='form-control' onChange={onChange} />
         <Field.Select field={parentId} name={parentId.name} selectedValue={parentId.value} options={parents} id='producer-parents-id' className='form-control' onChange={onChange} />
         <Field.Area field={description} rows='6' name={description.name} defaultValue={description.value} id='producer-description-id' className='form-control' onChange={onChange} />
-      </div>
-      <div className='col-md-6'>
-        <Field.Input field={altImage} defaultValue={altImage.value} name={altImage.name} id='producer-altImage-id' placeholder={altImage.placeholder} className='form-control' onChange={onChange} />
-        <Field.Input field={metaTitle} defaultValue={metaTitle.value} name={metaTitle.name} id='producer-metaTitle-id' placeholder={metaTitle.placeholder} className='form-control' onChange={onChange} />
-        <Field.Input field={metaDescription} defaultValue={metaDescription.value} name={metaDescription.name} id='producer-metaDescription-id' placeholder={metaDescription.placeholder} className='form-control' onChange={onChange} />
       </div>
     </div>
 

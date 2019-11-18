@@ -33,15 +33,5 @@ export default {
     name: 'altImage',
     label: 'Alt Image',
     placeholder: 'please input altImage'
-  },
-  metaTitle: {
-    name: 'metaTitle',
-    label: 'Meta Title',
-    placeholder: 'please input Meta Title'
-  },
-  metaDescription: {
-    name: 'metaDescription',
-    label: 'Meta Description',
-    placeholder: 'please input Meta Description'
   }
 }
