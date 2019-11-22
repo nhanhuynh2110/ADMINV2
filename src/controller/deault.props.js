@@ -12,6 +12,7 @@ export default {
     product: null,
     productMaster: null,
     producer: null,
+    unitProduct: null,
     permission: null,
     advertise: null,
     slide: null

@@ -12,6 +12,7 @@ import Gallery from './gallery'
 import Role from './roles'
 import Product from './product'
 import ProductMaster from './productMaster'
+import UnitProduct from './unitProduct'
 import Producer from './producer'
 import Advertise from './advertise'
 import Slide from './slide'
@@ -35,6 +36,7 @@ export default () => {
     product: new Product(),
     productMaster: new ProductMaster(),
     producer: new Producer(),
+    unitProduct: new UnitProduct(),
     permission: new Permission(),
     fileManager: new FileManager(),
     advertise: new Advertise(),

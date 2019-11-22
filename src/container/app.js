@@ -5,8 +5,8 @@ import { withContainer } from '../context'
 import LINKSTORE from '../helper/link'
 import hasPermission from '../helper/permissions.cli.util'
 import Test from './page/zphutest'
-import { Profile, Account, Category, Post, Gallery, Home, Product, ProductMaster, ChangePassword, Permission, Advertise, Slide, CategoryPost, Contact, ContactInfo, Producer } from './page'
-const { ACCOUNTLINK, CATEGORYLINK, POSTLINK, GALLERYLINK, PRODUCTLINK, PRODUCTMASTERLINK, PERMISSIONLINK, ADVERTISELINK, SLIDELINK, CATEGORYPOSTLINK, CONTACTLINK, PRODUCERLINK } = LINKSTORE
+import { Profile, Account, Category, Post, Gallery, Home, Product, ProductMaster, ChangePassword, Permission, Advertise, Slide, CategoryPost, Contact, ContactInfo, Producer, UnitProduct } from './page'
+const { ACCOUNTLINK, CATEGORYLINK, POSTLINK, GALLERYLINK, PRODUCTLINK, PRODUCTMASTERLINK, PERMISSIONLINK, ADVERTISELINK, SLIDELINK, CATEGORYPOSTLINK, CONTACTLINK, PRODUCERLINK, UNITPRODUCTLINK } = LINKSTORE
 
 class App extends React.PureComponent {
   constructor (props) {
@@ -27,6 +27,7 @@ class App extends React.PureComponent {
       { key: 'main-product', path: PRODUCTLINK.GRID, component: Product },
       { key: 'main-product-master', path: PRODUCTMASTERLINK.GRID, component: ProductMaster },
       { key: 'main-producer', path: PRODUCERLINK.GRID, component: Producer },
+      { key: 'main-unit-product', path: UNITPRODUCTLINK.GRID, component: UnitProduct },
       { key: 'main-permisison', path: PERMISSIONLINK.GRID, component: Permission },
       { key: 'main-zphu-test', path: '/zphutest', component: Test },
       { key: 'main-logout', path: '/logout', render: () => <Redirect to='/login' /> },

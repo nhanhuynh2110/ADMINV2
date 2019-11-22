@@ -40,10 +40,6 @@ export default class PhuTest extends React.PureComponent {
                       </div>
                     </div>
                     <div className='col-md-5'>
-                      <div class="form-group">
-                        <label>Product Type &nbsp;</label>
-                        <input class="form-control" id="pro-title-id" placeholder="please input title" name="title" value="Phụ Kiện Xe Máy" />
-                      </div>
                       <div className='row'>
                         <div className='col-md-6'>
                           <div class="form-group">
@@ -53,8 +49,84 @@ export default class PhuTest extends React.PureComponent {
                         </div>
                         <div className='col-md-6'>
                           <div class="form-group">
-                            <label>Code &nbsp;</label>
-                            <input class="form-control" id="pro-title-id" placeholder="please input title" name="title" value="GTZ5S" />
+                            <label>Barcode &nbsp;</label>
+                            <input class="form-control" id="pro-title-id" placeholder="please input title" name="title" value="unit" />
+                          </div>
+                        </div>
+                      </div>
+                      <div className='row'>
+                        <div className='col-md-6'>
+                          <div class="form-group">
+                            <label>Quantity &nbsp;</label>
+                            <input class="form-control" id="pro-title-id" placeholder="please input title" name="title" value="200" />
+                          </div>
+                        </div>
+                        <div className='col-md-6'>
+                          <div class="form-group">
+                            <label>Unit &nbsp;</label>
+                            <input class="form-control" id="pro-title-id" placeholder="please input title" name="title" value="bottle" />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className='col-md-5'>
+                      <div className='row'>
+                        <div className='col-md-6'>
+                          <div class="form-group">
+                            <label>Price Cost &nbsp;</label>
+                            <input class="form-control" id="pro-title-id" placeholder="please input title" name="title" value="100,000" />
+                          </div>
+                        </div>
+                        <div className='col-md-6'>
+                          <div class="form-group">
+                            <label>Price Cost VAT &nbsp;</label>
+                            <input class="form-control" id="pro-title-id" placeholder="please input title" name="title" value="110,000" />
+                          </div>
+                        </div>
+                      </div>
+                      <div className='row'>
+                        <div className='col-md-6'>
+                          <div class="form-group">
+                            <label>Price Sale &nbsp;</label>
+                            <input class="form-control" id="pro-title-id" placeholder="please input title" name="title" value="120,000" />
+                          </div>
+                        </div>
+                        <div className='col-md-6'>
+                          <div class="form-group">
+                            <label>Price Sale VAT &nbsp;</label>
+                            <input class="form-control" id="pro-title-id" placeholder="please input title" name="title" value="132,000" />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className='col-md-5'>
+                      <div className='row'>
+                        <div className='col-md-6'>
+                          <div class="form-group">
+                            <label>Minimum purchase &nbsp;</label>
+                            <input class="form-control" id="pro-title-id" placeholder="please input title" name="title" value="100" />
+                          </div>
+                        </div>
+                        <div className='col-md-6'>
+                          <div class="form-group">
+                            <label>Maximum purchase &nbsp;</label>
+                            <input class="form-control" id="pro-title-id" placeholder="please input title" name="title" value="300" />
+                          </div>
+                        </div>
+                      </div>
+                      <div className='row'>
+                        <div className='col-md-6'>
+                          <div class="form-group">
+                            <label>Minimum sell &nbsp;</label>
+                            <input class="form-control" id="pro-title-id" placeholder="please input title" name="title" value="80" />
+                          </div>
+                        </div>
+                        <div className='col-md-6'>
+                          <div class="form-group">
+                            <label>Maximum sell &nbsp;</label>
+                            <input class="form-control" id="pro-title-id" placeholder="please input title" name="title" value="280" />
                           </div>
                         </div>
                       </div>
